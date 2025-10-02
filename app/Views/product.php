@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
+<?= $this->extend('layouts/main') ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tes</title>
-</head>
+<?= $this->section('title') ?>
+Product Page
+<?= $this->endSection() ?>
 
-<body>
-    <h1>Hello page product</h1>
-    <?php foreach ($products as $product): ?>
-        <span><?= $product["id"] ?></span>
-    <?php endforeach; ?>
-</body>
+<?= $this->section('content') ?>
+<h1 class="text-4xl font-semibold text-yellow-900">Data Produk</h1>
 
-</html>
+<?php foreach ($products as $product): ?>
+    <p><?= $product['name'] ?> (<?= $product['id'] ?>)</p>
+<?php endforeach; ?>
+<?= $this->endSection() ?>

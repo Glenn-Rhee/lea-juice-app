@@ -8,12 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" type="image/png" href="/favicon.ico">
     <link rel="stylesheet" href="<?= base_url('css/output.css') ?>">
-    <!-- STYLES -->
 </head>
 
 <body>
 
-    <h1 class="text-4xl font-bold text-red-900">Hello world</h1>
+    <marquee behavior="" direction="left">
+        <h1 class="text-4xl font-bold text-red-900">Hello world</h1>
+    </marquee>
     <details class="dropdown">
         <summary class="btn m-1">open or close</summary>
         <ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
