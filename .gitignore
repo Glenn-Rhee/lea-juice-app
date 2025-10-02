@@ -132,9 +132,6 @@ _modules/*
 # Node dependencies
 /node_modules/
 
-# CI4 writable folder
-/writable/
-
 # Build files (jika hasil compile CSS/JS)
 builds/
 public/css/tailwind.css
