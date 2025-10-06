@@ -1,10 +1,21 @@
+import Image from "next/image";
+import Link from "next/link";
+
 export default function Navbar() {
   return (
-    <nav className="fixed w-full z-50 px-8 py-5" id="navbar">
+    <nav className="fixed w-full z-50 px-8 " id="navbar">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
-        <div className="serif-font text-3xl font-bold text-stone-900">
-          LEA <span className="text-[#ff8c42]">JUICE</span>
-        </div>
+        <Link
+          href={"/"}
+          className="serif-font text-3xl font-bold text-stone-900"
+        >
+          <Image
+            src={"/logojus2.png"}
+            alt="Lea Juice Logo"
+            width={100}
+            height={100}
+          />
+        </Link>
         <div className="hidden md:flex space-x-12 text-sm text-stone-700">
           <a href="#home" className="nav-link">
             HOME
