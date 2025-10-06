@@ -1,4 +1,5 @@
 import Collection from "@/components/pages/home/Collection";
+import CTA from "@/components/pages/home/CTA";
 import HeroPage from "@/components/pages/home/HeroPage";
 import StatsSection from "@/components/pages/home/StatsSection";
 import Story from "@/components/pages/home/Story";
@@ -12,6 +13,7 @@ export default function HomePage() {
       <Collection />
       <Story />
       <Testimonials />
+      <CTA />
     </>
   );
 }
