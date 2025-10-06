@@ -1,6 +1,7 @@
 import Collection from "@/components/pages/home/Collection";
 import HeroPage from "@/components/pages/home/HeroPage";
 import StatsSection from "@/components/pages/home/StatsSection";
+import Story from "@/components/pages/home/Story";
 
 export default function HomePage() {
   return (
@@ -8,6 +9,7 @@ export default function HomePage() {
       <HeroPage />
       <StatsSection />
       <Collection />
+      <Story />
     </>
   );
 }
