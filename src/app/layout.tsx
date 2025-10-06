@@ -27,6 +27,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className="scroll-smooth">
+      <head>
+        <link rel="shortcut icon" href="logojus2.png" type="image/x-icon" />
+      </head>
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-stone-900 overflow-x-hidden`}
       >
