@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,9 +27,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className="scroll-smooth">
+      <head>
+        <link rel="shortcut icon" href="logojus2.png" type="image/x-icon" />
+      </head>
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-stone-900 overflow-x-hidden`}
       >
+        <Navbar />
         {children}
       </body>
     </html>
