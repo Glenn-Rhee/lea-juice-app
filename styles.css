@@ -1,0 +1,358 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+  background: #fafaf9;
+  color: #1c1917;
+}
+
+.serif-font {
+  font-family: "Cormorant Garamond", serif;
+}
+
+/* Hero Parallax Scene */
+.hero-scene {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fef3e2 0%, #fae6d0 50%, #f8dcc8 100%);
+}
+
+.parallax-element {
+  position: absolute;
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+/* Real Bottle Styles */
+.bottle-container {
+  position: absolute;
+  filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.15));
+}
+
+.bottle-main {
+  width: 280px;
+  height: auto;
+  animation: bottleFloat 6s ease-in-out infinite;
+}
+
+.bottle-left {
+  width: 220px;
+  height: auto;
+  opacity: 0.7;
+  animation: bottleFloat 5s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+.bottle-right {
+  width: 240px;
+  height: auto;
+  opacity: 0.6;
+  animation: bottleFloat 7s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+@keyframes bottleFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-30px) rotate(2deg);
+  }
+}
+
+/* Floating Particles */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #ff8c42 0%, transparent 70%);
+  border-radius: 50%;
+  animation: particleFloat 15s linear infinite;
+  opacity: 0;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translate(0, 100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(var(--tx), -100px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Gradient Overlays */
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.3;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(100px, -100px) scale(1.2);
+  }
+  66% {
+    transform: translate(-100px, 50px) scale(0.8);
+  }
+}
+
+/* Product Card Premium */
+.product-card-premium {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.product-card-premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #ff8c42, #ffa726, #ff8c42);
+  transform: scaleX(0);
+  transition: transform 0.6s ease;
+}
+
+.product-card-premium:hover::before {
+  transform: scaleX(1);
+}
+
+.product-card-premium:hover {
+  transform: translateY(-16px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+.product-image-wrapper {
+  position: relative;
+  height: 320px;
+  background: linear-gradient(135deg, #fef3e2 0%, #fae6d0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.product-image-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(to top, rgba(255, 140, 66, 0.1), transparent);
+}
+
+.product-bottle {
+  width: 180px;
+  height: auto;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+  position: relative;
+  z-index: 2;
+}
+
+.product-card-premium:hover .product-bottle {
+  transform: scale(1.1) translateY(-10px);
+}
+
+/* Scroll Animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(60px);
+  transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Premium Button */
+.btn-premium {
+  background: linear-gradient(135deg, #ff8c42 0%, #ffa726 100%);
+  color: white;
+  padding: 16px 48px;
+  border-radius: 50px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 10px 30px rgba(255, 140, 66, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-premium::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.btn-premium:hover::before {
+  left: 100%;
+}
+
+.btn-premium:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(255, 140, 66, 0.4);
+}
+
+/* Navigation Premium */
+nav {
+  background: rgba(250, 250, 249, 0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(28, 25, 23, 0.05);
+  transition: all 0.3s ease;
+}
+
+nav.scrolled {
+  background: rgba(250, 250, 249, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.nav-link {
+  position: relative;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: #ff8c42;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Stats Counter */
+.stat-item {
+  text-align: center;
+  padding: 32px;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+  transform: translateY(-8px);
+}
+
+.stat-number {
+  font-size: 3.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff8c42 0%, #ffa726 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: "Cormorant Garamond", serif;
+}
+
+/* Testimonial Slider */
+.testimonial-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: scale(1.02);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fafaf9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff8c42, #ffa726);
+  border-radius: 10px;
+  border: 3px solid #fafaf9;
+}
+
+/* Smooth Scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+}
