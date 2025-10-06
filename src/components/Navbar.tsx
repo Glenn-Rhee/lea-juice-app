@@ -1,7 +1,12 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+  const pathname = usePathname();
+
+  if (pathname.includes("/auth")) return null;
   return (
     <nav className="fixed w-full z-50 px-8 " id="navbar">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
