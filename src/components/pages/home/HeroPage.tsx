@@ -63,7 +63,6 @@ export default function HeroPage() {
       </div>
 
       <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-center z-10">
-        <span>Discover More</span>
         <div className="w-px h-20 bg-gradient-to-b from-orange-400 to-transparent mx-auto" />
       </div>
     </section>
