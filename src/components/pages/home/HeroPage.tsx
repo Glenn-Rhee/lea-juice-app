@@ -13,7 +13,10 @@ export default function HeroPage() {
   }, []);
 
   return (
-    <section className="w-screen h-screen relative bg-gradient-to-br from-[#fef3e200] via-[#fae6d07c] to-[#f8dcc8] overflow-hidden">
+    <section
+      id="home"
+      className="w-screen h-screen relative bg-gradient-to-br from-[#ffecd2] via-[#fcb69f] to-[#ff9a76] overflow-hidden"
+    >
       <div className="w-[500px] h-[500px] gradient-orb -top-[10%] -left-[10%] bg-[#ff8c42]" />
       <div className="w-[400px] h-[400px] gradient-orb -top-[10%] -left-[10%] bg-[#ffa726] delay-[-10s]" />
       <div className="particle left-[20%] delay-0" />
@@ -32,9 +35,9 @@ export default function HeroPage() {
             style={{ y }}
           >
             <Image
-              src="/satu.png"
-              width={150}
-              height={300}
+              src="/jus-manggaiy.png"
+              width={200}
+              height={3500}
               alt="Orange Juice"
               className="bottle-left"
             />
@@ -48,9 +51,9 @@ export default function HeroPage() {
             data-speed="0.5s"
           >
             <Image
-              src="/satu.png"
-              width={150}
-              height={300}
+              src="/jus-nagaiy.png"
+              width={200}
+              height={3500}
               alt="Orange Juice"
               className="bottle-main"
             />
@@ -64,9 +67,9 @@ export default function HeroPage() {
             data-speed="0.4s"
           >
             <Image
-              src="/satu.png"
-              width={150}
-              height={300}
+              src="/jus-pisangiy.png"
+              width={200}
+              height={3500}
               alt="Orange Juice"
               className="bottle-right"
             />
@@ -114,10 +117,7 @@ export default function HeroPage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut", delay: 0.1 }}
         className="absolute bottom-12 left-1/2 transform -translate-x-1/2 text-center z-10"
-      >
-        <span>Discover More</span>
-        <div className="w-px h-20 bg-gradient-to-b from-orange-400 to-transparent mx-auto" />
-      </motion.div>
+      ></motion.div>
     </section>
   );
 }

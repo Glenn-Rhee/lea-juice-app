@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #94a3b4;
   --foreground: #171717;
 }
 
@@ -134,29 +134,28 @@
 }
 
 .bottle-main {
-  width: 280px;
+  width: 348px;
   height: auto;
   animation: bottleFloat 6s ease-in-out infinite;
 }
 
 .bottle-left {
-  width: 220px;
+  width: 348px;
   height: auto;
-  opacity: 0.7;
+  opacity: 1;
   animation: bottleFloat 5s ease-in-out infinite;
   animation-delay: -2s;
 }
 
 .bottle-right {
-  width: 240px;
+  width: 348px;
   height: auto;
-  opacity: 0.6;
+  opacity: 1;
   animation: bottleFloat 7s ease-in-out infinite;
   animation-delay: -4s;
 }
 
 @keyframes bottleFloat {
-
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -208,7 +207,6 @@
 }
 
 @keyframes orbFloat {
-
   0%,
   100% {
     transform: translate(0, 0) scale(1);
@@ -320,10 +318,12 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.3),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   transition: left 0.6s ease;
 }
 
@@ -449,10 +449,12 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.4),
-      transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
   animation: shimmer 3s infinite;
 }
 
