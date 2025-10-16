@@ -101,7 +101,7 @@ export default function Testimonials() {
                     className="inline-block px-6 py-4 bg-white rounded-lg shadow-md border border-orange-100 hover:shadow-lg transition-shadow duration-300 flex-shrink-0"
                   >
                     <p className="text-stone-600 font-medium text-sm mb-4">
-                      "{t.comment.substring(0, 50)}..."
+                      &quot;{t.comment.substring(0, 50)}...&quot;
                     </p>
                     <div className="flex items-center gap-2 justify-between">
                       <span className="text-orange-500 font-semibold text-xs">

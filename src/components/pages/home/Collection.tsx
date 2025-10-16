@@ -1,7 +1,7 @@
 "use client";
 import { productsHighlight } from "@/utils/products-highlight";
 import Image from "next/image";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { useRef } from "react";
 
 export default function Collection() {
@@ -25,7 +25,7 @@ export default function Collection() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
