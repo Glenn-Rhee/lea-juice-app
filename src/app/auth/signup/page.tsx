@@ -1,72 +1,22 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  IconMail,
-  IconLock,
-  IconUser,
-  IconCheck,
-  IconAlertCircle,
-} from "@tabler/icons-react";
+import FormSignup from "@/components/pages/auth/FormSignup";
+import { cookies } from "next/headers";
+import { Metadata } from "next";
 
-export default function SignupPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "error" | "success";
-    text: string;
-  } | null>(null);
+export const metadata: Metadata = {
+  title: "Sign Up - Lea Juice App",
+  description: "Create a new account on Lea Juice App",
+};
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setMessage(null);
-
-    if (formData.password !== formData.confirmPassword) {
-      setMessage({ type: "error", text: "Passwords do not match" });
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Signup failed");
-
-      setMessage({
-        type: "success",
-        text: "Signup successful! Redirecting...",
-      });
-      setTimeout(() => (window.location.href = "/auth/login"), 1500);
-    } catch (err) {
-      if (err instanceof Error)
-        setMessage({ type: "error", text: err.message });
-    } finally {
-      setLoading(false);
-    }
-  }
+export default async function SignupPage() {
+  const token = (await cookies()).get("lea-xxx-juice")?.value;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 relative overflow-hidden">
@@ -85,152 +35,7 @@ export default function SignupPage() {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="px-8">
-            {message && (
-              <div
-                className={`flex items-center gap-2 text-sm p-3 mb-4 rounded-xl border transition-all duration-200 ${
-                  message.type === "error"
-                    ? "bg-red-50 text-red-700 border-red-200"
-                    : "bg-green-50 text-green-700 border-green-200"
-                }`}
-              >
-                {message.type === "error" ? (
-                  <IconAlertCircle size={18} />
-                ) : (
-                  <IconCheck size={18} />
-                )}
-                <span>{message.text}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Name */}
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-black font-medium">
-                  Full Name
-                </Label>
-                <div className="relative">
-                  <IconUser
-                    size={20}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
-                  />
-                  <Input
-                    id="name"
-                    placeholder="Davy wibowo"
-                    className="pl-10 h-11 rounded-xl border-2 border-black  focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Username */}
-              <div className="space-y-2">
-                <Label htmlFor="username" className="text-black font-medium">
-                  Username
-                </Label>
-                <Input
-                  id="username"
-                  placeholder="Dfa Academy"
-                  className="h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  required
-                />
-              </div>
-
-              {/* Email */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-black font-medium">
-                  Email Address
-                </Label>
-                <div className="relative">
-                  <IconMail
-                    size={20}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
-                  />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4transition-all text-black"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Password */}
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-black font-medium">
-                  Password
-                </Label>
-                <div className="relative">
-                  <IconLock
-                    size={20}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
-                  />
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
-                    value={formData.password}
-                    onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Confirm Password */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="confirmPassword"
-                  className="text-black font-medium"
-                >
-                  Confirm Password
-                </Label>
-                <div className="relative">
-                  <IconLock
-                    size={20}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
-                  />
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Re-enter password"
-                    className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
-                    value={formData.confirmPassword}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                disabled={loading}
-                className="w-full h-11 rounded-xl font-semibold bg-black hover:bg-slate-800 transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                {loading ? "Creating account..." : "Sign Up"}
-              </Button>
-            </form>
-          </CardContent>
+          <FormSignup token={token} />
 
           <CardFooter className="px-8 pb-8 text-center text-sm text-slate-600">
             Already have an account?{" "}

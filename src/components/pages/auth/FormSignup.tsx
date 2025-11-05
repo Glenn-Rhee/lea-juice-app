@@ -1,0 +1,226 @@
+"use client";
+import { Button } from "@/components/ui/button";
+import { CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import ResponseError from "@/error/ResponseError";
+import { ResponsePayload } from "@/types";
+import {
+  IconMail,
+  IconLock,
+  IconUser,
+  IconCheck,
+  IconAlertCircle,
+} from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
+
+interface FormSignupProps {
+  token: string | undefined;
+}
+
+export default function FormSignup(props: FormSignupProps) {
+  const { token } = props;
+  const [formData, setFormData] = useState({
+    fullname: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{
+    type: "error" | "success";
+    text: string;
+  } | null>(null);
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setMessage(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setMessage({ type: "error", text: "Passwords do not match" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = (await res.json()) as ResponsePayload;
+      if (data.status === "failed") {
+        throw new ResponseError(data.code, data.message);
+      }
+
+      toast.success(data.message);
+      router.push("/shop");
+    } catch (err) {
+      if (err instanceof ResponseError) {
+        setMessage({ type: "error", text: err.message });
+      } else {
+        setMessage({
+          type: "error",
+          text: "An unexpected error occurred. Please try again.",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+  return (
+    <>
+      <CardContent className="px-8">
+        {message && (
+          <div
+            className={`flex items-center gap-2 text-sm p-3 mb-4 rounded-xl border transition-all duration-200 ${
+              message.type === "error"
+                ? "bg-red-50 text-red-700 border-red-200"
+                : "bg-green-50 text-green-700 border-green-200"
+            }`}
+          >
+            {message.type === "error" ? (
+              <IconAlertCircle size={18} />
+            ) : (
+              <IconCheck size={18} />
+            )}
+            <span>{message.text}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Name */}
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-black font-medium">
+              Full Name
+            </Label>
+            <div className="relative">
+              <IconUser
+                size={20}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
+              />
+              <Input
+                id="name"
+                placeholder="Davy wibowo"
+                className="pl-10 h-11 rounded-xl border-2 border-black  focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+                value={formData.fullname}
+                onChange={(e) =>
+                  setFormData({ ...formData, fullname: e.target.value })
+                }
+                required
+              />
+            </div>
+          </div>
+
+          {/* Username */}
+          <div className="space-y-2">
+            <Label htmlFor="username" className="text-black font-medium">
+              Username
+            </Label>
+            <Input
+              id="username"
+              placeholder="Dfa Academy"
+              className="h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+              value={formData.username}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-black font-medium">
+              Email Address
+            </Label>
+            <div className="relative">
+              <IconMail
+                size={20}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
+              />
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4transition-all text-black"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                required
+              />
+            </div>
+          </div>
+
+          {/* Password */}
+          <div className="space-y-2">
+            <Label htmlFor="password" className="text-black font-medium">
+              Password
+            </Label>
+            <div className="relative">
+              <IconLock
+                size={20}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
+              />
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                required
+              />
+            </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword" className="text-black font-medium">
+              Confirm Password
+            </Label>
+            <div className="relative">
+              <IconLock
+                size={20}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
+              />
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Re-enter password"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+                value={formData.confirmPassword}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    confirmPassword: e.target.value,
+                  })
+                }
+                required
+              />
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full h-11 rounded-xl font-semibold bg-black hover:bg-slate-800 transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            {loading ? "Creating account..." : "Sign Up"}
+          </Button>
+        </form>
+      </CardContent>
+    </>
+  );
+}
