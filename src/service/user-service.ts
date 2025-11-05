@@ -36,7 +36,7 @@ export default class UserService {
     });
 
     cookieStore.set("lea-xxx-juice", token, {
-      name: "token",
+      name: "lea-xxx-juice",
       value: token,
       httpOnly: true,
       maxAge: 60 * 60 * 3,

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const dataJSON = await req.text();
     const authorization = req.headers.get("Authorization");
     const token = authorization?.split(" ")[1];
-    if (token) {
+    if (token !== "undefined") {
       throw new ResponseError(403, "You already registered!");
     }
     const data = JSON.parse(dataJSON) as RegisterUser;
