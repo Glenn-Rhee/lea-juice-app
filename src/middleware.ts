@@ -31,6 +31,9 @@ export async function middleware(req: NextRequest) {
       }
     }
   } else {
+    if (url.includes("/auth") && token) {
+      return NextResponse.redirect(new URL("/shop", req.url));
+    }
   }
   return NextResponse.next();
 }

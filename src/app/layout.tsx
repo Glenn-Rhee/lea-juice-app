@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
-import { cookies } from "next/headers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,9 +27,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.getAll();
-  console.log("Token in Layout:", token);
   return (
     <html lang="id" className="scroll-smooth">
       <head>
