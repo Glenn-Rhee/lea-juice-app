@@ -35,9 +35,17 @@ export default function Navbar() {
             REVIEWS
           </a>
         </div>
-        <button className="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-8 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300">
-          Shop Now
-        </button>
+        <div className="space-x-4">
+          <button className="bg-gradient-to-r cursor-pointer from-orange-400 to-orange-500 text-white px-8 py-3 rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300">
+            Shop Now
+          </button>
+          <Link
+            href={"/auth/login"}
+            className="border border-orange-500 cursor-pointer text-orange-500 px-8 py-3 rounded-full font-medium text-sm hover:border-transparent hover:bg-orange-500 hover:text-white transition-all duration-300"
+          >
+            Login
+          </Link>
+        </div>
       </div>
     </nav>
   );

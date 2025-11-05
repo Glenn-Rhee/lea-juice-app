@@ -12,7 +12,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const authorization = req.headers.get("Authorization");
     const token = authorization?.split(" ")[1];
     if (token) {
-      throw new ResponseError(403, "Forbidden! You already registered!");
+      throw new ResponseError(403, "You already registered!");
     }
     const data = JSON.parse(dataJSON) as RegisterUser;
 
