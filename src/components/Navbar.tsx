@@ -4,6 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { Session } from "next-auth";
+import { useState } from "react";
+import { signOut } from "next-auth/react";
+import toast from "react-hot-toast";
 
 interface NavbarProps {
   token: Session | null;
@@ -12,8 +15,26 @@ interface NavbarProps {
 export default function Navbar(props: NavbarProps) {
   const { token } = props;
   const pathname = usePathname();
+  const [loading, setLoading] = useState(false);
 
   if (pathname.includes("/auth")) return null;
+
+  async function handleLogout() {
+    setLoading(true);
+    try {
+      await signOut();
+      toast.success("Logout successfully!");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error("An error while logout! Please try again later!");
+      } else {
+        toast.error("An error occured!");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <nav className="fixed w-full z-50 px-8 " id="navbar">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -52,6 +73,9 @@ export default function Navbar(props: NavbarProps) {
           {token ? (
             <Button
               variant={"destructive"}
+              type="button"
+              onClick={handleLogout}
+              disabled={loading}
               className="cursor-pointer rounded-full px-8 py-5"
             >
               Logout

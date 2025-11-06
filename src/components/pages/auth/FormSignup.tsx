@@ -70,6 +70,7 @@ export default function FormSignup() {
 
       toast.success(data.message);
       router.push("/shop");
+      router.refresh();
     } catch (err) {
       if (err instanceof ResponseError) {
         setMessage({ type: "error", text: err.message });

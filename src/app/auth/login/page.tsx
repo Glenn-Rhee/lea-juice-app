@@ -69,6 +69,7 @@ export default function LoginPage() {
       }
 
       router.push("/shop");
+      router.refresh();
       setSuccess(true);
       toast.success("Login successfully!");
     } catch (error) {
