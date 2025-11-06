@@ -1,12 +1,13 @@
 import { MiddlewareConfig, NextRequest, NextResponse } from "next/server";
 import { ResponsePayload } from "./types";
 import { getToken } from "next-auth/jwt";
+
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl.pathname;
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (url.includes("/api")) {
-    if (url.includes("/auth")) {
+    if (url.includes("/auth/signup")) {
       if (req.method === "DELETE") {
         if (!token) {
           return NextResponse.json<ResponsePayload>({

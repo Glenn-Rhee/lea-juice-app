@@ -34,6 +34,29 @@ const handler = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token = {
+          sub: user.id,
+          name: user.name,
+          email: user.email,
+          ...token,
+        };
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.user = {
+        name: token.name,
+        email: token.email,
+      };
+
+      return session;
+    },
+  },
 
   session: { strategy: "jwt" },
   pages: { signIn: "/shop" },

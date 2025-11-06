@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
+import Providers from "@/components/Providers";
+import { getServerSession } from "next-auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +29,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const token = await getServerSession();
   return (
     <html lang="id" className="scroll-smooth">
       <head>
@@ -35,10 +38,12 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-stone-900 overflow-x-hidden`}
       >
-        <Toaster />
-        <Navbar />
-        {children}
-        <Footer />
+        <Providers>
+          <Toaster />
+          <Navbar token={token} />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
