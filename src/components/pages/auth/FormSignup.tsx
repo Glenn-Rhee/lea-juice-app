@@ -55,17 +55,17 @@ export default function FormSignup() {
       }
 
       const loginRes = (await signIn("credentials", {
-        ...data.data,
+        email: formData.email,
+        password: formData.password,
         callbackUrl: "/shop",
         redirect: false,
       })) as ResponseNextAuth;
 
       if (!loginRes.ok) {
+        console.log(loginRes);
+        toast.error("Signup succeded but login failed. Please login manually.");
         router.push("/auth/login");
-        throw new ResponseError(
-          loginRes.status,
-          "Signup succeded but login failed. Please login manually."
-        );
+        return;
       }
 
       toast.success(data.message);
