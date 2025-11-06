@@ -21,18 +21,25 @@ import {
   IconCheck,
   IconAlertCircle,
 } from "@tabler/icons-react";
+import { signIn } from "next-auth/react";
+import Validation from "@/validation/validation";
+import UserValidation from "@/validation/user-validation";
+import { ZodError } from "zod";
+import toast from "react-hot-toast";
+import { ResponseNextAuth } from "@/types";
+import ResponseError from "@/error/ResponseError";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    rememberMe: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
+  const router = useRouter();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -45,42 +52,33 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
-    setSuccess(false);
-
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          remember: formData.rememberMe,
-        }),
+      const data = Validation.validate(UserValidation.LOGIN, {
+        email: formData.email,
+        password: formData.password,
       });
 
-      const data = await response.json();
+      const response = (await signIn("credentials", {
+        ...data,
+        callbackUrl: "/shop",
+        redirect: false,
+      })) as ResponseNextAuth;
 
       if (!response.ok) {
-        throw new Error(data.message || "Invalid email or password");
+        throw new ResponseError(response.status, "Invalid email or password");
       }
 
+      router.push("/shop");
       setSuccess(true);
-
-      if (data.token) {
-        if (formData.rememberMe) {
-          localStorage.setItem("authToken", data.token);
-        } else {
-          sessionStorage.setItem("authToken", data.token);
-        }
+      toast.success("Login successfully!");
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        setError(error.message);
+      } else if (error instanceof ZodError) {
+        setError(error.issues[0].message);
+      } else {
+        setError("An unexpected error occurred. Please try again.");
       }
-
-      setTimeout(() => {
-        window.location.href = data.redirectUrl || "/dashboard";
-      }, 1500);
-    } catch (err) {
-      const error = err as Error;
-      setError(error.message || "An unexpected error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -142,7 +140,6 @@ export default function LoginPage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     disabled={isLoading}
-                    required
                     className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
                   />
                 </div>
@@ -177,7 +174,6 @@ export default function LoginPage() {
                     value={formData.password}
                     onChange={handleInputChange}
                     disabled={isLoading}
-                    required
                     className="pl-10 pr-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
                   />
                   <button
@@ -192,25 +188,6 @@ export default function LoginPage() {
                     )}
                   </button>
                 </div>
-              </div>
-
-              {/* Remember Me */}
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  name="rememberMe"
-                  checked={formData.rememberMe}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  className="w-4 h-4 accent-indigo-600 cursor-pointer"
-                />
-                <Label
-                  htmlFor="rememberMe"
-                  className="text-sm text-slate-600 cursor-pointer select-none"
-                >
-                  Remember me for 30 days
-                </Label>
               </div>
 
               {/* Submit Button */}

@@ -7,7 +7,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import FormSignup from "@/components/pages/auth/FormSignup";
-import { cookies } from "next/headers";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,8 +15,6 @@ export const metadata: Metadata = {
 };
 
 export default async function SignupPage() {
-  const token = (await cookies()).get("lea-xxx-juice")?.value;
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-purple-50 p-4 relative overflow-hidden">
       {/* Background Accent */}
@@ -35,7 +32,7 @@ export default async function SignupPage() {
             </CardDescription>
           </CardHeader>
 
-          <FormSignup token={token} />
+          <FormSignup  />
 
           <CardFooter className="px-8 pb-8 text-center text-sm text-slate-600">
             Already have an account?{" "}

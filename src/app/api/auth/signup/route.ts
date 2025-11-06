@@ -9,11 +9,6 @@ import { ZodError } from "zod";
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const dataJSON = await req.text();
-    const authorization = req.headers.get("Authorization");
-    const token = authorization?.split(" ")[1];
-    if (token !== "undefined") {
-      throw new ResponseError(403, "You already registered!");
-    }
     const data = JSON.parse(dataJSON) as RegisterUser;
 
     const dataUser = Validation.validate(UserValidation.REGISTER, data);

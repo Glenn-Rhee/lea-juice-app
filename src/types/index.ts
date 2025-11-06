@@ -17,3 +17,16 @@ export interface LoginUser {
   email: string;
   password: string;
 }
+
+export interface ResponseNextAuth {
+  error: string | null;
+  status: number;
+  ok: boolean;
+  url: string;
+}
+
+export interface DataUserAuth {
+  id: string;
+  name: string;
+  email: string;
+}

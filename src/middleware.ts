@@ -1,12 +1,9 @@
-import { cookies } from "next/headers";
 import { MiddlewareConfig, NextRequest, NextResponse } from "next/server";
 import { ResponsePayload } from "./types";
-
+import { getToken } from "next-auth/jwt";
 export async function middleware(req: NextRequest) {
-  const cookieStore = await cookies();
   const url = req.nextUrl.pathname;
-  const tokenCookie = cookieStore.get("lea-xxx-juice");
-  const token = tokenCookie ? tokenCookie.value : null;
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (url.includes("/api")) {
     if (url.includes("/auth")) {

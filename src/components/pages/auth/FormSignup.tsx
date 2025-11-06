@@ -4,7 +4,9 @@ import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ResponseError from "@/error/ResponseError";
-import { ResponsePayload } from "@/types";
+import { DataUserAuth, ResponseNextAuth, ResponsePayload } from "@/types";
+import UserValidation from "@/validation/user-validation";
+import Validation from "@/validation/validation";
 import {
   IconMail,
   IconLock,
@@ -12,16 +14,13 @@ import {
   IconCheck,
   IconAlertCircle,
 } from "@tabler/icons-react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { ZodError } from "zod";
 
-interface FormSignupProps {
-  token: string | undefined;
-}
-
-export default function FormSignup(props: FormSignupProps) {
-  const { token } = props;
+export default function FormSignup() {
   const [formData, setFormData] = useState({
     fullname: "",
     username: "",
@@ -39,26 +38,34 @@ export default function FormSignup(props: FormSignupProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setMessage(null);
-
-    if (formData.password !== formData.confirmPassword) {
-      setMessage({ type: "error", text: "Passwords do not match" });
-      return;
-    }
-
     setLoading(true);
     try {
+      const dataSignup = Validation.validate(UserValidation.REGISTER, formData);
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataSignup),
       });
 
-      const data = (await res.json()) as ResponsePayload;
+      const data = (await res.json()) as ResponsePayload<DataUserAuth>;
       if (data.status === "failed") {
         throw new ResponseError(data.code, data.message);
+      }
+
+      const loginRes = (await signIn("credentials", {
+        ...data.data,
+        callbackUrl: "/shop",
+        redirect: false,
+      })) as ResponseNextAuth;
+
+      if (!loginRes.ok) {
+        router.push("/auth/login");
+        throw new ResponseError(
+          loginRes.status,
+          "Signup succeded but login failed. Please login manually."
+        );
       }
 
       toast.success(data.message);
@@ -66,6 +73,8 @@ export default function FormSignup(props: FormSignupProps) {
     } catch (err) {
       if (err instanceof ResponseError) {
         setMessage({ type: "error", text: err.message });
+      } else if (err instanceof ZodError) {
+        setMessage({ type: "error", text: err.issues[0].message });
       } else {
         setMessage({
           type: "error",

@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
+import Bcrypt from "@/lib/bcrypt";
 
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -18,17 +19,24 @@ const handler = NextAuth({
           where: { email: credentials?.email },
         });
 
-        if (user && user.password === credentials?.password) {
-          return user;
+        if (!user || (!credentials?.email && !credentials?.password)) {
+          return null;
         }
 
-        return null;
+        const isValid = await Bcrypt.comparePassword(
+          credentials.password,
+          user.password
+        );
+
+        if (!isValid) return null;
+
+        return user;
       },
     }),
   ],
 
   session: { strategy: "jwt" },
-  pages: { signIn: "/login" },
+  pages: { signIn: "/shop" },
   secret: process.env.NEXTAUTH_SECRET,
 });
 
