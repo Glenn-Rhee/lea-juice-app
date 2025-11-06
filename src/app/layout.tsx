@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Toaster } from "react-hot-toast";
 import Providers from "@/components/Providers";
 import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -29,7 +30,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = await getServerSession();
+  const token = await getServerSession(authOptions);
   return (
     <html lang="id" className="scroll-smooth">
       <head>

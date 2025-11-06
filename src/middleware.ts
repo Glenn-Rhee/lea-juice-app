@@ -32,6 +32,13 @@ export async function middleware(req: NextRequest) {
     if (url.includes("/auth") && token) {
       return NextResponse.redirect(new URL("/shop", req.url));
     }
+
+    if (url.includes("/dashboard")) {
+      if (!token) return NextResponse.redirect(new URL("/shop", req.url));
+
+      if (token.role === "USER")
+        return NextResponse.redirect(new URL("/shop", req.url));
+    }
   }
   return NextResponse.next();
 }
