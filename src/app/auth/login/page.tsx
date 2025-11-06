@@ -65,6 +65,7 @@ export default function LoginPage() {
       })) as ResponseNextAuth;
 
       if (!response.ok) {
+        console.log(response);
         throw new ResponseError(response.status, "Invalid email or password");
       }
 
