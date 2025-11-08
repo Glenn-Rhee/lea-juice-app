@@ -216,6 +216,10 @@ const config = {
       },
       {
         "fromEnvVar": null,
+        "value": "debian-openssl-3.0.x"
+      },
+      {
+        "fromEnvVar": null,
         "value": "rhel-openssl-3.0.x"
       }
     ],
@@ -224,7 +228,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../.env"
   },
   "relativePath": "../../prisma",
@@ -243,8 +247,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DIRECT_URL\")\n}\n\nenum ROLE {\n  USER\n  ADMIN\n}\n\nenum STATUSORDER {\n  PENDING\n  SHIPPED\n  COMPLETED\n  CANCELLED\n  PROCESSING\n}\n\nenum STATUSPAYMENT {\n  PENDING\n  SUCCESS\n  FAILED\n}\n\nmodel User {\n  id          String   @id @default(uuid())\n  name        String\n  username    String\n  email       String   @unique\n  password    String\n  role        ROLE\n  created_at  DateTime @default(now())\n  updaated_at DateTime @updatedAt\n  Order       Order[]\n  Review      Review[]\n}\n\nmodel Product {\n  id           String         @id @default(uuid())\n  product_name String\n  description  String\n  price        Int\n  stock        Int\n  image_url    String\n  category_id  String\n  category     Category       @relation(fields: [category_id], references: [id])\n  Detail_Order Detail_Order[]\n  Review       Review[]\n}\n\nmodel Category {\n  id            String    @id @default(uuid())\n  category_name String\n  Product       Product[]\n}\n\nmodel Order {\n  id             String         @id @default(uuid())\n  user_id        String\n  total_price    Float\n  status         STATUSORDER\n  payment_method String\n  created_at     DateTime       @default(now())\n  updated_at     DateTime       @updatedAt\n  user           User           @relation(fields: [user_id], references: [id])\n  Detail_Order   Detail_Order[]\n  Payment        Payment?\n}\n\nmodel Detail_Order {\n  id         String  @id @default(uuid())\n  order_id   String\n  product_id String\n  quantity   Int\n  price      Float\n  order      Order   @relation(fields: [order_id], references: [id])\n  product    Product @relation(fields: [product_id], references: [id])\n}\n\nmodel Payment {\n  id             String        @id @default(uuid())\n  order_id       String        @unique\n  payment_status STATUSPAYMENT\n  transaction_id String\n  paid_at        DateTime      @default(now())\n  order          Order         @relation(fields: [order_id], references: [id])\n}\n\nmodel Review {\n  id         String   @id @default(uuid())\n  user_id    String\n  product_id String\n  rating     Int\n  comment    String\n  created_at DateTime @default(now())\n  user       User     @relation(fields: [user_id], references: [id])\n  product    Product  @relation(fields: [product_id], references: [id])\n}\n",
-  "inlineSchemaHash": "6cbd14ec52bf9084bf78f6cb19ea9d1d794be58f916a56151f3bbd1e30f641a9",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\", \"rhel-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DIRECT_URL\")\n}\n\nenum ROLE {\n  USER\n  ADMIN\n}\n\nenum STATUSORDER {\n  PENDING\n  SHIPPED\n  COMPLETED\n  CANCELLED\n  PROCESSING\n}\n\nenum STATUSPAYMENT {\n  PENDING\n  SUCCESS\n  FAILED\n}\n\nmodel User {\n  id          String   @id @default(uuid())\n  name        String\n  username    String\n  email       String   @unique\n  password    String\n  role        ROLE\n  created_at  DateTime @default(now())\n  updaated_at DateTime @updatedAt\n  Order       Order[]\n  Review      Review[]\n}\n\nmodel Product {\n  id           String         @id @default(uuid())\n  product_name String\n  description  String\n  price        Int\n  stock        Int\n  image_url    String\n  category_id  String\n  category     Category       @relation(fields: [category_id], references: [id])\n  Detail_Order Detail_Order[]\n  Review       Review[]\n}\n\nmodel Category {\n  id            String    @id @default(uuid())\n  category_name String\n  Product       Product[]\n}\n\nmodel Order {\n  id             String         @id @default(uuid())\n  user_id        String\n  total_price    Float\n  status         STATUSORDER\n  payment_method String\n  created_at     DateTime       @default(now())\n  updated_at     DateTime       @updatedAt\n  user           User           @relation(fields: [user_id], references: [id])\n  Detail_Order   Detail_Order[]\n  Payment        Payment?\n}\n\nmodel Detail_Order {\n  id         String  @id @default(uuid())\n  order_id   String\n  product_id String\n  quantity   Int\n  price      Float\n  order      Order   @relation(fields: [order_id], references: [id])\n  product    Product @relation(fields: [product_id], references: [id])\n}\n\nmodel Payment {\n  id             String        @id @default(uuid())\n  order_id       String        @unique\n  payment_status STATUSPAYMENT\n  transaction_id String\n  paid_at        DateTime      @default(now())\n  order          Order         @relation(fields: [order_id], references: [id])\n}\n\nmodel Review {\n  id         String   @id @default(uuid())\n  user_id    String\n  product_id String\n  rating     Int\n  comment    String\n  created_at DateTime @default(now())\n  user       User     @relation(fields: [user_id], references: [id])\n  product    Product  @relation(fields: [product_id], references: [id])\n}\n",
+  "inlineSchemaHash": "711b0ef2c2eeab6ef9e56d3c1959efb56d8f92b1a55f50278da226206ba7b871",
   "copyEngine": true
 }
 
@@ -285,6 +289,10 @@ Object.assign(exports, Prisma)
 // file annotations for bundling tools to include these files
 path.join(__dirname, "query_engine-windows.dll.node");
 path.join(process.cwd(), "generated/prisma/query_engine-windows.dll.node")
+
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-debian-openssl-3.0.x.so.node");
+path.join(process.cwd(), "generated/prisma/libquery_engine-debian-openssl-3.0.x.so.node")
 
 // file annotations for bundling tools to include these files
 path.join(__dirname, "libquery_engine-rhel-openssl-3.0.x.so.node");
