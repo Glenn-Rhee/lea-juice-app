@@ -65,7 +65,6 @@ export default function LoginPage() {
       })) as ResponseNextAuth;
 
       if (!response.ok) {
-        toast.error(response.error);
         throw new ResponseError(response.status, "Invalid email or password");
       }
 
