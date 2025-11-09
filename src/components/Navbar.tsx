@@ -7,6 +7,8 @@ import { Session } from "next-auth";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
+import { IconSearch, IconShoppingCart, IconUser } from "@tabler/icons-react";
+import SheetShop from "./pages/shop/SheetShop";
 
 interface NavbarProps {
   token: Session | null;
@@ -50,43 +52,78 @@ export default function Navbar(props: NavbarProps) {
           />
         </Link>
         <div className="hidden md:flex space-x-12 text-sm text-stone-700">
-          <a href="#home" className="nav-link">
+          <Link
+            href={pathname.includes("/shop") ? "/" : "#home"}
+            className="nav-link"
+          >
             HOME
-          </a>
-          <a href="#collection" className="nav-link">
+          </Link>
+          <Link
+            href={pathname.includes("/shop") ? "/shop" : "#collection"}
+            className="nav-link"
+          >
             COLLECTION
-          </a>
-          <a href="#story" className="nav-link">
-            OUR STORY
-          </a>
-          <a href="#testimonials" className="nav-link">
-            REVIEWS
-          </a>
+          </Link>
+          {pathname.includes("/shop") ? (
+            <Link href={"/store"} className="nav-link">
+              STORE
+            </Link>
+          ) : (
+            <>
+              <Link href="#story" className="nav-link">
+                OUR STORY
+              </Link>
+              <Link href="#testimonials" className="nav-link">
+                REVIEWS
+              </Link>
+            </>
+          )}
         </div>
         <div className="space-x-2">
-          <Link
-            href={"/shop"}
-            className="bg-gradient-to-r cursor-pointer from-orange-400 to-orange-500 text-white px-8 py-[11px] rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300"
-          >
-            Shop Now
-          </Link>
-          {token ? (
-            <Button
-              variant={"destructive"}
-              type="button"
-              onClick={handleLogout}
-              disabled={loading}
-              className="cursor-pointer rounded-full px-8 py-5"
-            >
-              Logout
-            </Button>
+          {!pathname.includes("/shop") ? (
+            <>
+              <Link
+                href={"/shop"}
+                className="bg-gradient-to-r cursor-pointer from-orange-400 to-orange-500 text-white px-8 py-[11px] rounded-full font-medium text-sm hover:shadow-lg transition-all duration-300"
+              >
+                Shop Now
+              </Link>
+              {token ? (
+                <Button
+                  variant={"destructive"}
+                  type="button"
+                  onClick={handleLogout}
+                  disabled={loading}
+                  className="cursor-pointer rounded-full px-8 py-5"
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Link
+                  href={"/auth/login"}
+                  className="border border-orange-500 cursor-pointer text-orange-500 px-8 py-[11px] rounded-full font-medium text-sm hover:border-transparent hover:bg-orange-500 hover:text-white transition-all duration-300"
+                >
+                  Login
+                </Link>
+              )}
+            </>
           ) : (
-            <Link
-              href={"/auth/login"}
-              className="border border-orange-500 cursor-pointer text-orange-500 px-8 py-[11px] rounded-full font-medium text-sm hover:border-transparent hover:bg-orange-500 hover:text-white transition-all duration-300"
-            >
-              Login
-            </Link>
+            <>
+              <button className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors">
+                <IconSearch />
+              </button>
+              <button className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors">
+                <IconUser />
+              </button>
+              <SheetShop>
+                <button className="cursor-pointer relative text-stone-700 hover:text-slate-900 transition-colors">
+                  <IconShoppingCart />
+                  <span className="w-6 h-6 text-xs font-medium text-white flex items-center justify-center rounded-full absolute -top-2 -right-3 bg-orange-600 aspect-square">
+                    9+
+                  </span>
+                </button>
+              </SheetShop>
+            </>
           )}
         </div>
       </div>
