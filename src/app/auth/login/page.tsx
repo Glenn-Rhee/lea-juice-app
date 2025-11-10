@@ -95,10 +95,6 @@ export default function LoginPage() {
       if (response && !response.ok) {
         throw new ResponseError(response.status, "Failed login with Google");
       }
-      router.push("/shop");
-      router.refresh();
-      setSuccess(true);
-      toast.success("Login successfully!");
     } catch (error) {
       if (error instanceof ResponseError) {
         toast.error(error.message);
