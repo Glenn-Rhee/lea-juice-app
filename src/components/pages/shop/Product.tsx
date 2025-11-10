@@ -3,13 +3,14 @@ import Link from "next/link";
 
 export default function Product() {
   return (
-    <div className="shadow-lg px-4 pt-2 pb-4 rounded-lg">
+    <div className="shadow-lg p-4 rounded-lg">
       <Link href={"/juice/1"}>
         <Image
           src={"/foto jus alpukat.png"}
           alt="Jus Alpukat"
           width={312}
           height={712}
+          className="w-full"
         />
         <div className="mt-4">
           <h6 className="font-semibold text-stone-900 text-xl">Jus Alpukat</h6>
