@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -30,6 +29,8 @@ import { ResponseNextAuth } from "@/types";
 import ResponseError from "@/error/ResponseError";
 import { useRouter } from "next/navigation";
 import GoogleIcon from "@/components/icons/GoogleIcon";
+import Loader from "@/components/icons/Loader";
+import { Separator } from "@/components/ui/separator";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -174,12 +175,6 @@ export default function LoginPage() {
                   >
                     Password
                   </Label>
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm font-medium text-slate-600 hover:text-slate-800 transition-colors"
-                  >
-                    Forgot?
-                  </Link>
                 </div>
                 <div className="relative">
                   <IconLock
@@ -218,26 +213,7 @@ export default function LoginPage() {
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center gap-2">
-                    <svg
-                      className="animate-spin h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      />
-                    </svg>
+                    <Loader />
                     Signing in...
                   </div>
                 ) : success ? (
@@ -250,12 +226,17 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
+            <div className="grid grid-cols-[1fr_20px_1fr] items-center mt-4 gap-x-3">
+              <Separator className="w-[50px] bg-black/80" />
+              <span className="text-sm text-slate-500">OR</span>
+              <Separator className="w-1/2 bg-black/80" />
+            </div>
             <button
               onClick={handleLoginGoogle}
               className="w-full cursor-pointer hover:bg-gray-200 transition-colors duration-200 bg-white border px-3 py-2 border-black rounded-md mt-5 relative"
             >
               <GoogleIcon className="absolute top-1/2 -translate-y-1/2" />
-              <span className="font-semibold text-lg text-slate-900 text-center">
+              <span className="font-semibold text-slate-900 text-center">
                 Continue with Google
               </span>
             </button>
