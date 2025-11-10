@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { ZodError } from "zod";
+import LoginWithGoogle from "./LoginWithGoogle";
 
 export default function FormSignup() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ export default function FormSignup() {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const [btnMsg, setBtnMsg] = useState("Creating account...");
   const [message, setMessage] = useState<{
     type: "error" | "success";
     text: string;
@@ -53,6 +55,8 @@ export default function FormSignup() {
       if (data.status === "failed") {
         throw new ResponseError(data.code, data.message);
       }
+
+      setBtnMsg("Logging you in...");
 
       const loginRes = (await signIn("credentials", {
         email: formData.email,
@@ -86,6 +90,21 @@ export default function FormSignup() {
       setLoading(false);
     }
   }
+
+  const handleLoginGoogle = async () => {
+    try {
+      const response = await signIn("google", { redirect: false });
+      if (response && !response.ok) {
+        throw new ResponseError(response.status, "Failed login with Google");
+      }
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occured! Please try again.");
+      }
+    }
+  };
   return (
     <>
       <CardContent className="px-8">
@@ -227,9 +246,11 @@ export default function FormSignup() {
             disabled={loading}
             className="w-full h-11 rounded-xl font-semibold bg-black hover:bg-slate-800 transition-all duration-300 shadow-md hover:shadow-lg"
           >
-            {loading ? "Creating account..." : "Sign Up"}
+            {loading ? btnMsg : "Sign Up"}
           </Button>
         </form>
+
+        <LoginWithGoogle handleLoginGoogle={handleLoginGoogle} />
       </CardContent>
     </>
   );

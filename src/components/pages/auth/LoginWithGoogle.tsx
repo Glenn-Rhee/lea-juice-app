@@ -1,0 +1,28 @@
+import GoogleIcon from "@/components/icons/GoogleIcon";
+import { Separator } from "@/components/ui/separator";
+
+interface LoginWithGoogleProps {
+  handleLoginGoogle: () => void;
+}
+
+export default function LoginWithGoogle(props: LoginWithGoogleProps) {
+  const { handleLoginGoogle } = props;
+  return (
+    <>
+      <div className="grid grid-cols-[1fr_20px_1fr] items-center mt-4 gap-x-3">
+        <Separator className="w-[50px] bg-black/80" />
+        <span className="text-sm text-slate-500">OR</span>
+        <Separator className="w-1/2 bg-black/80" />
+      </div>
+      <button
+        onClick={handleLoginGoogle}
+        className="w-full cursor-pointer hover:bg-gray-200 transition-colors duration-200 bg-white border px-3 py-2 border-black rounded-md mt-5 relative"
+      >
+        <GoogleIcon className="absolute top-1/2 -translate-y-1/2" />
+        <span className="font-semibold text-slate-900 text-center">
+          Continue with Google
+        </span>
+      </button>
+    </>
+  );
+}

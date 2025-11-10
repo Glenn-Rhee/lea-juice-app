@@ -32,9 +32,9 @@ export default async function SignupPage() {
             </CardDescription>
           </CardHeader>
 
-          <FormSignup  />
+          <FormSignup />
 
-          <CardFooter className="px-8 pb-8 text-center text-sm text-slate-600">
+          <CardFooter className="px-8 pb-8 text-center flex items-center justify-center text-sm text-slate-600">
             Already have an account?{" "}
             <Link
               href="/auth/login"

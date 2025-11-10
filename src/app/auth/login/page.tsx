@@ -28,9 +28,8 @@ import toast from "react-hot-toast";
 import { ResponseNextAuth } from "@/types";
 import ResponseError from "@/error/ResponseError";
 import { useRouter } from "next/navigation";
-import GoogleIcon from "@/components/icons/GoogleIcon";
 import Loader from "@/components/icons/Loader";
-import { Separator } from "@/components/ui/separator";
+import LoginWithGoogle from "@/components/pages/auth/LoginWithGoogle";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -226,20 +225,7 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-            <div className="grid grid-cols-[1fr_20px_1fr] items-center mt-4 gap-x-3">
-              <Separator className="w-[50px] bg-black/80" />
-              <span className="text-sm text-slate-500">OR</span>
-              <Separator className="w-1/2 bg-black/80" />
-            </div>
-            <button
-              onClick={handleLoginGoogle}
-              className="w-full cursor-pointer hover:bg-gray-200 transition-colors duration-200 bg-white border px-3 py-2 border-black rounded-md mt-5 relative"
-            >
-              <GoogleIcon className="absolute top-1/2 -translate-y-1/2" />
-              <span className="font-semibold text-slate-900 text-center">
-                Continue with Google
-              </span>
-            </button>
+            <LoginWithGoogle handleLoginGoogle={handleLoginGoogle} />
           </CardContent>
 
           <CardFooter className="px-8 pb-8">
