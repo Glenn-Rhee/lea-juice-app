@@ -21,6 +21,7 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: "LEA JUICE - Pure Taste, Pure Life",
+  icons: "./logojus2.png",
   description:
     "Handcrafted wellness in every bottle. 100% organic cold-pressed juice.",
 };
@@ -34,7 +35,7 @@ export default async function RootLayout({
   return (
     <html lang="id" className="scroll-smooth">
       <head>
-        <link rel="shortcut icon" href="logojus2.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="/logojus2.png" type="image/x-icon" />
       </head>
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-stone-900 overflow-x-hidden`}

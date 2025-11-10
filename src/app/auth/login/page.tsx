@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 import { ResponseNextAuth } from "@/types";
 import ResponseError from "@/error/ResponseError";
 import { useRouter } from "next/navigation";
+import GoogleIcon from "@/components/icons/GoogleIcon";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -65,7 +66,10 @@ export default function LoginPage() {
       })) as ResponseNextAuth;
 
       if (!response.ok) {
-        throw new ResponseError(response.status, "Invalid email or password");
+        throw new ResponseError(
+          response.status,
+          response.error || "Login failed"
+        );
       }
 
       router.push("/shop");
@@ -82,6 +86,25 @@ export default function LoginPage() {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleLoginGoogle = async () => {
+    try {
+      const response = await signIn("google", { redirect: false });
+      if (response && !response.ok) {
+        throw new ResponseError(response.status, "Failed login with Google");
+      }
+      router.push("/shop");
+      router.refresh();
+      setSuccess(true);
+      toast.success("Login successfully!");
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occured! Please try again.");
+      }
     }
   };
 
@@ -231,6 +254,15 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
+            <button
+              onClick={handleLoginGoogle}
+              className="w-full cursor-pointer hover:bg-gray-200 transition-colors duration-200 bg-white border px-3 py-2 border-black rounded-md mt-5 relative"
+            >
+              <GoogleIcon className="absolute top-1/2 -translate-y-1/2" />
+              <span className="font-semibold text-lg text-slate-900 text-center">
+                Continue with Google
+              </span>
+            </button>
           </CardContent>
 
           <CardFooter className="px-8 pb-8">
