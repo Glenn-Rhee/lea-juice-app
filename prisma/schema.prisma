@@ -12,7 +12,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DIRECT_URL")
+  url      = env("TEST_URL")
 }
 
 enum ROLE {
@@ -32,6 +32,12 @@ enum STATUSPAYMENT {
   PENDING
   SUCCESS
   FAILED
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+  UNKNOWN
 }
 
 model Account {
@@ -69,20 +75,36 @@ model VerificationToken {
 }
 
 model User {
-  id            String    @id @default(uuid())
+  id            String      @id @default(uuid())
   name          String?
   username      String?
-  email         String?   @unique
+  email         String?     @unique
   password      String?
   image         String?
   emailVerified String?
-  role          ROLE      @default(USER)
-  created_at    DateTime  @default(now())
-  updaated_at   DateTime  @updatedAt
+  role          ROLE        @default(USER)
+  created_at    DateTime    @default(now())
+  updaated_at   DateTime    @updatedAt
   Order         Order[]
   Review        Review[]
   accounts      Account[]
   sessions      Session[]
+  userDetail    UserDetail?
+}
+
+model UserDetail {
+  id          String    @id @default(uuid())
+  userId      String    @unique
+  address     String?
+  phoneNumber String?
+  dateOfBirth DateTime?
+  gender      GENDER    @default(UNKNOWN)
+  bio         String?
+  city        String?
+  province    String?
+  postalCode  String?
+
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Product {
