@@ -1,10 +1,20 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Products from "./Products";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function TabShop() {
   const [activeTab, setActiveTab] = useState("all");
+  const searchParams = useSearchParams();
+  const search = searchParams.get("s");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (search) {
+      router.push("/shop?s=" + search + "&category=" + activeTab);
+    }
+  }, [activeTab, search, router]);
 
   return (
     <div className="w-full mt-4">
@@ -34,7 +44,7 @@ export default function TabShop() {
           Juice
         </button>
         <button
-        className={cn(
+          className={cn(
             "transition-colors duration-300 cursor-pointer py-1 rounded-xl active:scale-95",
             activeTab === "salad"
               ? "bg-orange-500 text-white"

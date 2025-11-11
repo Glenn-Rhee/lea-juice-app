@@ -7,10 +7,9 @@ import { Session } from "next-auth";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
-import { IconSearch, IconShoppingCart, IconUser } from "@tabler/icons-react";
+import { IconShoppingCart, IconUser } from "@tabler/icons-react";
 import SheetShop from "./pages/shop/SheetShop";
-import { Input } from "./ui/input";
-import { cn } from "@/lib/utils";
+import Searchbar from "./Searchbar";
 
 interface NavbarProps {
   token: Session | null;
@@ -20,7 +19,6 @@ export default function Navbar(props: NavbarProps) {
   const { token } = props;
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
   if (pathname.includes("/auth")) return null;
 
@@ -120,24 +118,7 @@ export default function Navbar(props: NavbarProps) {
             </>
           ) : (
             <div className="relative flex items-center gap-x-3">
-              <input
-                type="search"
-                placeholder="Search.."
-                className={cn(
-                  "bg-transparent border border-orange-500 transition-all px-3 py-1.5 text-sm outline-none me-2 absolute top-1/2 -translate-y-1/2 right-[100%] duration-300 rounded-sm w-full",
-                  open
-                    ? "w-40 md:w-56 translate-x-0"
-                    : "w-0 opacity-0 pointer-events-none"
-                )}
-              />
-              <button
-                onClick={() => {
-                  setOpen((prev) => !prev);
-                }}
-                className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors"
-              >
-                <IconSearch />
-              </button>
+              <Searchbar />
               <button className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors">
                 <IconUser />
               </button>

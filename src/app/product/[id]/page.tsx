@@ -22,7 +22,7 @@ export default async function ProductPage({ params }: Props) {
   const links: Link[] = [
     { href: "/", text: "Home" },
     { href: "/shop", text: "Shop" },
-    { href: "/juice", text: "Juice" },
+    { href: "/shop?category=juice", text: "Juice" },
   ];
 
   return (
