@@ -10,7 +10,7 @@ export default function Product() {
           alt="Jus Alpukat"
           width={312}
           height={712}
-          className="w-full"
+          className="w-full rounded-md"
         />
         <div className="mt-4">
           <h6 className="font-semibold text-stone-900 text-xl">Jus Alpukat</h6>

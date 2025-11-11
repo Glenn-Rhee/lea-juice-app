@@ -15,7 +15,7 @@ export default function ChartItem() {
           alt="Alpukat juice"
           width={50}
           height={100}
-          className="rounded-md"
+          className="rounded-md object-cover aspect-square"
         />
         <div className="">
           <h6 className="text-lg font-semibold text-stone-800">
