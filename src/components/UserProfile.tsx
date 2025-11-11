@@ -1,0 +1,98 @@
+"use client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { IconLogin, IconLogout, IconUser } from "@tabler/icons-react";
+import { Session } from "next-auth";
+import Link from "next/link";
+import DialogEditProfile from "./DialogEditProfile";
+
+interface UserProfileProps {
+  token: Session | null;
+  handleLogout: () => Promise<void>;
+  disabled: boolean;
+}
+
+export interface UserDetail {
+  username: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  country: string;
+}
+
+export default function UserProfile(props: UserProfileProps) {
+  const { token, handleLogout, disabled } = props;
+
+  const userData = {
+    username: token?.user?.name || "User",
+    fullName: token?.user?.name || "",
+    email: token?.user?.email || "",
+    phone: "+62 812-3456-7890",
+    address: "Jl. Contoh No. 123",
+    city: "Jakarta",
+    province: "DKI Jakarta",
+    postalCode: "12345",
+    country: "Indonesia",
+  };
+
+  return (
+    <div className="relative">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors p-2 rounded-full hover:bg-gray-100">
+            <IconUser />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>
+            <div className="py-3">
+              <p className="text-sm font-semibold text-gray-900">
+                {userData.username}
+              </p>
+              <p className="text-xs text-gray-500 truncate">{userData.email}</p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          {token ? (
+            <>
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <DialogEditProfile userData={userData} />
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className="hover:bg-red-50">
+                <button
+                  onClick={handleLogout}
+                  disabled={disabled}
+                  className="w-full py-2 text-left text-sm text-red-600  flex items-center gap-3 disabled:opacity-50"
+                >
+                  <IconLogout size={16} className="text-red-600" color="red" />
+                  Logout
+                </button>
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <DropdownMenuItem>
+              <Link
+                className="w-full py-2 text-left text-sm flex items-center gap-3 disabled:opacity-50"
+                href={"/auth/login"}
+              >
+                <IconLogin size={16} />
+                Login
+              </Link>
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
