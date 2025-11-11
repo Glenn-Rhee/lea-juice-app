@@ -26,7 +26,11 @@ export default async function ProductPage({ params }: Props) {
   ];
 
   return (
-    <div className="pt-30 px-4 max-w-6xl mx-auto mb-8 flex gap-x-16">
+    <div className="pt-30 px-4 max-w-6xl mx-auto mb-8 md:flex gap-x-16">
+      <div className="flex w-full items-center justify-between md:hidden mb-3">
+        <BreadcrumbShop links={links} pageTitle={`Product with id ${id}`} />
+        <ButtonShare />
+      </div>
       <Image
         src={"/foto jus pisang.png"}
         alt={`Product with id ${id}`}
@@ -35,7 +39,7 @@ export default async function ProductPage({ params }: Props) {
         className="rounded-md shadow-xl"
       />
       <div className="w-full">
-        <div className="flex w-full items-center justify-between">
+        <div className="md:flex w-full items-center justify-between hidden">
           <BreadcrumbShop links={links} pageTitle={`Product with id ${id}`} />
           <ButtonShare />
         </div>
