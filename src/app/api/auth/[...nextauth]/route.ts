@@ -19,14 +19,28 @@ interface DataOauth {
 export const authOptions: AuthOptions = {
   adapter: {
     ...CustomPrismaAdapter(),
-    createUser: (data: DataOauth) => {
-      return prisma.user.create({
+    createUser: async (data: DataOauth) => {
+      const createdUser = await prisma.user.create({
         data: {
           ...data,
           username: data.username ?? "",
           emailVerified: data.email,
         },
       });
+      await prisma.userDetail.create({
+        data: {
+          userId: createdUser.id,
+          address: "",
+          phoneNumber: "",
+          bio: "",
+          city: "",
+          gender: "UNKNOWN",
+          postalCode: "",
+          province: "",
+        },
+      });
+
+      return createdUser;
     },
   },
 

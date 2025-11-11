@@ -11,6 +11,7 @@ export const prisma =
       { emit: "event", level: "warn" },
       { emit: "event", level: "error" },
     ],
+    datasources: { db: { url: process.env.DIRECT_URL } },
   });
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

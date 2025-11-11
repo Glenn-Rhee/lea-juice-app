@@ -27,6 +27,19 @@ export default class UserService {
       },
     });
 
+    await prisma.userDetail.create({
+      data: {
+        userId: createdUser.id,
+        address: "",
+        phoneNumber: "",
+        bio: "",
+        city: "",
+        gender: "UNKNOWN",
+        postalCode: "",
+        province: "",
+      },
+    });
+
     return {
       status: "success",
       code: 201,
