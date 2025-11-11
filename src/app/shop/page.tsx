@@ -14,8 +14,10 @@ export async function generateMetadata({
   const search = (await searchParams).s;
 
   return {
-    title: "Search for " + search,
-    description: "Description for product " + search,
+    title: search ? "Search for " + search : "Our Juice, salad, and fruits",
+    description: search
+      ? "Our products are the best in the world"
+      : "Description for product " + search,
   };
 }
 
