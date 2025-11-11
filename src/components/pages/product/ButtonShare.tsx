@@ -71,7 +71,7 @@ export default function ButtonShare() {
         <Separator className="bg-slate-800" />
         <div>
           <span className="font-medium text-stone-700">Share</span>
-          <div className="flex items-center justify-center gap-x-10 overflow-scroll mt-2">
+          <div className="flex items-center justify-center gap-x-10 mt-2">
             <button
               onClick={handleCopy}
               type="button"
