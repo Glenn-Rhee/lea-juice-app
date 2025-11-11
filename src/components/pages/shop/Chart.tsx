@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import ChartItem from "./ChartItem";
+import React from "react";
 
 const data = [
   {
@@ -69,10 +70,10 @@ export default function Chart() {
   return (
     <div className="w-full max-h-screen overflow-scroll px-3 flex flex-col gap-y-3">
       {data.map((d, i) => (
-        <>
-          <ChartItem key={d.id} />
+        <React.Fragment key={d.id}>
+          <ChartItem />
           {i !== length - 1 && <Separator />}
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

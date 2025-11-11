@@ -53,18 +53,26 @@ export default function Navbar(props: NavbarProps) {
         </Link>
         <div className="hidden md:flex space-x-12 text-sm text-stone-700">
           <Link
-            href={pathname.includes("/shop") ? "/" : "#home"}
+            href={
+              pathname.includes("/shop") || pathname.includes("/product")
+                ? "/"
+                : "#home"
+            }
             className="nav-link"
           >
             HOME
           </Link>
           <Link
-            href={pathname.includes("/shop") ? "/shop" : "#collection"}
+            href={
+              pathname.includes("/shop") || pathname.includes("/product")
+                ? "/shop"
+                : "#collection"
+            }
             className="nav-link"
           >
             COLLECTION
           </Link>
-          {pathname.includes("/shop") ? (
+          {pathname.includes("/shop") || pathname.includes("/product") ? (
             <Link href={"/store"} className="nav-link">
               STORE
             </Link>
@@ -80,7 +88,7 @@ export default function Navbar(props: NavbarProps) {
           )}
         </div>
         <div className="space-x-2">
-          {!pathname.includes("/shop") ? (
+          {!pathname.includes("/shop") && !pathname.includes("/product") ? (
             <>
               <Link
                 href={"/shop"}

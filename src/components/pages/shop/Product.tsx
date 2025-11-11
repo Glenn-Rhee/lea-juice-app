@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Product() {
   return (
     <div className="shadow-lg p-4 rounded-lg">
-      <Link href={"/juice/1"}>
+      <Link href={"/product/1"}>
         <Image
           src={"/foto jus alpukat.png"}
           alt="Jus Alpukat"

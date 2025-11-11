@@ -6,17 +6,34 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import React from "react";
 
-export default function BreadcrumbShop() {
+export type Link = {
+  href: string;
+  text: string;
+};
+
+interface BreadcrumbShopProps {
+  links: Link[];
+  pageTitle: string;
+}
+
+export default function BreadcrumbShop(props: BreadcrumbShopProps) {
+  const { links, pageTitle } = props;
+
   return (
     <Breadcrumb>
       <BreadcrumbList>
+        {links.map((link, i) => (
+          <React.Fragment key={`${link.href}-${i}`}>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={link.href}>{link.text}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </React.Fragment>
+        ))}
         <BreadcrumbItem>
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Shop</BreadcrumbPage>
+          <BreadcrumbPage>{pageTitle}</BreadcrumbPage>
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
