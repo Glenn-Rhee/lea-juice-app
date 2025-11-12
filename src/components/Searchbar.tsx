@@ -38,7 +38,11 @@ export default function Searchbar() {
       />
       <button
         onClick={() => {
-          setOpen((prev) => !prev);
+          if (value.trim() !== "" && open) {
+            router.push("/shop?s=" + value);
+          } else {
+            setOpen((prev) => !prev);
+          }
         }}
         className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors"
       >

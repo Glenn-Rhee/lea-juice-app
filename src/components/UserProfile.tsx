@@ -28,27 +28,24 @@ export interface UserDetail {
   username: string;
   fullName: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
   address: string;
   city: string;
   province: string;
   postalCode: string;
-  country: string;
 }
 
 export default function UserProfile(props: UserProfileProps) {
   const { token, handleLogout, disabled } = props;
-
-  const userData = {
-    username: token?.user?.name || "User",
+  const userData: UserDetail = {
+    username: token ? token.user.username || "-" : "User Guest",
     fullName: token?.user?.name || "",
     email: token?.user?.email || "",
-    phone: "+62 812-3456-7890",
-    address: "Jl. Contoh No. 123",
-    city: "Jakarta",
-    province: "DKI Jakarta",
-    postalCode: "12345",
-    country: "Indonesia",
+    phoneNumber: "",
+    address: "",
+    city: "",
+    province: "",
+    postalCode: "",
   };
 
   return (
