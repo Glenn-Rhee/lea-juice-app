@@ -33,8 +33,8 @@ export default function DialogEditProfile(props: DialogEditProfileProps) {
 
   return (
     <Dialog>
-      <DialogTrigger>
-        <div className="w-full py-2 text-left text-sm text-gray-700 flex items-center gap-3">
+      <DialogTrigger className="w-full">
+        <div className="w-full  py-2 text-left text-sm text-gray-700 flex items-center gap-3">
           <IconEdit size={16} />
           Edit Profile
         </div>

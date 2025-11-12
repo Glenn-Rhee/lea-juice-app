@@ -7,10 +7,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IconLogin, IconLogout, IconUser } from "@tabler/icons-react";
+import {
+  IconLogin,
+  IconLogout,
+  IconReceiptDollar,
+  IconUser,
+} from "@tabler/icons-react";
 import { Session } from "next-auth";
 import Link from "next/link";
 import DialogEditProfile from "./DialogEditProfile";
+import { Separator } from "./ui/separator";
 
 interface UserProfileProps {
   token: Session | null;
@@ -65,9 +71,15 @@ export default function UserProfile(props: UserProfileProps) {
           <DropdownMenuSeparator />
           {token ? (
             <>
+              <DropdownMenuItem className="text-gray-700 flex items-center py-2 text-sm gap-x-3 cursor-pointer">
+                <IconReceiptDollar />
+                Transaction
+              </DropdownMenuItem>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                 <DialogEditProfile userData={userData} />
               </DropdownMenuItem>
+
+              <Separator className="bg-slate-400" />
 
               <DropdownMenuItem className="hover:bg-red-50">
                 <button
