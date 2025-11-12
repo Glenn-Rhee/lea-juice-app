@@ -73,12 +73,10 @@ export default function Map(props: MapProps) {
               </Popup>
             </Marker>
 
-            {/* User Location Marker */}
             <UserLocationMarker />
           </MapContainer>
         </div>
 
-        {/* Map Controls Info */}
         <div className="px-6 py-4 bg-orange-50 border-t-2 border-orange-100">
           <div className="flex flex-wrap gap-4 text-sm text-gray-600">
             <div className="flex items-center gap-2">

@@ -31,7 +31,6 @@ export default function StoreInfoCard(props: StoreInfoCardProps) {
   };
   return (
     <div className="lg:col-span-2 space-y-6">
-      {/* Main Store Card */}
       <div className="bg-white rounded-2xl p-8 shadow-xl border-2 border-orange-100">
         <div className="flex items-start justify-between mb-6">
           <div>
@@ -129,7 +128,6 @@ export default function StoreInfoCard(props: StoreInfoCardProps) {
         </div>
       </div>
 
-      {/* Social Media Card */}
       <div className="bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl p-6 shadow-lg text-white">
         <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
           <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

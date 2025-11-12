@@ -11,7 +11,7 @@ export default function Searchbar() {
 
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
-      if (value === "") {
+      if (value.trim() === "") {
         router.push("/shop");
       } else {
         router.push("/shop?s=" + value);

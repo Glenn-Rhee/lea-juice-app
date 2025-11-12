@@ -11,6 +11,7 @@ import { IconShoppingCart } from "@tabler/icons-react";
 import SheetShop from "./pages/shop/SheetShop";
 import Searchbar from "./Searchbar";
 import UserProfile from "./UserProfile";
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
   token: Session | null;
@@ -60,12 +61,15 @@ export default function Navbar(props: NavbarProps) {
             </Link>
             <Link
               href={pathname !== "/" ? "/shop" : "#collection"}
-              className="nav-link"
+              className={cn("nav-link", pathname === "/shop" && "active")}
             >
               COLLECTION
             </Link>
             {pathname !== "/" ? (
-              <Link href={"/store"} className="nav-link">
+              <Link
+                href={"/store"}
+                className={cn("nav-link", pathname === "/store" && "active")}
+              >
                 STORE
               </Link>
             ) : (
