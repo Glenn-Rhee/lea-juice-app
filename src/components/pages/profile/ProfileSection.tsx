@@ -41,7 +41,7 @@ export default async function ProfileSection(props: ProfileSectionProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-gray-500">Phone Number</span>
-            <span className="text-lg text-gray-900 font-medium">
+            <span className="text-gray-900 font-medium">
               {data.phoneNumber || "-"}
             </span>
           </div>
@@ -53,7 +53,7 @@ export default async function ProfileSection(props: ProfileSectionProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-gray-500">Email</span>
-            <span className="text-lg text-gray-900 font-medium">
+            <span className="text-gray-900 font-medium">
               {session?.user.email}
             </span>
           </div>
@@ -65,7 +65,7 @@ export default async function ProfileSection(props: ProfileSectionProps) {
           </div>
           <div className="flex flex-col">
             <span className="text-sm text-gray-500">Current Address</span>
-            <span className="text-lg text-gray-900 font-medium">
+            <span className="text-gray-900 font-medium">
               {data.address || "-"}
             </span>
           </div>

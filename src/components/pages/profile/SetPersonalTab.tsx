@@ -1,4 +1,5 @@
 "use client";
+import Loader from "@/components/icons/Loader";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -18,14 +19,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ResponseError from "@/error/ResponseError";
 import { cn } from "@/lib/utils";
-import { PatchUser } from "@/types";
+import { PatchUser, ResponsePayload } from "@/types";
 import UserValidation from "@/validation/user-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Popover } from "@radix-ui/react-popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import z from "zod";
 
 interface SetPersonalTabProps {
@@ -39,12 +44,45 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
     mode: "onChange",
     defaultValues: {
       ...data,
-      dateOfBirth: data.dateOfBirth || new Date(),
+      dateOfBirth:
+        new Date(data.dateOfBirth as unknown as string) || new Date(),
     },
   });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(values: z.infer<typeof UserValidation.EDIT>) {
-    console.log(values);
+    setLoading(true);
+    try {
+      const now = new Date().getFullYear();
+      const userDate = new Date(values.dateOfBirth).getFullYear();
+      const age = now - userDate;
+      if (age < 18) {
+        throw new ResponseError(403, "Oops! Minimum age of user is 18");
+      }
+
+      const response = await fetch("/api/user", {
+        method: "PATCH",
+        credentials: "include",
+        body: JSON.stringify(values),
+      });
+
+      const dataResponse = (await response.json()) as ResponsePayload;
+      if (dataResponse.status === "failed") {
+        throw new ResponseError(dataResponse.code, dataResponse.message);
+      }
+
+      toast.success(dataResponse.message);
+      router.refresh();
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occured!");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -344,7 +382,9 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
                 <FormControl>
                   <Input
                     {...field}
+                    inputMode="numeric"
                     type="text"
+                    maxLength={5}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   />
                 </FormControl>
@@ -362,6 +402,14 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             )}
           />
         </div>
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full px-3 flex items-center justify-center gap-x-3 bg-gradient-to-br py-6 from-orange-400 via-orange-500 to-orange-600 text-white font-semibold text-lg rounded-lg mt-4 cursor-pointer hover:opacity-90 active:scale-95 transition-all duration-200"
+        >
+          {loading && <Loader />}
+          Save
+        </Button>
       </form>
     </Form>
   );

@@ -6,6 +6,7 @@ interface AboutmeTabProps {
 
 export default function AboutmeTab(props: AboutmeTabProps) {
   const { data } = props;
+  const dateUser = new Date(data.dateOfBirth as unknown as string);
   return (
     <>
       <div className="w-full">
@@ -30,7 +31,7 @@ export default function AboutmeTab(props: AboutmeTabProps) {
           <div className="flex flex-col">
             <span className="text-sm text-gray-400">Date of Birth</span>
             <span className="text-gray-700 font-medium">
-              {data.dateOfBirth?.toLocaleDateString("id-ID") || "-"}
+              {dateUser.toLocaleDateString("id-ID") || "-"}
             </span>
           </div>
           <div className="flex flex-col col-span-2">

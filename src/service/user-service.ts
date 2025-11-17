@@ -72,7 +72,7 @@ export default class UserService {
     });
 
     await prisma.userDetail.update({
-      where: { id: user.id },
+      where: { userId: user.id },
       data: {
         address: data.address,
         phoneNumber: data.phoneNumber,

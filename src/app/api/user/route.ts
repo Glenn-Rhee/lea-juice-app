@@ -10,7 +10,11 @@ import { ZodError } from "zod";
 export async function PATCH(req: NextRequest): Promise<NextResponse> {
   try {
     const dataJSON = await req.text();
-    const data = JSON.parse(dataJSON) as PatchUser;
+    let data = JSON.parse(dataJSON) as PatchUser;
+    data = {
+      ...data,
+      dateOfBirth: new Date(data.dateOfBirth as unknown as string),
+    };
     const dataUser = Validation.validate(UserValidation.EDIT, data);
 
     const response = await UserService.patchUser(dataUser);
