@@ -30,3 +30,17 @@ export interface DataUserAuth {
   name: string;
   email: string;
 }
+
+export interface PatchUser {
+  username: string;
+  fullname: string;
+  email: string;
+  phoneNumber: string;
+  gender: "MALE" | "FEMALE" | "UNKNOWN";
+  dateOfBirth: Date | null;
+  bio?: string;
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+}

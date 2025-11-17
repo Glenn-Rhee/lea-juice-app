@@ -76,6 +76,8 @@ export const authOptions: AuthOptions = {
             );
           }
 
+          console.log(user);
+
           const isValid = await Bcrypt.comparePassword(
             credentials.password,
             user.password!
@@ -91,6 +93,7 @@ export const authOptions: AuthOptions = {
             image: user.image ?? null,
             role: user.role,
             email: user.email!,
+            username: user.username ?? "",
             emailVerified: null,
           };
         } catch (error) {
@@ -108,6 +111,7 @@ export const authOptions: AuthOptions = {
       if (user) {
         token = {
           ...token,
+          id: user.id,
           sub: user.id,
           name: user.name,
           email: user.email,

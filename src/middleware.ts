@@ -27,6 +27,17 @@ export async function middleware(req: NextRequest) {
         }
       }
     }
+
+    if (url.includes("/user")) {
+      if (!token) {
+        return NextResponse.json<ResponsePayload>({
+          code: 403,
+          data: null,
+          message: "Unathorized! You don't have any permission!",
+          status: "failed",
+        });
+      }
+    }
   } else {
     if (url.includes("/auth") && token) {
       return NextResponse.redirect(new URL("/shop", req.url));
@@ -37,6 +48,10 @@ export async function middleware(req: NextRequest) {
 
       if (token.role === "USER")
         return NextResponse.redirect(new URL("/shop", req.url));
+    }
+
+    if (url.includes("/profile") && !token) {
+      return NextResponse.redirect(new URL("/shop", req.url));
     }
   }
   return NextResponse.next();

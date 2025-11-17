@@ -12,7 +12,7 @@ export default function UserLocationMarker() {
           setPosition([pos.coords.latitude, pos.coords.longitude]);
         },
         (error) => {
-          console.error("Error getting location:", error);
+          console.log("Error getting location:", error);
         }
       );
     }

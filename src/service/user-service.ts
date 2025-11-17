@@ -1,7 +1,7 @@
 import ResponseError from "@/error/ResponseError";
 import Bcrypt from "@/lib/bcrypt";
 import { prisma } from "@/lib/prisma";
-import { RegisterUser, ResponsePayload } from "@/types";
+import { PatchUser, RegisterUser, ResponsePayload } from "@/types";
 
 export default class UserService {
   static async createUser(data: RegisterUser): Promise<ResponsePayload> {
@@ -49,6 +49,86 @@ export default class UserService {
         email: createdUser.email,
       },
       message: "Successfully signup!",
+    };
+  }
+
+  static async patchUser(data: PatchUser): Promise<ResponsePayload> {
+    const isRegistered = await prisma.user.findFirst({
+      where: { email: data.email },
+    });
+
+    if (!isRegistered)
+      throw new ResponseError(
+        404,
+        "Email is not found! Check your form data properly!"
+      );
+
+    const user = await prisma.user.update({
+      where: { email: data.email },
+      data: {
+        name: data.fullname,
+        username: data.username,
+      },
+    });
+
+    await prisma.userDetail.update({
+      where: { id: user.id },
+      data: {
+        address: data.address,
+        phoneNumber: data.phoneNumber,
+        dateOfBirth: data.dateOfBirth,
+        gender: data.gender,
+        bio: data.bio,
+        city: data.city,
+        province: data.province,
+        postalCode: data.postalCode,
+      },
+    });
+
+    return {
+      status: "success",
+      code: 201,
+      data: null,
+      message: "Successfully edit user data!",
+    };
+  }
+
+  static async getUser(id: string): Promise<ResponsePayload> {
+    const userData = await prisma.user.findFirst({
+      where: { id },
+    });
+
+    if (!userData) {
+      throw new ResponseError(404, "Oops user not found! Invalid token!");
+    }
+
+    const userDetail = await prisma.userDetail.findFirst({
+      where: { userId: userData.id },
+    });
+
+    if (!userDetail) {
+      throw new ResponseError(404, "Oops user not found! Invalid token!");
+    }
+
+    const data: PatchUser = {
+      address: userDetail.address || "",
+      city: userDetail.city || "",
+      dateOfBirth: userDetail.dateOfBirth || null,
+      email: userData.email || "",
+      fullname: userData.name || "",
+      gender: userDetail.gender,
+      phoneNumber: userDetail.phoneNumber || "",
+      postalCode: userDetail.postalCode || "",
+      province: userDetail.province || "",
+      username: userData.username || "",
+      bio: userDetail.bio || "",
+    };
+
+    return {
+      status: "success",
+      code: 200,
+      data,
+      message: "Successfully get data user!",
     };
   }
 }

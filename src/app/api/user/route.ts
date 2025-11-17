@@ -1,0 +1,82 @@
+import ResponseError from "@/error/ResponseError";
+import UserService from "@/service/user-service";
+import { PatchUser, ResponsePayload } from "@/types";
+import UserValidation from "@/validation/user-validation";
+import Validation from "@/validation/validation";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import { ZodError } from "zod";
+
+export async function PATCH(req: NextRequest): Promise<NextResponse> {
+  try {
+    const dataJSON = await req.text();
+    const data = JSON.parse(dataJSON) as PatchUser;
+    const dataUser = Validation.validate(UserValidation.EDIT, data);
+
+    const response = await UserService.patchUser(dataUser);
+    return NextResponse.json<ResponsePayload>(response);
+  } catch (error) {
+    console.log("Error user Route at PATCH method:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 401,
+        data: null,
+        message: error.issues[0].message,
+      });
+    } else if (error instanceof ResponseError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: error.code,
+        data: null,
+        message: error.message,
+      });
+    } else {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 500,
+        data: null,
+        message: "An error occured! Please try again later",
+      });
+    }
+  }
+}
+
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  try {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token || !token.id) {
+      throw new ResponseError(
+        403,
+        "Unathorized! You don't have any permission!"
+      );
+    }
+
+    const response = await UserService.getUser(token.id);
+    return NextResponse.json<ResponsePayload>(response);
+  } catch (error) {
+    console.log("Error user Route at GET method:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 401,
+        data: null,
+        message: error.issues[0].message,
+      });
+    } else if (error instanceof ResponseError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: error.code,
+        data: null,
+        message: error.message,
+      });
+    } else {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 500,
+        data: null,
+        message: "An error occured! Please try again later",
+      });
+    }
+  }
+}

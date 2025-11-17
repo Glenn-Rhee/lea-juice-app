@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  IconEdit,
   IconLogin,
   IconLogout,
   IconReceiptDollar,
@@ -15,7 +16,6 @@ import {
 } from "@tabler/icons-react";
 import { Session } from "next-auth";
 import Link from "next/link";
-import DialogEditProfile from "./DialogEditProfile";
 import { Separator } from "./ui/separator";
 
 interface UserProfileProps {
@@ -73,7 +73,13 @@ export default function UserProfile(props: UserProfileProps) {
                 Transaction
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <DialogEditProfile userData={userData} />
+                <Link
+                  href={"/profile"}
+                  className="w-full  py-2 text-left text-sm text-gray-700 flex items-center gap-3"
+                >
+                  <IconEdit size={16} />
+                  Edit Profile
+                </Link>
               </DropdownMenuItem>
 
               <Separator className="bg-slate-400" />

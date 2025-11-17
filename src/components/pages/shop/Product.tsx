@@ -1,7 +1,18 @@
+"use client";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function Product() {
+  const { data: session } = useSession();
+
+  async function handleCheckout() {
+    if (!session) {
+      toast.error("Oops! Login first to checkout your juice!");
+    }
+  }
+
   return (
     <div className="shadow-lg p-4 rounded-lg">
       <Link href={"/product/1"}>
@@ -17,7 +28,10 @@ export default function Product() {
           <span className="text-stone-400 text-sm font-medium">Rp20.000</span>
         </div>
       </Link>
-      <button className="w-full mt-4 bg-white border py-2 rounded-full cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white transition-colors duration-300">
+      <button
+        onClick={handleCheckout}
+        className="w-full mt-4 bg-white border py-2 rounded-full cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white transition-colors duration-300"
+      >
         Add to chart
       </button>
     </div>
