@@ -16,6 +16,38 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "@effect/language-service",
+        "refactors": true, // controls Effect refactors (default: true)
+        "diagnostics": true, // controls Effect diagnostics (default: true)
+        "diagnosticSeverity": {
+          // allows to change per-rule default severity of the diagnostic in the whole project
+          "floatingEffect": "warning" // example for a rule, allowed values are off,error,warning,message,suggestion
+        },
+        "diagnosticsName": true, // controls whether to include the rule name in diagnostic messages (default: true)
+        "missingDiagnosticNextLine": "warning", // controls the severity of warnings for unused @effect-diagnostics-next-line comments (default: "warning", allowed values: off,error,warning,message,suggestion)
+        "reportSuggestionsAsWarningsInTsc": false, // when enabled, diagnostics with "suggestion" or "message" severity will be reported as "warning" in TSC with "[suggestion]" prefix (default: false)
+        "quickinfo": true, // controls Effect quickinfo (default: true)
+        "quickinfoEffectParameters": "whenTruncated", // (default: "whenTruncated") controls when to display effect type parameters always,never,whenTruncated
+        "quickinfoMaximumLength": -1, // controls how long can be the types in the quickinfo hover (helps with very long type to improve perfs, defaults to -1 for no truncation, can be any number eg. 1000 and TS will try to fit as much as possible in that budget, higher number means more info.)
+        "completions": true, // controls Effect completions (default: true)
+        "goto": true, // controls Effect goto references (default: true)
+        "inlays": true, // controls Effect provided inlayHints (default: true)
+        "allowedDuplicatedPackages": [], // list of package names that have effect in peer dependencies and are allowed to be duplicated (default: [])
+        "barrelImportPackages": [], // package names that should be preferred as imported from the top level barrel file (default: [])
+        "namespaceImportPackages": [], // package names that should be preferred as imported with namespace imports e.g. ["effect", "@effect/*"] (default: [])
+        "topLevelNamedReexports": "ignore", // for namespaceImportPackages, how should top level named re-exports (e.g. {pipe} from "effect") be treated? "ignore" will leave them as is, "follow" will rewrite them to the re-exported module (e.g. {pipe} from "effect/Function")
+        "importAliases": { "Array": "Arr" }, // allows to chose some different names for import name aliases (only when not chosing to import the whole module) (default: {})
+        "noExternal": false, // disables features that provides links to external websites (such as links to mermaidchart.com) (default: false)
+        "keyPatterns": [
+          {
+            "target": "service",
+            "pattern": "default",
+            "skipLeadingPath": ["src/"]
+          }
+        ], // configure the key patterns; recommended reading more on the section "Configuring Key Patterns"
+        "layerGraphFollowDepth": 0 // controls the depth level that the layer graph will follow when resolving layer dependencies, depth is counted only when exiting the currently hovered/analyzed layer definition (default: 0)
       }
     ],
     "paths": {

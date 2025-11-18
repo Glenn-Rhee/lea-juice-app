@@ -32,6 +32,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import z from "zod";
+import UploadImage from "./UploadImage";
 
 interface SetPersonalTabProps {
   data: PatchUser;
@@ -62,7 +63,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
       }
 
       const response = await fetch("/api/user", {
-        method: "PATCH",
+        method: "PUT",
         credentials: "include",
         body: JSON.stringify(values),
       });
@@ -296,6 +297,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
               </FormItem>
             )}
           />
+          <UploadImage />
         </div>
         <h3 className="font-semibold text-xl text-gray-800">
           Shipping Address :

@@ -54,4 +54,8 @@ export default class UserValidation {
     }),
     bio: z.string({ error: "Please fill bio properly" }).optional(),
   });
+
+  static readonly EDITIMAGE = z.object({
+    image: z.url({ error: "Please fill url image properly!" }),
+  });
 }
