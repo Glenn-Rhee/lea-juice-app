@@ -6,7 +6,9 @@ import { cookies } from "next/headers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("next-auth.session-token");
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? "https://lea-juice-app.vercel.app"
@@ -34,7 +36,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProfilePage() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("next-auth.session-token");
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? "https://lea-juice-app.vercel.app"
