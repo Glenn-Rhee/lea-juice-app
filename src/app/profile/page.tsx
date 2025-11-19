@@ -44,6 +44,7 @@ export default async function ProfilePage() {
     headers: {
       Authorization: `Bearer ${token?.value || ""}`,
     },
+    cache: "no-store",
   });
   const dataUser = (await response.json()) as ResponsePayload<DataUser>;
   console.log("Data user profile page:", dataUser);
