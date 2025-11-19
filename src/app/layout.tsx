@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import Providers from "@/components/Providers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,19 +34,26 @@ export default async function RootLayout({
 }) {
   const token = await getServerSession(authOptions);
   return (
-    <html lang="id" className="scroll-smooth">
+    <html lang="id" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <link rel="shortcut icon" href="/logojus2.png" type="image/x-icon" />
       </head>
       <body
-        className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-stone-900 overflow-x-hidden`}
+        className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-white overflow-x-hidden`}
       >
-        <Providers>
-          <Toaster />
-          <Navbar token={token} />
-          {children}
-          <Footer />
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Toaster />
+            <Navbar token={token} />
+            {children}
+            <Footer />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
