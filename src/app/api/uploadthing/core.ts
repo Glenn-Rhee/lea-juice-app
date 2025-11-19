@@ -30,8 +30,7 @@ export const ourFileRouter = {
       const fileKey = input.image.split("/").pop();
 
       const utApi = new UTApi();
-      const deleted = await utApi.deleteFiles(fileKey!);
-      console.log(deleted);
+      await utApi.deleteFiles(fileKey!);
       return { id: token.id };
     })
     .onUploadComplete(async ({ file, metadata }) => {

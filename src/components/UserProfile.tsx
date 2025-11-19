@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  IconDashboard,
   IconEdit,
   IconLogin,
   IconLogout,
@@ -68,14 +69,30 @@ export default function UserProfile(props: UserProfileProps) {
           <DropdownMenuSeparator />
           {token ? (
             <>
-              <DropdownMenuItem className="text-gray-700 flex items-center py-2 text-sm gap-x-3 cursor-pointer">
-                <IconReceiptDollar />
-                Transaction
+              <DropdownMenuItem>
+                <Link
+                  className="text-gray-700 w-full flex items-center py-2 text-sm gap-x-3 cursor-pointer"
+                  href={"/transaction"}
+                >
+                  <IconReceiptDollar />
+                  Transaction
+                </Link>
               </DropdownMenuItem>
+              {token.user.role === "ADMIN" && (
+                <DropdownMenuItem>
+                  <Link
+                    className="text-gray-700 w-full flex items-center py-2 text-sm gap-x-3 cursor-pointer"
+                    href={"/dashboard"}
+                  >
+                    <IconDashboard />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                 <Link
                   href={"/profile"}
-                  className="w-full  py-2 text-left text-sm text-gray-700 flex items-center gap-3"
+                  className="w-full py-2 text-left text-sm text-gray-700 flex items-center gap-3"
                 >
                   <IconEdit size={16} />
                   Edit Profile

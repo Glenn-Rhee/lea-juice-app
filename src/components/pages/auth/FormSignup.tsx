@@ -66,7 +66,6 @@ export default function FormSignup() {
       })) as ResponseNextAuth;
 
       if (!loginRes.ok) {
-        console.log(loginRes);
         toast.error("Signup succeded but login failed. Please login manually.");
         router.push("/auth/login");
         return;

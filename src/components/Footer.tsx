@@ -9,6 +9,7 @@ export default function Footer() {
   const pathname = usePathname();
 
   if (pathname.includes("/auth")) return null;
+  if (pathname.includes("/dashboard")) return null;
   return (
     <footer className="py-10 px-6 bg-stone-900">
       <div className="max-w-7xl mx-auto">

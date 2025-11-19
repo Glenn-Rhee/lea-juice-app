@@ -51,7 +51,7 @@ export default async function ProfilePage() {
     cache: "no-store",
   });
   const dataUser = (await response.json()) as ResponsePayload<DataUser>;
-  console.log("Data user profile page:", dataUser);
+
   return (
     <div className="pt-24 px-4 max-w-7xl mx-auto mb-8">
       <h1 className="text-center text-gray-900 font-bold text-4xl">

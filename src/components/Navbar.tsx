@@ -23,6 +23,7 @@ export default function Navbar(props: NavbarProps) {
   const [loading, setLoading] = useState(false);
 
   if (pathname.includes("/auth")) return null;
+  if (pathname.includes("/dashboard")) return null;
 
   async function handleLogout() {
     setLoading(true);

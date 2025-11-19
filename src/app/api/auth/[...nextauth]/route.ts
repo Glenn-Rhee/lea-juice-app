@@ -76,8 +76,6 @@ export const authOptions: AuthOptions = {
             );
           }
 
-          console.log(user);
-
           const isValid = await Bcrypt.comparePassword(
             credentials.password,
             user.password!

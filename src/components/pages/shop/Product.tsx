@@ -9,6 +9,7 @@ export default function Product() {
 
   async function handleCheckout() {
     if (!session) {
+      toast.dismiss();
       toast.error("Oops! Login first to checkout your juice!");
     }
   }
