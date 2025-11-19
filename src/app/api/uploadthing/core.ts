@@ -1,5 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UploadThingError, UTApi } from "uploadthing/server";
+import z from "zod";
 
 const f = createUploadthing();
 
@@ -10,16 +12,26 @@ export const ourFileRouter = {
       maxFileCount: 1,
     },
   })
-    .middleware(async ({ req }) => {
+    .input(
+      z.object({
+        image: z.url({ error: "Please fill your image url" }),
+      })
+    )
+    .middleware(async ({ req, input }) => {
       const token = await getToken({
         req,
         secret: process.env.NEXTAUTH_SECRET,
       });
 
       if (!token) {
-        throw new Error("User not authenticated!");
+        throw new UploadThingError("User not authenticated!");
       }
 
+      const fileKey = input.image.split("/").pop();
+
+      const utApi = new UTApi();
+      const deleted = await utApi.deleteFiles(fileKey!);
+      console.log(deleted);
       return { id: token.id };
     })
     .onUploadComplete(async ({ file, metadata }) => {

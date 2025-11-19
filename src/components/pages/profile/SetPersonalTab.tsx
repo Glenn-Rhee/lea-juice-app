@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import ResponseError from "@/error/ResponseError";
 import { cn } from "@/lib/utils";
-import { PatchUser, ResponsePayload } from "@/types";
+import { DataUser, ResponsePayload } from "@/types";
 import UserValidation from "@/validation/user-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Popover } from "@radix-ui/react-popover";
@@ -35,7 +35,7 @@ import z from "zod";
 import UploadImage from "./UploadImage";
 
 interface SetPersonalTabProps {
-  data: PatchUser;
+  data: DataUser;
 }
 
 export default function SetPersonalTab(props: SetPersonalTabProps) {
@@ -297,7 +297,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
               </FormItem>
             )}
           />
-          <UploadImage />
+          <UploadImage imageUrl={data.image} />
         </div>
         <h3 className="font-semibold text-xl text-gray-800">
           Shipping Address :

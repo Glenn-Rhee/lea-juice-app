@@ -45,6 +45,10 @@ export interface PatchUser {
   postalCode: string;
 }
 
+export interface DataUser extends PatchUser {
+  image: string;
+}
+
 export interface ImageUserEdit {
   image: string;
 }

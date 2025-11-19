@@ -2,6 +2,7 @@ import ResponseError from "@/error/ResponseError";
 import Bcrypt from "@/lib/bcrypt";
 import { prisma } from "@/lib/prisma";
 import {
+  DataUser,
   ImageUserEdit,
   PatchUser,
   RegisterUser,
@@ -115,7 +116,7 @@ export default class UserService {
       throw new ResponseError(404, "Oops user not found! Invalid token!");
     }
 
-    const data: PatchUser = {
+    const data: DataUser = {
       address: userDetail.address || "",
       city: userDetail.city || "",
       dateOfBirth: userDetail.dateOfBirth || null,
@@ -127,6 +128,7 @@ export default class UserService {
       province: userDetail.province || "",
       username: userData.username || "",
       bio: userDetail.bio || "",
+      image: userData.image || "",
     };
 
     return {

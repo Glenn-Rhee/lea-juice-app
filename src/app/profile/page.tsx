@@ -1,6 +1,6 @@
 import ProfileSection from "@/components/pages/profile/ProfileSection";
 import SetProfileSection from "@/components/pages/profile/SetProfileSection";
-import { PatchUser, ResponsePayload } from "@/types";
+import { DataUser, ResponsePayload } from "@/types";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 
@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
       Authorization: `Bearer ${token?.value || ""}`,
     },
   });
-  const dataUser = (await response.json()) as ResponsePayload<PatchUser>;
+  const dataUser = (await response.json()) as ResponsePayload<DataUser>;
   if (dataUser.status === "failed") {
     return {
       title: "Edit data user",
@@ -45,7 +45,7 @@ export default async function ProfilePage() {
       Authorization: `Bearer ${token?.value || ""}`,
     },
   });
-  const dataUser = (await response.json()) as ResponsePayload<PatchUser>;
+  const dataUser = (await response.json()) as ResponsePayload<DataUser>;
 
   return (
     <div className="pt-24 px-4 max-w-7xl mx-auto mb-8">

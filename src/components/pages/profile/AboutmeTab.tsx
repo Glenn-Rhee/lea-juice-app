@@ -1,7 +1,7 @@
-import { PatchUser } from "@/types";
+import { DataUser } from "@/types";
 
 interface AboutmeTabProps {
-  data: PatchUser;
+  data: DataUser;
 }
 
 export default function AboutmeTab(props: AboutmeTabProps) {

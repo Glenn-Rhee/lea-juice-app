@@ -1,12 +1,12 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Separator } from "@/components/ui/separator";
-import { PatchUser } from "@/types";
+import { DataUser } from "@/types";
 import { IconLocation, IconMail, IconPhone } from "@tabler/icons-react";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 
 interface ProfileSectionProps {
-  data: PatchUser;
+  data: DataUser;
 }
 
 export default async function ProfileSection(props: ProfileSectionProps) {
@@ -17,7 +17,7 @@ export default async function ProfileSection(props: ProfileSectionProps) {
     <div className="bg-white max-w-md w-full rounded-2xl p-8 shadow-xl border-2 border-orange-100">
       <div className="w-full flex items-center flex-col justify-center">
         <Image
-          src={"/prof.jpg"}
+          src={data.image}
           alt="Profile Ariel Rizki"
           width={150}
           height={100}

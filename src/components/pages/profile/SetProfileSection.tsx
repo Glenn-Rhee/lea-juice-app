@@ -2,11 +2,11 @@
 import TabsEditProfile from "@/components/TabsEditProfile";
 import { useState } from "react";
 import AboutmeTab from "./AboutmeTab";
-import { PatchUser } from "@/types";
+import { DataUser } from "@/types";
 import SetPersonalTab from "./SetPersonalTab";
 
 interface SetProfileSectionProps {
-  data: PatchUser;
+  data: DataUser;
 }
 
 export default function SetProfileSection(props: SetProfileSectionProps) {

@@ -6,14 +6,21 @@ import ResponseError from "@/error/ResponseError";
 import { useUploadThing } from "@/lib/uploadthing";
 import { ResponsePayload } from "@/types";
 import { IconClick, IconPhotoScan } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import toast from "react-hot-toast";
 
-export default function UploadImage() {
+interface UploadImageProps {
+  imageUrl: string;
+}
+
+export default function UploadImage(props: UploadImageProps) {
+  const { imageUrl } = props;
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>();
   const [files, setFiles] = useState<File[]>([]);
+  const router = useRouter();
   const { startUpload, isUploading } = useUploadThing("imageUpload", {
     onClientUploadComplete: ([data]) => {
       uploadImageToServer(data.ufsUrl);
@@ -26,7 +33,10 @@ export default function UploadImage() {
       toast.error("Oops! Maximum upload file only 1");
       return;
     }
-    await startUpload(accFiles);
+    await startUpload(accFiles, {
+      image: imageUrl,
+    });
+
     setIsDragOver(false);
   };
 
@@ -58,6 +68,7 @@ export default function UploadImage() {
       }
 
       toast.success(dataResponse.message);
+      router.refresh();
     } catch (error) {
       if (error instanceof ResponseError) {
         toast.error(error.message);
