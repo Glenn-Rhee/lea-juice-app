@@ -32,7 +32,7 @@ export const columns: ColumnDef<Transaction>[] = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        className="border border-black"
+        className="border border-white  data-[state=checked]:border-white data-[state=checked]:border-[1px]"
         onCheckedChange={(val) => table.toggleAllPageRowsSelected(!!val)}
         aria-label="Select All"
       />
@@ -116,15 +116,25 @@ export const columns: ColumnDef<Transaction>[] = [
       const status = row.original.status;
       switch (status) {
         case "PENDING":
-          return <Badge className="bg-yellow-600">{row.original.status}</Badge>;
+          return (
+            <Badge className="bg-yellow-600 ms-2">{row.original.status}</Badge>
+          );
         case "PROCESSING":
-          return <Badge className="bg-orange-600">{row.original.status}</Badge>;
+          return (
+            <Badge className="bg-orange-600 ms-2">{row.original.status}</Badge>
+          );
         case "SHIPPED":
-          return <Badge className="bg-blue-600">{row.original.status}</Badge>;
+          return (
+            <Badge className="bg-blue-600 ms-2">{row.original.status}</Badge>
+          );
         case "CANCELLED":
-          return <Badge className="bg-red-600">{row.original.status}</Badge>;
+          return (
+            <Badge className="bg-red-600 ms-2">{row.original.status}</Badge>
+          );
         default:
-          return <Badge className="bg-green-600">{row.original.status}</Badge>;
+          return (
+            <Badge className="bg-green-600 ms-2">{row.original.status}</Badge>
+          );
       }
     },
   },

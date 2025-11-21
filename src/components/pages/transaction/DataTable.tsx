@@ -97,16 +97,18 @@ export default function DataTable<TData, TValue>(
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="">
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={cn("bg-slate-100")}
+                  className={cn(
+                    "bg-gray-100 text-stone-800 hover:bg-gray-300 data-[state=selected]:bg-orange-200/70 "
+                  )}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -130,7 +132,6 @@ export default function DataTable<TData, TValue>(
       </div>
       <div className="flex items-center w-full justify-between px-2 space-x-2 py-4">
         <Button
-          variant={"outline"}
           size={"sm"}
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -164,7 +165,6 @@ export default function DataTable<TData, TValue>(
         </div>
 
         <Button
-          variant={"outline"}
           size={"sm"}
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
