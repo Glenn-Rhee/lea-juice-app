@@ -138,7 +138,7 @@ export default function FormSignup() {
               <Input
                 id="name"
                 placeholder="Davy wibowo"
-                className="pl-10 h-11 rounded-xl border-2 border-black  focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 font-medium focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
                 value={formData.fullname}
                 onChange={(e) =>
                   setFormData({ ...formData, fullname: e.target.value })
@@ -156,7 +156,7 @@ export default function FormSignup() {
             <Input
               id="username"
               placeholder="Dfa Academy"
-              className="h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+              className="h-11 rounded-xl border-2 border-black focus:border-yellow-500 font-medium focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
               value={formData.username}
               onChange={(e) =>
                 setFormData({ ...formData, username: e.target.value })
@@ -179,7 +179,7 @@ export default function FormSignup() {
                 id="email"
                 type="email"
                 placeholder="you@example.com"
-                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4transition-all text-black"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 font-medium focus:ring-4transition-all text-black"
                 value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
@@ -203,7 +203,7 @@ export default function FormSignup() {
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 font-medium focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
@@ -227,7 +227,7 @@ export default function FormSignup() {
                 id="confirmPassword"
                 type="password"
                 placeholder="Re-enter password"
-                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+                className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 font-medium focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
                 value={formData.confirmPassword}
                 onChange={(e) =>
                   setFormData({

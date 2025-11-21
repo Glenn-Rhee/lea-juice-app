@@ -93,7 +93,7 @@ export default function FormLogin() {
       }
     }
   };
-  
+
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-5">
@@ -134,7 +134,7 @@ export default function FormLogin() {
               value={formData.email}
               onChange={handleInputChange}
               disabled={isLoading}
-              className="pl-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
+              className="pl-10 h-11 rounded-xl font-medium border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all text-black"
             />
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function FormLogin() {
               value={formData.password}
               onChange={handleInputChange}
               disabled={isLoading}
-              className="pl-10 pr-10 h-11 rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              className="pl-10 pr-10 h-11 text-stone-900 font-medium rounded-xl border-2 border-black focus:border-yellow-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
             />
             <button
               type="button"

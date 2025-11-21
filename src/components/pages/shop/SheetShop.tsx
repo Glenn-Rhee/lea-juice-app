@@ -15,9 +15,9 @@ export default function SheetShop({ children }: { children: React.ReactNode }) {
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent>
+      <SheetContent className="bg-white">
         <SheetHeader>
-          <SheetTitle className="text-xl">Juice Cart</SheetTitle>
+          <SheetTitle className="text-xl text-stone-800">Juice Cart</SheetTitle>
           <Separator className="bg-slate-600" />
         </SheetHeader>
         {isEmpty ? <EmptyChart /> : <Chart />}
