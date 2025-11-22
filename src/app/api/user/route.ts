@@ -6,11 +6,12 @@ import Validation from "@/validation/validation";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { UTApi } from "uploadthing/server";
 
 export async function PUT(req: NextRequest): Promise<NextResponse> {
+  const dataJSON = await req.text();
+  let data = JSON.parse(dataJSON) as PatchUser;
   try {
-    const dataJSON = await req.text();
-    let data = JSON.parse(dataJSON) as PatchUser;
     data = {
       ...data,
       dateOfBirth: new Date(data.dateOfBirth as unknown as string),
@@ -21,6 +22,10 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json<ResponsePayload>(response);
   } catch (error) {
     console.log("Error user Route at PUT method:", error);
+    const utApi = new UTApi();
+    const fileKey = data.image!.split("/").pop();
+    await utApi.deleteFiles(fileKey!);
+
     if (error instanceof ZodError) {
       return NextResponse.json<ResponsePayload>({
         status: "failed",
