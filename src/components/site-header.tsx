@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function SiteHeader() {
@@ -27,14 +28,13 @@ export function SiteHeader() {
         </h1>
         <div className="ml-auto flex items-center gap-2">
           <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://lea-juice-app.vercel.app/"
+            <Link
+              href="/"
               rel="noopener noreferrer"
-              target="_blank"
               className="dark:text-foreground"
             >
               LeaJuice
-            </a>
+            </Link>
           </Button>
         </div>
       </div>

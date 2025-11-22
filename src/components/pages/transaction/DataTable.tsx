@@ -43,7 +43,7 @@ export default function DataTable<TData, TValue>(
   });
 
   function getPaginationRange(current: number, total: number) {
-    const delta = 2; // jumlah halaman di kiri/kanan
+    const delta = 2;
     const range = [];
     const left = Math.max(2, current - delta);
     const right = Math.min(total - 1, current + delta);
@@ -104,11 +104,11 @@ export default function DataTable<TData, TValue>(
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   className={cn(
-                    "bg-gray-100 text-stone-800 hover:bg-gray-300 data-[state=selected]:bg-orange-200/70 "
+                    "bg-transparent font-medium py-1 text-stone-800 hover:bg-white/20 data-[state=selected]:bg-slate-200/20 "
                   )}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="">
+                    <TableCell key={cell.id} className="py-5">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -150,11 +150,11 @@ export default function DataTable<TData, TValue>(
                 key={idx}
                 onClick={() => table.setPageIndex(Number(page) - 1)}
                 className={`
-          px-3 py-1 border rounded-md
+          px-3 py-1 border rounded-md cursor-pointer
           ${
             table.getState().pagination.pageIndex + 1 === page
               ? "bg-orange-600 text-white"
-              : "bg-orange-200 hover:bg-orange-300"
+              : ""
           }
         `}
               >
