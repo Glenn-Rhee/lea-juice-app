@@ -3,7 +3,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -148,9 +147,9 @@ export const columns: ColumnDef<Transaction>[] = [
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuContent className="bg-white text-stone-700" align="end">
           <DropdownMenuItem
+            className="data-[highlighted]:bg-gray-300 hover:data-[highlighted]:text-stone-700"
             onClick={async () => {
               await navigator.clipboard.writeText(row.original.id);
               toast.dismiss();
@@ -160,8 +159,9 @@ export const columns: ColumnDef<Transaction>[] = [
             Copy payment ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>View Product</DropdownMenuItem>
-          <DropdownMenuItem>View payment details</DropdownMenuItem>
+          <DropdownMenuItem className="data-[highlighted]:bg-gray-300 hover:data-[highlighted]:text-stone-700">
+            View Product
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),

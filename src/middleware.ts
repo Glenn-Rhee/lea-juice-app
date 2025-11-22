@@ -53,6 +53,13 @@ export async function middleware(req: NextRequest) {
     if (url.includes("/profile") && !token) {
       return NextResponse.redirect(new URL("/shop", req.url));
     }
+
+    if (
+      token?.role === "ADMIN" &&
+      (url === "/profile" || url === "/transaction")
+    ) {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
   }
   return NextResponse.next();
 }

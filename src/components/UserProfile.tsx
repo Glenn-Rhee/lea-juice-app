@@ -72,7 +72,11 @@ export default function UserProfile(props: UserProfileProps) {
               <DropdownMenuItem className="data-[highlighted]:bg-gray-300">
                 <Link
                   className="text-stone-700 w-full flex items-center py-2 text-sm gap-x-3 cursor-pointer"
-                  href={"/transaction"}
+                  href={
+                    token.user.role === "ADMIN"
+                      ? "/dashboard/transactions"
+                      : "/transactions"
+                  }
                 >
                   <IconReceiptDollar className="text-stone-700" />
                   Transaction
@@ -94,7 +98,11 @@ export default function UserProfile(props: UserProfileProps) {
                 onSelect={(e) => e.preventDefault()}
               >
                 <Link
-                  href={"/profile"}
+                  href={
+                    token.user.role === "ADMIN"
+                      ? "/dashboard/profile"
+                      : "/profile"
+                  }
                   className="text-stone-700 w-full flex items-center py-2 text-sm gap-x-3 cursor-pointer"
                 >
                   <IconEdit size={16} className="text-stone-700" />

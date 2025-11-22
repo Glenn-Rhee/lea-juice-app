@@ -1,7 +1,5 @@
 "use client";
-
 import { type Icon } from "@tabler/icons-react";
-
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -10,6 +8,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 export function NavMain({
   items,
@@ -20,17 +20,26 @@ export function NavMain({
     icon?: Icon;
   }[];
 }) {
+  const pathname = usePathname();
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2"></SidebarMenuItem>
         </SidebarMenu>
-        <SidebarMenu>
+        <SidebarMenu className="space-y-3">
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <Link href={item.url}>
-                <SidebarMenuButton tooltip={item.title}>
+              <Link href={item.url} className="cursor-pointer w-full">
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  className={cn(
+                    "hover:text-white py-6 cursor-pointer font-medium",
+                    {
+                      "bg-primary hover:bg-orange-600": pathname === item.url,
+                    }
+                  )}
+                >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </SidebarMenuButton>
