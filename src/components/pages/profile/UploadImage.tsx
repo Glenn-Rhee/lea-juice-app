@@ -2,41 +2,30 @@
 import Loader from "@/components/icons/Loader";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import ResponseError from "@/error/ResponseError";
-import { useUploadThing } from "@/lib/uploadthing";
-import { ResponsePayload } from "@/types";
+import { cn } from "@/lib/utils";
 import { IconClick, IconPhotoScan } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import toast from "react-hot-toast";
 
 interface UploadImageProps {
-  imageUrl: string;
+  label: string;
+  files: File[];
+  isUploading: boolean;
+  uploadProgress: number | undefined;
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 export default function UploadImage(props: UploadImageProps) {
-  const { imageUrl } = props;
+  const { label, files, setFiles, isUploading, uploadProgress } = props;
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<number>();
-  const [files, setFiles] = useState<File[]>([]);
-  const router = useRouter();
-  const { startUpload, isUploading } = useUploadThing("imageUpload", {
-    onClientUploadComplete: ([data]) => {
-      uploadImageToServer(data.ufsUrl);
-    },
-    onUploadProgress: (e) => setUploadProgress(e),
-  });
 
   const onDropAccepted = async (accFiles: File[]) => {
     if (accFiles.length > 1) {
       toast.error("Oops! Maximum upload file only 1");
       return;
     }
-    await startUpload(accFiles, {
-      image: imageUrl,
-    });
-
+    setFiles(accFiles);
     setIsDragOver(false);
   };
 
@@ -51,40 +40,19 @@ export default function UploadImage(props: UploadImageProps) {
     }
     setIsDragOver(false);
   };
-
-  async function uploadImageToServer(url: string) {
-    try {
-      const response = await fetch("/api/user", {
-        method: "PATCH",
-        credentials: "include",
-        body: JSON.stringify({
-          image: url,
-        }),
-      });
-
-      const dataResponse = (await response.json()) as ResponsePayload;
-      if (dataResponse.status === "failed") {
-        throw new ResponseError(dataResponse.code, dataResponse.message);
-      }
-
-      toast.success(dataResponse.message);
-      router.refresh();
-    } catch (error) {
-      if (error instanceof ResponseError) {
-        toast.error(error.message);
-      } else {
-        toast.error("An error occured!");
-      }
-    } finally {
-      setFiles([]);
-      setUploadProgress(undefined);
-      setIsDragOver(false);
-    }
-  }
-
+  
   return (
     <div className="w-full p-2 col-span-2">
-      <h6 className="font-medium text-sm text-gray-800">Profile Picture</h6>
+      <h6
+        className={cn(
+          "font-medium text-sm",
+          label.toLowerCase().includes("product")
+            ? "text-white"
+            : "text-stone-800"
+        )}
+      >
+        {label}
+      </h6>
       <Dropzone
         accept={{
           "image/png": [".png"],
@@ -102,18 +70,41 @@ export default function UploadImage(props: UploadImageProps) {
         {({ getRootProps, getInputProps }) => (
           <div
             {...getRootProps()}
-            className="w-full rounded-lg flex flex-col justify-center items-center border-dotted border border-gray-500 h-32"
+            className="w-full rounded-lg cursor-pointer flex flex-col justify-center items-center border-dotted border border-gray-500 h-32"
           >
             <Input {...getInputProps()} />
             {files.length === 0 && !isUploading && !isDragOver && (
-              <IconPhotoScan className="text-zinc-500 mb-2 text-lg" />
+              <IconPhotoScan
+                className={cn(
+                  "mb-2 text-lg",
+                  label.toLowerCase().includes("product")
+                    ? "text-white"
+                    : "text-zinc-500"
+                )}
+              />
             )}
 
-            {isDragOver && <IconClick className="h-6 w-6 text-zinc-500 mb-2" />}
+            {isDragOver && (
+              <IconClick
+                className={cn(
+                  "h-6 w-6 mb-2",
+                  label.toLowerCase().includes("product")
+                    ? "text-white"
+                    : "text-zinc-500"
+                )}
+              />
+            )}
 
             {isUploading && <Loader />}
 
-            <div className="flex flex-col justify-center mb-2 text-sm text-zinc-700">
+            <div
+              className={cn(
+                "flex flex-col justify-center mb-2 text-sm",
+                label.toLowerCase().includes("product")
+                  ? "text-white"
+                  : "text-zinc-700"
+              )}
+            >
               {isUploading ? (
                 <div className="flex flex-col items-center">
                   <p>Uploading...</p>
@@ -135,7 +126,16 @@ export default function UploadImage(props: UploadImageProps) {
                 </p>
               )}
             </div>
-            <p className="text-xs text-zinc-500">PNG, JPG, JPEG</p>
+            <p
+              className={cn(
+                "text-xs",
+                label.toLowerCase().includes("product")
+                  ? "text-white"
+                  : "text-zinc-500"
+              )}
+            >
+              PNG, JPG, JPEG
+            </p>
           </div>
         )}
       </Dropzone>

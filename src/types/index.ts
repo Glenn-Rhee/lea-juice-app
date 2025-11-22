@@ -43,12 +43,9 @@ export interface PatchUser {
   city: string;
   province: string;
   postalCode: string;
+  image: string | null;
 }
 
 export interface DataUser extends PatchUser {
-  image: string;
-}
-
-export interface ImageUserEdit {
   image: string;
 }

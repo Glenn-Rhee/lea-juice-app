@@ -1,13 +1,7 @@
 import ResponseError from "@/error/ResponseError";
 import Bcrypt from "@/lib/bcrypt";
 import { prisma } from "@/lib/prisma";
-import {
-  DataUser,
-  ImageUserEdit,
-  PatchUser,
-  RegisterUser,
-  ResponsePayload,
-} from "@/types";
+import { DataUser, PatchUser, RegisterUser, ResponsePayload } from "@/types";
 
 export default class UserService {
   static async createUser(data: RegisterUser): Promise<ResponsePayload> {
@@ -74,6 +68,7 @@ export default class UserService {
       data: {
         name: data.fullname,
         username: data.username,
+        image: data.image,
       },
     });
 
@@ -136,28 +131,6 @@ export default class UserService {
       code: 200,
       data,
       message: "Successfully get data user!",
-    };
-  }
-
-  static async updateImage(
-    data: ImageUserEdit,
-    email: string
-  ): Promise<ResponsePayload> {
-    const user = await prisma.user.findFirst({
-      where: { email },
-    });
-
-    if (!user) {
-      throw new ResponseError(404, "Oops! Email is not registered!");
-    }
-
-    await prisma.user.update({ where: { email }, data: { image: data.image } });
-
-    return {
-      code: 201,
-      data: null,
-      message: "Successfully upload file!",
-      status: "success",
     };
   }
 }

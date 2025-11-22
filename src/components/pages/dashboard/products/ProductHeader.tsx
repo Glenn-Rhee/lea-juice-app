@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -10,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SearchIcon } from "lucide-react";
+import DialogProduct from "./DialogProduct";
 
 export default function ProductHeader() {
   return (
@@ -39,9 +39,7 @@ export default function ProductHeader() {
         </Select>
       </div>
       <div className="flex w-full justify-end pe-4 items-center">
-        <Button type="button" className="cursor-pointer">
-          Add Product
-        </Button>
+        <DialogProduct />
       </div>
     </div>
   );

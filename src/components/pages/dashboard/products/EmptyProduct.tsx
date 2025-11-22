@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import DialogProduct from "./DialogProduct";
 
 export default function EmptyProduct() {
   return (
@@ -13,7 +13,7 @@ export default function EmptyProduct() {
         />
         <h1 className="text-4xl text-white font-bold">Whoop!</h1>
         <p className="text-white font-medium text-xl">Product still empty</p>
-        <Button className="font-medium">Add product</Button>
+        <DialogProduct />
       </div>
     </div>
   );
