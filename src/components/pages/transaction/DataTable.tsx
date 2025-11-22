@@ -154,7 +154,7 @@ export default function DataTable<TData, TValue>(
           ${
             table.getState().pagination.pageIndex + 1 === page
               ? "bg-orange-600 text-white"
-              : ""
+              : "border border-orange-500 text-orange-500"
           }
         `}
               >

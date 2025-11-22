@@ -75,7 +75,7 @@ export default function UserProfile(props: UserProfileProps) {
                   href={
                     token.user.role === "ADMIN"
                       ? "/dashboard/transactions"
-                      : "/transactions"
+                      : "/transaction"
                   }
                 >
                   <IconReceiptDollar className="text-stone-700" />

@@ -25,17 +25,15 @@ export default function ProductHeader() {
           />
         </div>
         <Select>
-          <SelectTrigger className="h-full px-3 py-1 bg-red-900 rounded-md">
-            <SelectValue placeholder="Select a fruit" />
+          <SelectTrigger className="h-full w-[180px] px-3 py-1 bg-red-900 rounded-md">
+            <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectLabel>Fruits</SelectLabel>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="blueberry">Blueberry</SelectItem>
-              <SelectItem value="grapes">Grapes</SelectItem>
-              <SelectItem value="pineapple">Pineapple</SelectItem>
+              <SelectLabel>Category</SelectLabel>
+              <SelectItem value="juice">Juice</SelectItem>
+              <SelectItem value="fruit">Fruit</SelectItem>
+              <SelectItem value="salad">Salad</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
