@@ -128,7 +128,7 @@ model Product {
 
 model Category {
   id            String    @id @default(uuid())
-  category_name CATEGORY
+  category_name CATEGORY  @unique
   Product       Product[]
 }
 

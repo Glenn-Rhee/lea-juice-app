@@ -15,5 +15,6 @@ export default class ProductValidation {
       error: "Please fill category between of JUICE, FRUIT, SALAD",
     }),
     image_url: z.url({ error: "Please fill image url properly!" }).nullable(),
+    description: z.string({ error: "Please fill description properly!" }),
   });
 }

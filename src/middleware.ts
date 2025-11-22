@@ -38,6 +38,17 @@ export async function middleware(req: NextRequest) {
         });
       }
     }
+
+    if (url.includes("/products")) {
+      if (req.method !== "GET" && token?.role === "USER") {
+        return NextResponse.json<ResponsePayload>({
+          code: 403,
+          data: null,
+          message: "Forbidden! You don't have any permission!",
+          status: "failed",
+        });
+      }
+    }
   } else {
     if (url.includes("/auth") && token) {
       return NextResponse.redirect(new URL("/shop", req.url));
