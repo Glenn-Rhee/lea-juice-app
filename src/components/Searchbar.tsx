@@ -1,33 +1,30 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { IconSearch } from "@tabler/icons-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import Loader from "./icons/Loader";
 
 export default function Searchbar() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
-  const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
-
-  useEffect(() => {
-    setLoading(false);
-  }, [searchParams]);
-
+  const loading = isPending;
   async function handleSearch() {
-    setLoading(true);
-    if (value.trim() === "") {
-      router.push("/shop");
-    } else {
-      router.push("/shop?s=" + value);
-    }
+    startTransition(() => {
+      if (value.trim() === "") {
+        router.push("/shop");
+      } else {
+        router.push("/shop?s=" + value);
+      }
+    });
   }
 
   return (
     <>
       <input
+        disabled={loading}
         type="search"
         placeholder="Search.."
         value={value}
@@ -43,11 +40,12 @@ export default function Searchbar() {
         )}
       />
       <button
+        disabled={loading}
         onClick={() => {
-          if (value.trim() !== "" && open) {
-            router.push("/shop?s=" + value);
-          } else {
+          if (value.trim() === "") {
             setOpen((prev) => !prev);
+          } else {
+            handleSearch();
           }
         }}
         className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors"

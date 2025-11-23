@@ -122,14 +122,16 @@ export default function Navbar(props: NavbarProps) {
                   handleLogout={handleLogout}
                 />
 
-                <SheetShop>
-                  <button className="cursor-pointer relative text-stone-700 hover:text-slate-900 transition-colors">
-                    <IconShoppingCart />
-                    <span className="w-6 h-6 text-xs font-medium text-white flex items-center justify-center rounded-full absolute -top-2 -right-3 bg-orange-600 aspect-square">
-                      9+
-                    </span>
-                  </button>
-                </SheetShop>
+                {token?.user.role === "USER" && (
+                  <SheetShop>
+                    <button className="cursor-pointer relative text-stone-700 hover:text-slate-900 transition-colors">
+                      <IconShoppingCart />
+                      <span className="w-6 h-6 text-xs font-medium text-white flex items-center justify-center rounded-full absolute -top-2 -right-3 bg-orange-600 aspect-square">
+                        9+
+                      </span>
+                    </button>
+                  </SheetShop>
+                )}
               </div>
             )}
           </div>

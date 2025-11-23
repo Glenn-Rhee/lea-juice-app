@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { SearchIcon } from "lucide-react";
 import DialogProduct from "./DialogProduct";
-import { useEffect, useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "@/components/icons/Loader";
 import { CATEGORY } from "../../../../../generated/prisma";
@@ -19,7 +19,8 @@ import { Button } from "@/components/ui/button";
 
 export default function ProductHeader() {
   const [value, setValue] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const loading = isPending;
   const searchParams = useSearchParams();
   const CATEGORIES = ["JUICE", "FRUIT", "SALAD"] as const;
   const c = searchParams.get("c") as CATEGORY | null;
@@ -32,17 +33,14 @@ export default function ProductHeader() {
   );
   const router = useRouter();
 
-  useEffect(() => {
-    setLoading(false);
-  }, [searchParams]);
-
   function handleSearch() {
-    setLoading(true);
-    if (value.trim() === "") {
-      router.push("/dashboard/products");
-    } else {
-      router.push(`/dashboard/products?q=${value}&c=${category}`);
-    }
+    startTransition(() => {
+      if (value.trim() === "") {
+        router.push("/dashboard/products");
+      } else {
+        router.push(`/dashboard/products?q=${value}&c=${category}`);
+      }
+    });
   }
 
   return (
