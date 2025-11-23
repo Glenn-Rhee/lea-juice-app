@@ -49,3 +49,34 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
   }
 }
+
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  try {
+    const response = await ProductService.getProduct();
+    return NextResponse.json<ResponsePayload>(response)
+  } catch (error) {
+    console.log("Error product Route at POST method:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 401,
+        data: null,
+        message: error.issues[0].message,
+      });
+    } else if (error instanceof ResponseError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: error.code,
+        data: null,
+        message: error.message,
+      });
+    } else {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 500,
+        data: null,
+        message: "An error occured! Please try again later",
+      });
+    }
+  }
+}

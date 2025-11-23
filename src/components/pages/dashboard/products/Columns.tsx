@@ -1,6 +1,5 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
-import { CATEGORY } from "../../../../../generated/prisma";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
@@ -11,17 +10,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { DataProduct } from "@/types";
 
-export interface Product {
-  id: string;
-  product_name: string;
-  price: number;
-  stock: number;
-  image_url: string;
-  category: CATEGORY;
-}
-
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<DataProduct>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -114,7 +105,9 @@ export const columns: ColumnDef<Product>[] = [
       </button>
     ),
     cell: ({ row }) => (
-      <span className="text-white font-medium">{row.original.category}</span>
+      <span className="text-white font-medium">
+        {row.original.category.category_name}
+      </span>
     ),
   },
   {

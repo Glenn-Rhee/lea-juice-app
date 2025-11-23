@@ -42,6 +42,19 @@ export default class ProductService {
       message: "Successfully created new product!",
     };
   }
-}
 
-// HANDLE KETIKA IMAGE SUDAH KE UPLOAD, TAPI TERJADI KEGAGALAN KETIKA MEMASUKKAN DATA KE DATABASE
+  static async getProduct(): Promise<ResponsePayload> {
+    const products = await prisma.product.findMany({
+      include: {
+        category: true,
+      },
+    });
+
+    return {
+      code: 200,
+      data: products,
+      message: "Successfully get products!",
+      status: "success",
+    };
+  }
+}
