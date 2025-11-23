@@ -8,7 +8,8 @@ import { DataProduct } from "@/types";
 import DialogProduct from "./DialogProduct";
 import z from "zod";
 import ProductValidation from "@/validation/product-validation";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconEdit } from "@tabler/icons-react";
+import DeleteProduct from "./DeleteProduct";
 
 export const columns: ColumnDef<DataProduct>[] = [
   {
@@ -146,13 +147,7 @@ export const columns: ColumnDef<DataProduct>[] = [
               <IconEdit className="text-white" />
             </Button>
           </DialogProduct>
-          <Button
-            className="cursor-pointer"
-            variant={"destructive"}
-            size={"icon"}
-          >
-            <IconTrash />
-          </Button>
+          <DeleteProduct id={row.original.id} />
         </div>
       );
     },
