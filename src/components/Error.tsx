@@ -1,7 +1,14 @@
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-export default function Error(props: { message: string; code: number }) {
-  const { message, code } = props;
+interface ErrorProps {
+  message: string;
+  code: number;
+  className?: string;
+}
+
+export default function Error(props: ErrorProps) {
+  const { message, code, className } = props;
   return (
     <div className="w-full h-[80vh] flex items-center justify-center">
       <div className="flex flex-col items-center gap-y-2">
@@ -11,8 +18,12 @@ export default function Error(props: { message: string; code: number }) {
           width={250}
           height={200}
         />
-        <h1 className="text-4xl text-white font-bold">ERROR {code}!</h1>
-        <p className="text-white font-medium text-xl">{message}</p>
+        <h1 className={cn("text-4xl text-white font-bold", className)}>
+          ERROR {code}!
+        </h1>
+        <p className={cn("text-white font-semibold text-xl", className)}>
+          {message}
+        </p>
       </div>
     </div>
   );

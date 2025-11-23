@@ -3,9 +3,16 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Products from "./Products";
 import { useRouter, useSearchParams } from "next/navigation";
+import { DataProduct } from "@/types";
 
-export default function TabShop() {
+interface TabShopProps {
+  data: DataProduct[];
+}
+
+export default function TabShop(props: TabShopProps) {
+  const { data } = props;
   const [activeTab, setActiveTab] = useState("all");
+  const [dataProduct, setDataProduct] = useState(data);
   const searchParams = useSearchParams();
   const search = searchParams.get("s");
   const router = useRouter();
@@ -15,6 +22,16 @@ export default function TabShop() {
       router.push("/shop?s=" + search + "&category=" + activeTab);
     }
   }, [activeTab, search, router]);
+
+  useEffect(() => {
+    setDataProduct(() =>
+      activeTab === "all"
+        ? data
+        : data.filter(
+            (v) => v.category.category_name.toLowerCase() === activeTab
+          )
+    );
+  }, [activeTab, data]);
 
   return (
     <div className="w-full mt-4">
@@ -58,21 +75,21 @@ export default function TabShop() {
         <button
           className={cn(
             "transition-colors duration-300 cursor-pointer py-1 rounded-xl active:scale-95",
-            activeTab === "fruits"
+            activeTab === "fruit"
               ? "bg-orange-500 text-white"
               : "bg-white text-orange-600 border border-orange-500 hover:bg-gray-100"
           )}
           type="button"
-          onClick={() => setActiveTab("fruits")}
+          onClick={() => setActiveTab("fruit")}
         >
           Fruits
         </button>
       </div>
 
-      {activeTab === "all" && <Products />}
-      {activeTab === "juice" && <Products stock={10} />}
-      {activeTab === "salad" && <Products stock={4} />}
-      {activeTab === "fruits" && <Products stock={13} />}
+      {activeTab === "all" && <Products data={dataProduct} />}
+      {activeTab === "juice" && <Products data={dataProduct} />}
+      {activeTab === "salad" && <Products data={dataProduct} />}
+      {activeTab === "fruit" && <Products data={dataProduct} />}
     </div>
   );
 }
