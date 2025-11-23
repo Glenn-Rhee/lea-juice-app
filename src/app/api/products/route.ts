@@ -54,7 +54,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const query = req.nextUrl.searchParams;
-    console.log(query);
     const category = query.get("c") as CATEGORY | null;
     if (category) {
       const CATEGORIES = ["JUICE", "FRUIT", "SALAD"] as const;
@@ -66,6 +65,48 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json<ResponsePayload>(response);
   } catch (error) {
     console.log("Error product Route at POST method:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 401,
+        data: null,
+        message: error.issues[0].message,
+      });
+    } else if (error instanceof ResponseError) {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: error.code,
+        data: null,
+        message: error.message,
+      });
+    } else {
+      return NextResponse.json<ResponsePayload>({
+        status: "failed",
+        code: 500,
+        data: null,
+        message: "An error occured! Please try again later",
+      });
+    }
+  }
+}
+
+export async function PATCH(req: NextRequest): Promise<NextResponse> {
+  const dataJSON = await req.text();
+  const data = (await JSON.parse(dataJSON)) as z.infer<
+    typeof ProductValidation.PRODUCT
+  >;
+  try {
+    const query = req.nextUrl.searchParams;
+    const id = query.get("id");
+    if (!id) {
+      throw new ResponseError(402, "Id product is required!");
+    }
+    const dataValidated = Validation.validate(ProductValidation.PRODUCT, data);
+
+    const response = await ProductService.updateProduct(dataValidated, id);
+    return NextResponse.json<ResponsePayload>(response);
+  } catch (error) {
+    console.log("Error product Route at PATCH method:", error);
     if (error instanceof ZodError) {
       return NextResponse.json<ResponsePayload>({
         status: "failed",

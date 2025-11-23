@@ -131,4 +131,39 @@ export default class ProductService {
       status: "success",
     };
   }
+
+  static async updateProduct(
+    data: z.infer<typeof ProductValidation.PRODUCT>,
+    id: string
+  ): Promise<ResponsePayload> {
+    const isRegistered = await prisma.product.findUnique({ where: { id } });
+    if (!isRegistered) {
+      throw new ResponseError(404, "Product is not found!");
+    }
+
+    const category = await prisma.category.upsert({
+      where: { category_name: data.category },
+      update: {},
+      create: { category_name: data.category },
+    });
+
+    await prisma.product.update({
+      where: { id },
+      data: {
+        category_id: category.id,
+        description: data.description,
+        image_url: data.image_url || "",
+        price: data.price,
+        product_name: data.product_name,
+        stock: data.stock,
+      },
+    });
+
+    return {
+      status: "success",
+      code: 201,
+      data: null,
+      message: "Successfully update product!",
+    };
+  }
 }

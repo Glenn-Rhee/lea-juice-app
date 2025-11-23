@@ -68,11 +68,10 @@ export default function DialogProduct() {
 
     try {
       const uploaded = await startUpload(imgFile, {
-        image: null,
+        image: data.image_url,
       });
 
       if (!uploaded || uploaded.length === 0) {
-        console.log(uploaded);
         throw new ResponseError(500, "Image upload failed! Please try again.");
       }
 
@@ -93,6 +92,10 @@ export default function DialogProduct() {
       }
 
       form.reset();
+      setDisplayPrice("0");
+      setDisplayStock("0");
+      form.reset({ description: "" });
+      setImgFile([]);
       toast.success(dataResponse.message);
       router.refresh();
     } catch (error) {
