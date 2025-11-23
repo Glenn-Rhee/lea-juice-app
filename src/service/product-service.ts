@@ -4,6 +4,7 @@ import { ResponsePayload } from "@/types";
 import ProductValidation from "@/validation/product-validation";
 import z from "zod";
 import { CATEGORY } from "../../generated/prisma";
+import { UTApi } from "uploadthing/server";
 
 export default class ProductService {
   static async createProduct(
@@ -170,6 +171,25 @@ export default class ProductService {
       code: 201,
       data: null,
       message: "Successfully update product!",
+    };
+  }
+
+  static async deleteProduct(id: string): Promise<ResponsePayload> {
+    const isRegistered = await prisma.product.findUnique({ where: { id } });
+    if (!isRegistered) {
+      throw new ResponseError(404, "Oops product is not found!");
+    }
+
+    await prisma.product.delete({ where: { id } });
+    const utapi = new UTApi();
+    const fileKey = isRegistered.image_url.split("/").pop();
+    await utapi.deleteFiles(fileKey!);
+
+    return {
+      status: "success",
+      code: 201,
+      data: null,
+      message: "Sucessfully delete product!",
     };
   }
 }
