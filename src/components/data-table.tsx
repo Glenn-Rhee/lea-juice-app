@@ -44,6 +44,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   Row,
+  RowData,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -91,6 +92,14 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 
+// Extend TableMeta untuk support update callback
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface TableMeta<TData extends RowData> {
+    updateData?: (rowIndex: number, columnId: string, value: unknown) => void;
+  }
+}
+
 export const schema = z.object({
   id: z.number(),
   transactionId: z.string(),
@@ -120,6 +129,180 @@ function DragHandle({ id }: { id: number }) {
       <IconGripVertical className="text-muted-foreground size-3" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
+  );
+}
+
+function TableCellViewer({
+  item,
+  onUpdate,
+}: {
+  item: z.infer<typeof schema>;
+  onUpdate?: (transaction: z.infer<typeof schema>) => void;
+}) {
+  const isMobile = useIsMobile();
+  const [formData, setFormData] = React.useState(item);
+
+  const handleSave = () => {
+    if (onUpdate) {
+      onUpdate(formData);
+    }
+  };
+
+  return (
+    <Drawer direction={isMobile ? "bottom" : "right"}>
+      <DrawerTrigger asChild>
+        <Button variant="link" className="text-foreground w-fit px-0 text-left">
+          {item.product}
+        </Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="gap-1">
+          <DrawerTitle>Transaction Details</DrawerTitle>
+          <DrawerDescription>{item.transactionId}</DrawerDescription>
+        </DrawerHeader>
+        <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
+          <form className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="transactionId">Transaction ID</Label>
+              <Input
+                id="transactionId"
+                defaultValue={item.transactionId}
+                disabled
+              />
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="product">Product</Label>
+              <Input
+                id="product"
+                value={formData.product}
+                onChange={(e) =>
+                  setFormData({ ...formData, product: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="productType">Jenis Product</Label>
+                <Select
+                  value={formData.productType}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, productType: value })
+                  }
+                >
+                  <SelectTrigger id="productType">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Juice Original">
+                      Juice Original
+                    </SelectItem>
+                    <SelectItem value="Juice Mix">Juice Mix</SelectItem>
+                    <SelectItem value="Smoothie">Smoothie</SelectItem>
+                    <SelectItem value="Package">Package</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, status: value })
+                  }
+                >
+                  <SelectTrigger id="status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="completed">
+                      <div className="flex items-center gap-2">
+                        <IconCircleCheckFilled className="size-4 fill-green-500" />
+                        Completed
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="pending">
+                      <div className="flex items-center gap-2">
+                        <IconClock className="size-4 text-yellow-500" />
+                        Pending
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="cancelled">
+                      <div className="flex items-center gap-2">
+                        <IconX className="size-4 text-red-500" />
+                        Cancelled
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="customerName">Nama Pembeli</Label>
+              <Input
+                id="customerName"
+                value={formData.customerName}
+                onChange={(e) =>
+                  setFormData({ ...formData, customerName: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input
+                  id="quantity"
+                  type="number"
+                  value={formData.quantity}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      quantity: parseInt(e.target.value) || 0,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Label htmlFor="amount">Amount</Label>
+                <Input
+                  id="amount"
+                  defaultValue={new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  }).format(item.amount)}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label htmlFor="date">Date</Label>
+              <Input
+                id="date"
+                type="date"
+                value={formData.date}
+                onChange={(e) =>
+                  setFormData({ ...formData, date: e.target.value })
+                }
+              />
+            </div>
+          </form>
+        </div>
+        <DrawerFooter>
+          <DrawerClose asChild>
+            <Button onClick={handleSave}>Save Changes</Button>
+          </DrawerClose>
+          <DrawerClose asChild>
+            <Button variant="outline">Close</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -166,8 +349,24 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "product",
     header: "Product",
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />;
+    cell: ({ row, table }) => {
+      const updateData = table.options.meta?.updateData;
+      const handleUpdate = (updatedTransaction: z.infer<typeof schema>) => {
+        if (updateData) {
+          // Update semua field yang berubah
+          Object.keys(updatedTransaction).forEach((key) => {
+            if (key !== "id") {
+              updateData(
+                row.index,
+                key,
+                updatedTransaction[key as keyof typeof updatedTransaction]
+              );
+            }
+          });
+        }
+      };
+
+      return <TableCellViewer item={row.original} onUpdate={handleUpdate} />;
     },
   },
   {
@@ -258,28 +457,50 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>View Details</DropdownMenuItem>
-          <DropdownMenuItem>Print Invoice</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">
-            Cancel Order
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row, table }) => {
+      const updateData = table.options.meta?.updateData;
+
+      const handleStatusChange = (newStatus: string) => {
+        if (updateData) {
+          updateData(row.index, "status", newStatus);
+        }
+      };
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
+              size="icon"
+            >
+              <IconDotsVertical />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-44">
+            <DropdownMenuItem>View Details</DropdownMenuItem>
+            <DropdownMenuItem>Print Invoice</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => handleStatusChange("completed")}>
+              <IconCircleCheckFilled className="size-4 fill-green-500 mr-2" />
+              Mark as Completed
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleStatusChange("pending")}>
+              <IconClock className="size-4 text-yellow-500 mr-2" />
+              Mark as Pending
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => handleStatusChange("cancelled")}
+            >
+              <IconX className="size-4 mr-2" />
+              Cancel Order
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
   },
 ];
 
@@ -332,6 +553,11 @@ export function DataTable({
     useSensor(KeyboardSensor, {})
   );
 
+  // Update local data when initialData changes
+  React.useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+
   const dataIds = React.useMemo<UniqueIdentifier[]>(
     () => data?.map(({ id }) => id) || [],
     [data]
@@ -360,15 +586,30 @@ export function DataTable({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    meta: {
+      updateData: (rowIndex: number, columnId: string, value: unknown) => {
+        setData((old) =>
+          old.map((row, index) => {
+            if (index === rowIndex) {
+              return {
+                ...old[rowIndex]!,
+                [columnId]: value,
+              };
+            }
+            return row;
+          })
+        );
+      },
+    },
   });
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (active && over && active.id !== over.id) {
-      setData((data) => {
+      setData((currentData) => {
         const oldIndex = dataIds.indexOf(active.id);
         const newIndex = dataIds.indexOf(over.id);
-        return arrayMove(data, oldIndex, newIndex);
+        return arrayMove(currentData, oldIndex, newIndex);
       });
     }
   }
@@ -383,7 +624,7 @@ export function DataTable({
           View
         </Label>
 
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex items-center gap-2 justify-end w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -551,130 +792,6 @@ export function DataTable({
           </div>
         </div>
       </TabsContent>
-      <TabsContent
-        value="past-performance"
-        className="flex flex-col px-4 lg:px-6"
-      >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
-      <TabsContent
-        value="focus-documents"
-        className="flex flex-col px-4 lg:px-6"
-      >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
-      </TabsContent>
     </Tabs>
-  );
-}
-
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
-  const isMobile = useIsMobile();
-
-  return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.product}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="gap-1">
-          <DrawerTitle>Transaction Details</DrawerTitle>
-          <DrawerDescription>{item.transactionId}</DrawerDescription>
-        </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
-          <form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="transactionId">Transaction ID</Label>
-              <Input
-                id="transactionId"
-                defaultValue={item.transactionId}
-                disabled
-              />
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="product">Product</Label>
-              <Input id="product" defaultValue={item.product} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="productType">Jenis Product</Label>
-                <Select defaultValue={item.productType}>
-                  <SelectTrigger id="productType">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Juice Original">
-                      Juice Original
-                    </SelectItem>
-                    <SelectItem value="Juice Mix">Juice Mix</SelectItem>
-                    <SelectItem value="Smoothie">Smoothie</SelectItem>
-                    <SelectItem value="Package">Package</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="status">Status</Label>
-                <Select defaultValue={item.status}>
-                  <SelectTrigger id="status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="customerName">Nama Pembeli</Label>
-              <Input id="customerName" defaultValue={item.customerName} />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="quantity">Quantity</Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  defaultValue={item.quantity}
-                />
-              </div>
-
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="amount">Amount</Label>
-                <Input
-                  id="amount"
-                  defaultValue={new Intl.NumberFormat("id-ID", {
-                    style: "currency",
-                    currency: "IDR",
-                  }).format(item.amount)}
-                  disabled
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="date">Date</Label>
-              <Input id="date" type="date" defaultValue={item.date} />
-            </div>
-          </form>
-        </div>
-        <DrawerFooter>
-          <Button>Save Changes</Button>
-          <DrawerClose asChild>
-            <Button variant="outline">Close</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
   );
 }
