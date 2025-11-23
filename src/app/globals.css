@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @custom-variant dark (&:is(.dark *));
 @plugin "tailwindcss-animate";
 
@@ -112,6 +111,24 @@
   --sidebar-ring: oklch(0.408 0.123 38.172);
 }
 
+/* Root calendar */
+.rdp-root .rdp-caption {
+  @apply bg-orange-600 text-white rounded-t-md;
+}
+
+.rdp-root .rdp-nav_button {
+  @apply bg-orange-700 text-white hover:bg-orange-800;
+}
+
+.rdp-root .rdp-caption select {
+  @apply bg-orange-700 text-white rounded-md px-2 py-1;
+}
+
+.rdp-root .rdp-dropdown {
+  @apply flex gap-2;
+}
+
+
 .hero-scene {
   position: relative;
   height: 100vh;
@@ -154,6 +171,7 @@
 }
 
 @keyframes bottleFloat {
+
   0%,
   100% {
     transform: translateY(0) rotate(0deg);
@@ -205,6 +223,7 @@
 }
 
 @keyframes orbFloat {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
@@ -316,12 +335,10 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.3),
+      transparent);
   transition: left 0.6s ease;
 }
 
@@ -448,12 +465,10 @@ html {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.4),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      transparent);
   animation: shimmer 3s infinite;
 }
 

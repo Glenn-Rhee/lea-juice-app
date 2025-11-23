@@ -28,12 +28,21 @@ export async function middleware(req: NextRequest) {
       }
     }
 
-    if (url.includes("/user")) {
-      if (!token) {
+    if (url.includes("/user") && !token) {
+      return NextResponse.json<ResponsePayload>({
+        code: 403,
+        data: null,
+        message: "Unathorized! You don't have any permission!",
+        status: "failed",
+      });
+    }
+
+    if (url.includes("/products")) {
+      if (req.method !== "GET" && (!token || token.role === "USER")) {
         return NextResponse.json<ResponsePayload>({
           code: 403,
           data: null,
-          message: "Unathorized! You don't have any permission!",
+          message: "Forbidden! You don't have any permission!",
           status: "failed",
         });
       }

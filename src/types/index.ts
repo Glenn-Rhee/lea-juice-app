@@ -1,3 +1,5 @@
+import { CATEGORY, Product } from "../../generated/prisma";
+
 export interface ResponsePayload<T = unknown> {
   status: "success" | "failed";
   message: string;
@@ -43,12 +45,16 @@ export interface PatchUser {
   city: string;
   province: string;
   postalCode: string;
+  image: string | null;
 }
 
 export interface DataUser extends PatchUser {
   image: string;
 }
 
-export interface ImageUserEdit {
-  image: string;
+export interface DataProduct extends Product {
+  category: {
+    id: string;
+    category_name: CATEGORY
+  }
 }

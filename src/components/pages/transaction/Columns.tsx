@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
 export type Transaction = {
   id: string;
   productName: string;
@@ -23,28 +22,6 @@ export type Transaction = {
 };
 
 export const columns: ColumnDef<Transaction>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        className="border border-white  data-[state=checked]:border-white data-[state=checked]:border-[1px]"
-        onCheckedChange={(val) => table.toggleAllPageRowsSelected(!!val)}
-        aria-label="Select All"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        className="border border-black"
-        checked={row.getIsSelected()}
-        onCheckedChange={(val) => row.toggleSelected(!!val)}
-        aria-label="Select row"
-      />
-    ),
-  },
   {
     accessorKey: "id",
     header: "Transaction ID",

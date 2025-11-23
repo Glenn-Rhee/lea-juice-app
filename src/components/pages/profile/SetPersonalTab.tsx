@@ -33,6 +33,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import z from "zod";
 import UploadImage from "./UploadImage";
+import { useUploadThing } from "@/lib/uploadthing";
 
 interface SetPersonalTabProps {
   data: DataUser;
@@ -50,6 +51,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
     },
   });
   const [loading, setLoading] = useState(false);
+  const [imgFile, setImgFile] = useState<File[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number | undefined>();
+  const { startUpload, isUploading } = useUploadThing("imageUpload", {
+    onUploadProgress: (e) => setUploadProgress(e),
+  });
+
   const router = useRouter();
 
   async function handleSubmit(values: z.infer<typeof UserValidation.EDIT>) {
@@ -62,10 +69,25 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
         throw new ResponseError(403, "Oops! Minimum age of user is 18");
       }
 
+      let dataUser = { ...values };
+      if (imgFile.length > 0) {
+        const uploaded = await startUpload(imgFile, {
+          image: data.image,
+        });
+        if (!uploaded || uploaded.length === 0) {
+          throw new ResponseError(
+            500,
+            "Image upload failed! Please try again."
+          );
+        }
+
+        dataUser = { ...values, image: uploaded[0].ufsUrl };
+      }
+
       const response = await fetch("/api/user", {
         method: "PUT",
         credentials: "include",
-        body: JSON.stringify(values),
+        body: JSON.stringify(dataUser),
       });
 
       const dataResponse = (await response.json()) as ResponsePayload;
@@ -98,12 +120,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="fullname"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Fullname</FormLabel>
+                <FormLabel className="text-stone-800">Fullname</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -122,12 +144,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="username"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Username</FormLabel>
+                <FormLabel className="text-stone-800">Username</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -146,13 +168,13 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="email"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Email</FormLabel>
+                <FormLabel className="text-stone-800">Email</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="email"
                     disabled
-                    className="w-full px-3 py-2 border pointer-events-none cursor-not-allowed border-gray-300 bg-gray-300/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border pointer-events-none cursor-not-allowed border-gray-300 bg-gray-300/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -171,13 +193,13 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel className="text-stone-800">Phone Number</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
                     inputMode="numeric"
-                    className="w-full px-3 py-2 border border-gray-300 bg-gray-300/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 bg-gray-300/60 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -198,7 +220,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="gender"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Gender</FormLabel>
+                <FormLabel className="text-stone-800">Gender</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
@@ -206,7 +228,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
                   >
                     <SelectTrigger
                       id="gender"
-                      className="w-full mt-2 border focus:ring-orange-500 border-gray-300 focus:ring-2"
+                      className="w-full mt-2 border focus:ring-orange-500 text-stone-800 border-gray-300 focus:ring-2"
                     >
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
@@ -233,22 +255,21 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="dateOfBirth"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Date of Birth</FormLabel>
+                <FormLabel className="text-stone-800">Date of Birth</FormLabel>
                 <FormControl>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
+                      <button
                         data-empty={!field.value}
-                        className="data-[empty=true]:text-muted-foreground mt-2 justify-start text-left font-normal"
+                        className="data-[empty=true]:text-muted-foreground mt-2 justify-start text-stone-800 flex items-center text-sm gap-x-2 px-2 py-2 rounded-md text-left font-normal cursor-pointer border border-gray-300"
                       >
-                        <CalendarIcon />
+                        <CalendarIcon size={20} />
                         {field.value ? (
                           format(field.value, "PPP")
                         ) : (
                           <span>Pick a date</span>
                         )}
-                      </Button>
+                      </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
                       <Calendar
@@ -278,12 +299,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="bio"
             render={({ field }) => (
               <FormItem className="p-2 col-span-2">
-                <FormLabel>Bio</FormLabel>
+                <FormLabel className="text-stone-800">Bio</FormLabel>
                 <FormControl>
                   <textarea
                     {...field}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -297,7 +318,13 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
               </FormItem>
             )}
           />
-          <UploadImage imageUrl={data.image} />
+          <UploadImage
+            label="Profile Picture"
+            files={imgFile}
+            isUploading={isUploading}
+            setFiles={setImgFile}
+            uploadProgress={uploadProgress}
+          />
         </div>
         <h3 className="font-semibold text-xl text-gray-800">
           Shipping Address :
@@ -308,12 +335,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="address"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Address</FormLabel>
+                <FormLabel className="text-stone-800">Address</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -332,12 +359,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="city"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>City</FormLabel>
+                <FormLabel className="text-stone-800">City</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -356,12 +383,12 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="province"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Province</FormLabel>
+                <FormLabel className="text-stone-800">Province</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div
@@ -380,14 +407,14 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
             name="postalCode"
             render={({ field }) => (
               <FormItem className="p-2">
-                <FormLabel>Postal Code</FormLabel>
+                <FormLabel className="text-stone-800">Postal Code</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
                     inputMode="numeric"
                     type="text"
                     maxLength={5}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-stone-800"
                   />
                 </FormControl>
                 <div

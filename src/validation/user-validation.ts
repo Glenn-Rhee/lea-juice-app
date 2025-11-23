@@ -53,9 +53,6 @@ export default class UserValidation {
       error: "Please fill gender MALE, FEMALE, or UNKNOWN",
     }),
     bio: z.string({ error: "Please fill bio properly" }).optional(),
-  });
-
-  static readonly EDITIMAGE = z.object({
-    image: z.url({ error: "Please fill url image properly!" }),
+    image: z.url({ error: "Please fill url image properly!" }).nullable(),
   });
 }

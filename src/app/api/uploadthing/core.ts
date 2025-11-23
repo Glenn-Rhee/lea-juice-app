@@ -14,7 +14,7 @@ export const ourFileRouter = {
   })
     .input(
       z.object({
-        image: z.url({ error: "Please fill your image url" }),
+        image: z.url({ error: "Please fill your image url" }).nullable(),
       })
     )
     .middleware(async ({ req, input }) => {
@@ -25,6 +25,11 @@ export const ourFileRouter = {
 
       if (!token) {
         throw new UploadThingError("User not authenticated!");
+      }
+      if (!input.image) {
+        return {
+          id: token.id,
+        };
       }
 
       const fileKey = input.image.split("/").pop();

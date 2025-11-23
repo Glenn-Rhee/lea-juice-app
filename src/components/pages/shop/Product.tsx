@@ -1,10 +1,16 @@
 "use client";
+import { DataProduct } from "@/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
-export default function Product() {
+interface ProductProps {
+  data: DataProduct;
+}
+
+export default function Product(props: ProductProps) {
+  const { data } = props;
   const { data: session } = useSession();
 
   async function handleCheckout() {
@@ -18,15 +24,19 @@ export default function Product() {
     <div className="shadow-lg p-4 rounded-lg">
       <Link href={"/product/1"}>
         <Image
-          src={"/foto jus alpukat.png"}
-          alt="Jus Alpukat"
-          width={312}
-          height={712}
-          className="w-full rounded-md"
+          src={data.image_url}
+          alt={data.product_name}
+          width={100}
+          height={100}
+          className="object-cover w-60 h-60 mx-auto rounded-md"
         />
         <div className="mt-4">
-          <h6 className="font-semibold text-stone-900 text-xl">Jus Alpukat</h6>
-          <span className="text-stone-400 text-sm font-medium">Rp20.000</span>
+          <h6 className="font-semibold text-stone-900 text-xl">
+            {data.product_name}
+          </h6>
+          <span className="text-stone-400 text-sm font-medium">
+            Rp{data.price.toLocaleString("id-ID")}
+          </span>
         </div>
       </Link>
       <button
