@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Search, ChevronDown, Download, Filter } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 
@@ -21,97 +21,74 @@ export default function TransactionsDashboardPage() {
     "all" | "completed" | "pending" | "cancelled"
   >("all");
   const [showStatusMenu, setShowStatusMenu] = useState<boolean>(false);
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // Load data dari JSON file
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const response = await fetch("/api/transactions");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        setTransactions(data);
-      } catch (error) {
-        console.error("Error loading data:", error);
-        // Fallback ke mock data jika fetch gagal
-        setTransactions([
-          {
-            id: 1,
-            transactionId: "TRX-2024-001",
-            product: "Lemon Mint Fresh",
-            productType: "Juice Original",
-            customerName: "Budi Santoso",
-            amount: 25000,
-            quantity: 2,
-            date: "2024-11-19",
-            status: "completed",
-          },
-          {
-            id: 2,
-            transactionId: "TRX-2024-002",
-            product: "Orange Blast",
-            productType: "Juice Mix",
-            customerName: "Siti Aminah",
-            amount: 30000,
-            quantity: 1,
-            date: "2024-11-19",
-            status: "pending",
-          },
-          {
-            id: 3,
-            transactionId: "TRX-2024-003",
-            product: "Apple Carrot Smoothie",
-            productType: "Smoothie",
-            customerName: "Andi Wijaya",
-            amount: 35000,
-            quantity: 3,
-            date: "2024-11-18",
-            status: "completed",
-          },
-          {
-            id: 4,
-            transactionId: "TRX-2024-004",
-            product: "Mango Paradise",
-            productType: "Juice Original",
-            customerName: "Dewi Lestari",
-            amount: 28000,
-            quantity: 2,
-            date: "2024-11-18",
-            status: "cancelled",
-          },
-          {
-            id: 5,
-            transactionId: "TRX-2024-005",
-            product: "Strawberry Delight",
-            productType: "Smoothie",
-            customerName: "Ahmad Rizki",
-            amount: 32000,
-            quantity: 1,
-            date: "2024-11-17",
-            status: "completed",
-          },
-          {
-            id: 6,
-            transactionId: "TRX-2024-006",
-            product: "Green Detox",
-            productType: "Juice Mix",
-            customerName: "Linda Wijaya",
-            amount: 40000,
-            quantity: 2,
-            date: "2024-11-17",
-            status: "pending",
-          },
-        ]);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadData();
-  }, []);
+  const transactions: Transaction[] = [
+    {
+      id: 1,
+      transactionId: "TRX-2024-001",
+      product: "Lemon Mint Fresh",
+      productType: "Juice Original",
+      customerName: "Budi Santoso",
+      amount: 25000,
+      quantity: 2,
+      date: "2024-11-19",
+      status: "completed",
+    },
+    {
+      id: 2,
+      transactionId: "TRX-2024-002",
+      product: "Orange Blast",
+      productType: "Juice Mix",
+      customerName: "Siti Aminah",
+      amount: 30000,
+      quantity: 1,
+      date: "2024-11-19",
+      status: "pending",
+    },
+    {
+      id: 3,
+      transactionId: "TRX-2024-003",
+      product: "Apple Carrot Smoothie",
+      productType: "Smoothie",
+      customerName: "Andi Wijaya",
+      amount: 35000,
+      quantity: 3,
+      date: "2024-11-18",
+      status: "completed",
+    },
+    {
+      id: 4,
+      transactionId: "TRX-2024-004",
+      product: "Mango Paradise",
+      productType: "Juice Original",
+      customerName: "Dewi Lestari",
+      amount: 28000,
+      quantity: 2,
+      date: "2024-11-18",
+      status: "cancelled",
+    },
+    {
+      id: 5,
+      transactionId: "TRX-2024-005",
+      product: "Strawberry Delight",
+      productType: "Smoothie",
+      customerName: "Ahmad Rizki",
+      amount: 32000,
+      quantity: 1,
+      date: "2024-11-17",
+      status: "completed",
+    },
+    {
+      id: 6,
+      transactionId: "TRX-2024-006",
+      product: "Green Detox",
+      productType: "Juice Mix",
+      customerName: "Linda Wijaya",
+      amount: 40000,
+      quantity: 2,
+      date: "2024-11-17",
+      status: "pending",
+    },
+  ];
 
   // Filter berdasarkan search dan status
   const filteredTransactions = transactions.filter((trx: Transaction) => {
@@ -295,137 +272,125 @@ export default function TransactionsDashboardPage() {
             </p>
           </div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading data...</p>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition">
+              <p className="text-sm text-muted-foreground mb-2">
+                Total Transaksi
+              </p>
+              <p className="text-3xl font-bold">
+                {filteredTransactions.length}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                dari {transactions.length} total
+              </p>
             </div>
-          ) : (
-            <>
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Total Transaksi
-                  </p>
-                  <p className="text-3xl font-bold">
-                    {filteredTransactions.length}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    dari {transactions.length} total
-                  </p>
-                </div>
-                <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Total Nilai
-                  </p>
-                  <p className="text-3xl font-bold">
-                    Rp {totalAmount.toLocaleString("id-ID")}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    nilai transaksi
-                  </p>
-                </div>
-                <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition">
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Transaksi Selesai
-                  </p>
-                  <p className="text-3xl font-bold">{completedCount}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {Math.round(
-                      (completedCount / filteredTransactions.length) * 100
-                    ) || 0}
-                    % dari total
-                  </p>
-                </div>
-              </div>
+            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition">
+              <p className="text-sm text-muted-foreground mb-2">Total Nilai</p>
+              <p className="text-3xl font-bold">
+                Rp {totalAmount.toLocaleString("id-ID")}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                nilai transaksi
+              </p>
+            </div>
+            <div className="bg-card border rounded-xl p-6 shadow-sm hover:shadow-md transition">
+              <p className="text-sm text-muted-foreground mb-2">
+                Transaksi Selesai
+              </p>
+              <p className="text-3xl font-bold">{completedCount}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {Math.round(
+                  (completedCount / filteredTransactions.length) * 100
+                ) || 0}
+                % dari total
+              </p>
+            </div>
+          </div>
 
-              {/* Search and Filter */}
-              <div className="flex flex-col md:flex-row gap-3">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Cari ID transaksi, nama pelanggan, atau produk..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-input rounded-lg bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <div className="relative">
+          {/* Search and Filter */}
+          <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Cari ID transaksi, nama pelanggan, atau produk..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-input rounded-lg bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition"
+              />
+            </div>
+            <div className="flex gap-2">
+              <div className="relative">
+                <button
+                  onClick={() => setShowStatusMenu(!showStatusMenu)}
+                  className="flex items-center gap-2 px-4 py-2 border border-input rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition"
+                >
+                  <Filter className="h-4 w-4" />
+                  {selectedStatus === "all" ? "Semua Status" : selectedStatus}
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+                {showStatusMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-popover border border-border rounded-lg shadow-lg z-10">
                     <button
-                      onClick={() => setShowStatusMenu(!showStatusMenu)}
-                      className="flex items-center gap-2 px-4 py-2 border border-input rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition"
+                      onClick={() => {
+                        setSelectedStatus("all");
+                        setShowStatusMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground border-b border-border text-sm rounded-t-lg ${
+                        selectedStatus === "all" ? "bg-accent" : ""
+                      }`}
                     >
-                      <Filter className="h-4 w-4" />
-                      {selectedStatus === "all"
-                        ? "Semua Status"
-                        : selectedStatus}
-                      <ChevronDown className="h-4 w-4" />
+                      Semua Status
                     </button>
-                    {showStatusMenu && (
-                      <div className="absolute right-0 mt-2 w-48 bg-popover border border-border rounded-lg shadow-lg z-10">
-                        <button
-                          onClick={() => {
-                            setSelectedStatus("all");
-                            setShowStatusMenu(false);
-                          }}
-                          className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground border-b border-border text-sm rounded-t-lg ${
-                            selectedStatus === "all" ? "bg-accent" : ""
-                          }`}
-                        >
-                          Semua Status
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedStatus("completed");
-                            setShowStatusMenu(false);
-                          }}
-                          className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground border-b border-border text-sm ${
-                            selectedStatus === "completed" ? "bg-accent" : ""
-                          }`}
-                        >
-                          Completed
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedStatus("pending");
-                            setShowStatusMenu(false);
-                          }}
-                          className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground border-b border-border text-sm ${
-                            selectedStatus === "pending" ? "bg-accent" : ""
-                          }`}
-                        >
-                          Pending
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedStatus("cancelled");
-                            setShowStatusMenu(false);
-                          }}
-                          className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground text-sm rounded-b-lg ${
-                            selectedStatus === "cancelled" ? "bg-accent" : ""
-                          }`}
-                        >
-                          Cancelled
-                        </button>
-                      </div>
-                    )}
+                    <button
+                      onClick={() => {
+                        setSelectedStatus("completed");
+                        setShowStatusMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground border-b border-border text-sm ${
+                        selectedStatus === "completed" ? "bg-accent" : ""
+                      }`}
+                    >
+                      Completed
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedStatus("pending");
+                        setShowStatusMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground border-b border-border text-sm ${
+                        selectedStatus === "pending" ? "bg-accent" : ""
+                      }`}
+                    >
+                      Pending
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedStatus("cancelled");
+                        setShowStatusMenu(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 hover:bg-accent hover:text-accent-foreground text-sm rounded-b-lg ${
+                        selectedStatus === "cancelled" ? "bg-accent" : ""
+                      }`}
+                    >
+                      Cancelled
+                    </button>
                   </div>
-                  <button
-                    onClick={handleExport}
-                    className="flex items-center gap-2 px-4 py-2 border border-input rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition"
-                  >
-                    <Download className="h-4 w-4" />
-                    Export
-                  </button>
-                </div>
+                )}
               </div>
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 border border-input rounded-lg bg-background hover:bg-accent hover:text-accent-foreground transition"
+              >
+                <Download className="h-4 w-4" />
+                Export
+              </button>
+            </div>
+          </div>
 
-              {/* DataTable - Pass filtered data */}
-              <DataTable data={filteredTransactions} />
-            </>
-          )}
+          {/* DataTable - Pass filtered data */}
+          <DataTable data={filteredTransactions} />
         </div>
       </div>
     </div>

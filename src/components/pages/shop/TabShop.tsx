@@ -2,7 +2,6 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Products from "./Products";
-import { useRouter, useSearchParams } from "next/navigation";
 import { DataProduct } from "@/types";
 
 interface TabShopProps {
@@ -13,15 +12,6 @@ export default function TabShop(props: TabShopProps) {
   const { data } = props;
   const [activeTab, setActiveTab] = useState("all");
   const [dataProduct, setDataProduct] = useState(data);
-  const searchParams = useSearchParams();
-  const search = searchParams.get("s");
-  const router = useRouter();
-
-  useEffect(() => {
-    if (search) {
-      router.push("/shop?s=" + search + "&category=" + activeTab);
-    }
-  }, [activeTab, search, router]);
 
   useEffect(() => {
     setDataProduct(() =>

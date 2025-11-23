@@ -1,7 +1,13 @@
-export default function Loader() {
+import { cn } from "@/lib/utils";
+
+interface LoaderProps {
+  className?: string;
+}
+export default function Loader(props: LoaderProps) {
+  const { className } = props;
   return (
     <svg
-      className="animate-spin h-5 w-5 text-white"
+      className={cn("animate-spin h-5 w-5 text-white", className)}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

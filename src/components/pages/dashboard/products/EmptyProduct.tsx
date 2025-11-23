@@ -3,8 +3,17 @@ import Image from "next/image";
 import DialogProduct from "./DialogProduct";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-export default function EmptyProduct({ message }: { message: string }) {
+export default function EmptyProduct({
+  message,
+  className,
+  goBack,
+}: {
+  message: string;
+  className?: string;
+  goBack?: string;
+}) {
   const router = useRouter();
   return (
     <div className="w-full h-[80vh] flex items-center justify-center">
@@ -15,12 +24,16 @@ export default function EmptyProduct({ message }: { message: string }) {
           width={250}
           height={200}
         />
-        <h1 className="text-4xl text-white font-bold">Whoop!</h1>
-        <p className="text-white font-medium text-xl">{message}</p>
+        <h1 className={cn("text-4xl text-white font-bold", className)}>
+          Whoop!
+        </h1>
+        <p className={cn("text-white font-medium text-xl", className)}>
+          {message}
+        </p>
         {message.includes("not found") ? (
           <Button
             className="cursor-pointer"
-            onClick={() => router.push("/dashboard/products")}
+            onClick={() => router.push(goBack || "/dashboard/products")}
           >
             Go Back
           </Button>

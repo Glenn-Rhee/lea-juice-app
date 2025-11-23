@@ -1,4 +1,5 @@
 import Error from "@/components/Error";
+import EmptyProduct from "@/components/pages/dashboard/products/EmptyProduct";
 import BreadcrumbShop from "@/components/pages/shop/BreadcrumbShop";
 import Products from "@/components/pages/shop/Products";
 import TabShop from "@/components/pages/shop/TabShop";
@@ -39,7 +40,11 @@ export default async function ShopePage({ searchParams }: Props) {
   try {
     const response = await fetch(
       `${baseUrl}/api/products` +
-        (search ? `?q=${search}${category ? `&c=${category}` : ""}` : "")
+        (search
+          ? `?q=${search}${
+              category ? `&c=${(category as string).toUpperCase()}` : ""
+            }`
+          : "")
     );
     const dataResponse = (await response.json()) as ResponsePayload<
       DataProduct[]
@@ -82,7 +87,11 @@ export default async function ShopePage({ searchParams }: Props) {
                 <h2 className="text-stone-800 font-semibold text-3xl mt-4">
                   Top Sellers
                 </h2>
-                <Products data={dataProducts} />
+                {dataProducts.length === 0 ? (
+                  <EmptyProduct message="Product is not finished yet" />
+                ) : (
+                  <Products data={dataProducts} />
+                )}
               </>
             )}
             <h2
@@ -97,7 +106,15 @@ export default async function ShopePage({ searchParams }: Props) {
                 ? "Result for category " + category
                 : "Explore our juices"}
             </h2>
-            <TabShop data={dataProducts} />
+            {dataProducts.length === 0 ? (
+              <EmptyProduct
+                className="text-slate-900"
+                goBack="/shop"
+                message={`${search} is not found!`}
+              />
+            ) : (
+              <TabShop data={dataProducts} />
+            )}
           </>
         )
       )}
