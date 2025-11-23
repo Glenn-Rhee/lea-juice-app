@@ -56,7 +56,7 @@ export default function DialogProduct(props: DialogProductProps) {
       price: dataProduct ? dataProduct.price : 0,
       stock: dataProduct ? dataProduct.stock : 0,
       category: dataProduct ? dataProduct.category : "JUICE",
-      image_url: dataProduct ? dataProduct.image_url : "",
+      image_url: dataProduct ? dataProduct.image_url : null,
     },
   });
   const [imgFile, setImgFile] = useState<File[]>([]);
