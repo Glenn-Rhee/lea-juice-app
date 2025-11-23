@@ -1,16 +1,14 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import Image from "next/image";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { DataProduct } from "@/types";
+import DialogProduct from "./DialogProduct";
+import z from "zod";
+import ProductValidation from "@/validation/product-validation";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 
 export const columns: ColumnDef<DataProduct>[] = [
   {
@@ -127,21 +125,36 @@ export const columns: ColumnDef<DataProduct>[] = [
   },
   {
     id: "actions",
-    cell: () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 cursor-pointer w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4 text-white" />
+    cell: ({ row }) => {
+      const data: z.infer<typeof ProductValidation.PRODUCT> = {
+        ...row.original,
+        category: row.original.category.category_name,
+      };
+
+      return (
+        <div className="flex items-center gap-x-3">
+          <DialogProduct
+            httpMethod="PATCH"
+            dataProduct={data}
+            idProduct={row.original.id}
+          >
+            <Button
+              size={"icon"}
+              variant={"outline"}
+              className="cursor-pointer"
+            >
+              <IconEdit className="text-white" />
+            </Button>
+          </DialogProduct>
+          <Button
+            className="cursor-pointer"
+            variant={"destructive"}
+            size={"icon"}
+          >
+            <IconTrash />
           </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem className="text-red-500 hover:data-[highlighted]:bg-red-100 font-medium hover:data-[highlighted]:text-red-500">
-            Delete
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+        </div>
+      );
+    },
   },
 ];

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { IconClick, IconPhotoScan } from "@tabler/icons-react";
+import Image from "next/image";
 import { useState } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import toast from "react-hot-toast";
@@ -14,10 +15,11 @@ interface UploadImageProps {
   isUploading: boolean;
   uploadProgress: number | undefined;
   setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+  imgUrl?: string | null;
 }
 
 export default function UploadImage(props: UploadImageProps) {
-  const { label, files, setFiles, isUploading, uploadProgress } = props;
+  const { label, files, setFiles, isUploading, uploadProgress, imgUrl } = props;
   const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
   const onDropAccepted = async (accFiles: File[]) => {
@@ -40,7 +42,7 @@ export default function UploadImage(props: UploadImageProps) {
     }
     setIsDragOver(false);
   };
-  
+
   return (
     <div className="w-full p-2 col-span-2">
       <h6
@@ -73,16 +75,21 @@ export default function UploadImage(props: UploadImageProps) {
             className="w-full rounded-lg cursor-pointer flex flex-col justify-center items-center border-dotted border border-gray-500 h-32"
           >
             <Input {...getInputProps()} />
-            {files.length === 0 && !isUploading && !isDragOver && (
-              <IconPhotoScan
-                className={cn(
-                  "mb-2 text-lg",
-                  label.toLowerCase().includes("product")
-                    ? "text-white"
-                    : "text-zinc-500"
-                )}
-              />
-            )}
+            {files.length === 0 &&
+              !isUploading &&
+              !isDragOver &&
+              (imgUrl ? (
+                <Image src={imgUrl} alt="Image" width={50} height={40} />
+              ) : (
+                <IconPhotoScan
+                  className={cn(
+                    "mb-2 text-lg",
+                    label.toLowerCase().includes("product")
+                      ? "text-white"
+                      : "text-zinc-500"
+                  )}
+                />
+              ))}
 
             {isDragOver && (
               <IconClick

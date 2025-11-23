@@ -28,7 +28,7 @@ import {
 import ProductValidation from "@/validation/product-validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import UploadImage from "../../profile/UploadImage";
@@ -37,67 +37,117 @@ import toast from "react-hot-toast";
 import ResponseError from "@/error/ResponseError";
 import { ResponsePayload } from "@/types";
 
-export default function DialogProduct() {
+interface DialogProductProps {
+  httpMethod: "POST" | "PATCH";
+  idProduct?: string;
+  dataProduct?: z.infer<typeof ProductValidation.PRODUCT>;
+  children: React.ReactNode;
+}
+
+export default function DialogProduct(props: DialogProductProps) {
+  const { httpMethod, dataProduct, idProduct, children } = props;
+  const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof ProductValidation.PRODUCT>>({
     resolver: zodResolver(ProductValidation.PRODUCT),
     mode: "onChange",
     defaultValues: {
-      product_name: "",
-      price: 0,
-      stock: 0,
-      category: "JUICE",
-      image_url: null,
+      description: dataProduct ? dataProduct.description : "",
+      product_name: dataProduct ? dataProduct.product_name : "",
+      price: dataProduct ? dataProduct.price : 0,
+      stock: dataProduct ? dataProduct.stock : 0,
+      category: dataProduct ? dataProduct.category : "JUICE",
+      image_url: dataProduct ? dataProduct.image_url : "",
     },
   });
   const [imgFile, setImgFile] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number | undefined>();
   const [loading, setLoading] = useState(false);
-  const [displayPrice, setDisplayPrice] = useState("0");
-  const [displayStock, setDisplayStock] = useState("0");
+  const [displayPrice, setDisplayPrice] = useState(
+    form.getValues("price") || "0"
+  );
+  const [displayStock, setDisplayStock] = useState(
+    form.getValues("stock") || "0"
+  );
   const router = useRouter();
   const { startUpload, isUploading } = useUploadThing("imageUpload", {
     onUploadProgress: (e) => setUploadProgress(e),
   });
 
+  useEffect(() => {
+    if (!dataProduct) return;
+
+    form.reset({
+      description: dataProduct.description,
+      product_name: dataProduct.product_name,
+      price: dataProduct.price,
+      stock: dataProduct.stock,
+      category: dataProduct.category,
+      image_url: dataProduct.image_url,
+    });
+
+    setDisplayPrice(
+      dataProduct.price
+        ? dataProduct.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        : "0"
+    );
+    setDisplayStock(
+      dataProduct.stock
+        ? dataProduct.stock.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        : "0"
+    );
+    setImgFile([]);
+  }, [dataProduct, form]);
+
   async function handleSubmit(data: z.infer<typeof ProductValidation.PRODUCT>) {
     setLoading(true);
-    if (imgFile.length === 0) {
-      toast.error("Please upload product image");
-      return;
-    }
-
     try {
-      const uploaded = await startUpload(imgFile, {
-        image: data.image_url,
-      });
-
-      if (!uploaded || uploaded.length === 0) {
-        throw new ResponseError(500, "Image upload failed! Please try again.");
+      if (data.image_url === "" && imgFile.length === 0) {
+        throw new ResponseError(401, "Please upload product image");
       }
 
-      const dataProduct = { ...data, image_url: uploaded[0].ufsUrl };
+      let dataProduct = { ...data };
+      if (imgFile.length > 0) {
+        const uploaded = await startUpload(imgFile, {
+          image: data.image_url,
+        });
 
-      const response = await fetch("/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(dataProduct),
-      });
+        if (!uploaded || uploaded.length === 0) {
+          throw new ResponseError(
+            500,
+            "Image upload failed! Please try again."
+          );
+        }
+        dataProduct = { ...dataProduct, image_url: uploaded[0].ufsUrl };
+      } else {
+        dataProduct = { ...dataProduct, image_url: data.image_url };
+      }
+
+      const response = await fetch(
+        `/api/products${idProduct ? `?id=${idProduct}` : ""}`,
+        {
+          method: httpMethod,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(dataProduct),
+        }
+      );
 
       const dataResponse = (await response.json()) as ResponsePayload;
       if (dataResponse.status === "failed") {
         throw new ResponseError(dataResponse.code, dataResponse.message);
       }
 
+      router.push("/dashboard/products");
       form.reset();
       setDisplayPrice("0");
       setDisplayStock("0");
+      setOpen(false);
       form.reset({ description: "" });
+      form.reset({ product_name: "" });
       setImgFile([]);
       toast.success(dataResponse.message);
-      router.refresh();
     } catch (error) {
       if (error instanceof ResponseError) {
         toast.error(error.message);
@@ -111,12 +161,8 @@ export default function DialogProduct() {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button type="button" className="cursor-pointer">
-          Add Product
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-center">Add product</DialogTitle>
@@ -279,6 +325,7 @@ export default function DialogProduct() {
               isUploading={isUploading}
               setFiles={setImgFile}
               label="Product Image"
+              imgUrl={form.getValues("image_url")}
             />
             <Button
               disabled={loading}

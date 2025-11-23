@@ -25,7 +25,11 @@ export default function EmptyProduct({ message }: { message: string }) {
             Go Back
           </Button>
         ) : (
-          <DialogProduct />
+          <DialogProduct httpMethod="POST">
+            <Button type="button" className="cursor-pointer">
+              Add Product
+            </Button>
+          </DialogProduct>
         )}
       </div>
     </div>

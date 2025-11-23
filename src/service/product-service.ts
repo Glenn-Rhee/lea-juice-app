@@ -51,6 +51,7 @@ export default class ProductService {
       include: {
         category: true,
       },
+      orderBy: { product_name: "asc" },
     });
 
     if (q && category) {
@@ -67,6 +68,7 @@ export default class ProductService {
         include: {
           category: true,
         },
+        orderBy: { product_name: "asc" },
       });
 
       if (products.length === 0) {
@@ -83,6 +85,7 @@ export default class ProductService {
           include: {
             category: true,
           },
+          orderBy: { product_name: "asc" },
         });
       }
     } else if (q) {
@@ -96,6 +99,7 @@ export default class ProductService {
         include: {
           category: true,
         },
+        orderBy: { product_name: "asc" },
       });
 
       if (products.length === 0) {
@@ -109,6 +113,7 @@ export default class ProductService {
           include: {
             category: true,
           },
+          orderBy: { product_name: "asc" },
         });
       }
     } else if (category) {
@@ -121,6 +126,7 @@ export default class ProductService {
         include: {
           category: true,
         },
+        orderBy: { product_name: "asc" },
       });
     }
 

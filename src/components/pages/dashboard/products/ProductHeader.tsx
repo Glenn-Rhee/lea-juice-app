@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "@/components/icons/Loader";
 import { CATEGORY } from "../../../../../generated/prisma";
+import { Button } from "@/components/ui/button";
 
 export default function ProductHeader() {
   const [value, setValue] = useState("");
@@ -84,7 +85,11 @@ export default function ProductHeader() {
         </Select>
       </div>
       <div className="flex w-full justify-end pe-4 items-center">
-        <DialogProduct />
+        <DialogProduct httpMethod="POST">
+          <Button type="button" className="cursor-pointer">
+            Add Product
+          </Button>
+        </DialogProduct>
       </div>
     </div>
   );
