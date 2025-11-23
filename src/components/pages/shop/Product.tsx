@@ -18,6 +18,11 @@ export default function Product(props: ProductProps) {
       toast.dismiss();
       toast.error("Oops! Login first to checkout your juice!");
     }
+
+    if (session?.user.role === "ADMIN") {
+      toast.dismiss();
+      toast.error("Oops! Admin can not checkout product!");
+    }
   }
 
   return (

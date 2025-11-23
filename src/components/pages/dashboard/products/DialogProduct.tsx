@@ -140,12 +140,17 @@ export default function DialogProduct(props: DialogProductProps) {
       }
 
       router.push("/dashboard/products");
-      form.reset();
+      form.reset({
+        category: "JUICE",
+        description: "",
+        image_url: null,
+        price: 0,
+        product_name: "",
+        stock: 0,
+      });
       setDisplayPrice("0");
       setDisplayStock("0");
       setOpen(false);
-      form.reset({ description: "" });
-      form.reset({ product_name: "" });
       setImgFile([]);
       toast.success(dataResponse.message);
     } catch (error) {
