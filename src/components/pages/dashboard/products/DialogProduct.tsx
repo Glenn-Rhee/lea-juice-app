@@ -52,6 +52,8 @@ export default function DialogProduct() {
   const [imgFile, setImgFile] = useState<File[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number | undefined>();
   const [loading, setLoading] = useState(false);
+  const [displayPrice, setDisplayPrice] = useState("0");
+  const [displayStock, setDisplayStock] = useState("0");
   const router = useRouter();
   const { startUpload, isUploading } = useUploadThing("imageUpload", {
     onUploadProgress: (e) => setUploadProgress(e),
@@ -89,6 +91,7 @@ export default function DialogProduct() {
         throw new ResponseError(dataResponse.code, dataResponse.message);
       }
 
+      form.reset();
       toast.success(dataResponse.message);
       router.refresh();
     } catch (error) {
@@ -143,10 +146,27 @@ export default function DialogProduct() {
                   <FormControl className="mt-1">
                     <Input
                       {...field}
+                      value={displayPrice}
                       onChange={(e) => {
-                        const v = e.target.value;
-                        if (!/^\d*$/.test(v)) return;
-                        field.onChange(v === "" ? undefined : Number(v));
+                        let raw = e.target.value;
+                        raw = raw.replace(/\D/g, "");
+                        if (raw === "") {
+                          setDisplayPrice("");
+                          field.onChange(undefined);
+                          return;
+                        }
+
+                        raw = raw.replace(/^0+/, "");
+                        if (raw === "") {
+                          raw = "0";
+                        }
+
+                        const formatted = raw.replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          "."
+                        );
+                        setDisplayPrice(formatted);
+                        field.onChange(Number(raw));
                       }}
                       pattern="[0-9]*"
                       type="text"
@@ -168,10 +188,27 @@ export default function DialogProduct() {
                   <FormControl className="mt-1">
                     <Input
                       {...field}
+                      value={displayStock}
                       onChange={(e) => {
-                        const v = e.target.value;
-                        if (!/^\d*$/.test(v)) return;
-                        field.onChange(v === "" ? undefined : Number(v));
+                        let raw = e.target.value;
+                        raw = raw.replace(/\D/g, "");
+                        if (raw === "") {
+                          setDisplayStock("");
+                          field.onChange(undefined);
+                          return;
+                        }
+
+                        raw = raw.replace(/^0+/, "");
+                        if (raw === "") {
+                          raw = "0";
+                        }
+
+                        const formatted = raw.replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          "."
+                        );
+                        setDisplayStock(formatted);
+                        field.onChange(Number(raw));
                       }}
                       type="text"
                       inputMode="numeric"

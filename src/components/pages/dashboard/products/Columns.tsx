@@ -39,7 +39,9 @@ export const columns: ColumnDef<DataProduct>[] = [
     accessorKey: "id",
     header: "Product ID",
     cell: ({ row }) => (
-      <span className="text-white font-medium">{row.original.id}</span>
+      <span className="text-white font-medium">
+        {row.original.id.slice(0, 8)}
+      </span>
     ),
   },
   {
