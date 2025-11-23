@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { ResponsePayload } from "@/types";
 import ProductValidation from "@/validation/product-validation";
 import z from "zod";
+import { CATEGORY } from "../../generated/prisma";
 
 export default class ProductService {
   static async createProduct(
@@ -43,12 +44,85 @@ export default class ProductService {
     };
   }
 
-  static async getProduct(): Promise<ResponsePayload> {
-    const products = await prisma.product.findMany({
+  static async getProduct(query: URLSearchParams): Promise<ResponsePayload> {
+    const q = query.get("q");
+    const category = query.get("c") as CATEGORY | null;
+    let products = await prisma.product.findMany({
       include: {
         category: true,
       },
     });
+
+    if (q && category) {
+      products = await prisma.product.findMany({
+        where: {
+          product_name: {
+            contains: q,
+            mode: "insensitive",
+          },
+          category: {
+            category_name: category,
+          },
+        },
+        include: {
+          category: true,
+        },
+      });
+
+      if (products.length === 0) {
+        products = await prisma.product.findMany({
+          where: {
+            description: {
+              contains: q,
+              mode: "insensitive",
+            },
+            category: {
+              category_name: category,
+            },
+          },
+          include: {
+            category: true,
+          },
+        });
+      }
+    } else if (q) {
+      products = await prisma.product.findMany({
+        where: {
+          product_name: {
+            contains: q,
+            mode: "insensitive",
+          },
+        },
+        include: {
+          category: true,
+        },
+      });
+
+      if (products.length === 0) {
+        products = await prisma.product.findMany({
+          where: {
+            description: {
+              contains: q,
+              mode: "insensitive",
+            },
+          },
+          include: {
+            category: true,
+          },
+        });
+      }
+    } else if (category) {
+      products = await prisma.product.findMany({
+        where: {
+          category: {
+            category_name: category,
+          },
+        },
+        include: {
+          category: true,
+        },
+      });
+    }
 
     return {
       code: 200,
