@@ -6,16 +6,29 @@ import ResponseError from "@/error/ResponseError";
 import { DataProduct, ResponsePayload } from "@/types";
 import { Metadata } from "next";
 
+type Props = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
 const baseUrl =
   process.env.NODE_ENV === "production"
     ? "https://lea-juice-app.vercel.app"
     : "http://localhost:3000";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const response = await fetch(`${baseUrl}/api/products`);
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
+  const query = (await searchParams).q;
+  const c = (await searchParams).c;
+
+  const response = await fetch(
+    `${baseUrl}/api/products` +
+      (query ? `?q=${query}${c ? `&c=${c}` : ""}` : "")
+  );
   const dataProducts = (await response.json()) as ResponsePayload<
     DataProduct[]
   >;
+
   if (dataProducts.status === "failed") {
     return {
       title: "Error getting products",
@@ -25,17 +38,22 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
-    title: "Dashboard Products",
+    title: query ? `Result for ${query}` : "Dashboard Products",
     description:
       "Manage and oversee your product listings, including adding new products, updating existing ones, and monitoring inventory levels to ensure optimal stock availability.",
   };
 }
 
-export default async function ProductsDashboardPage() {
+export default async function ProductsDashboardPage({ searchParams }: Props) {
+  const query = (await searchParams).q;
+  const c = (await searchParams).c;
   let dataProducts: DataProduct[] | null = null;
   let errorMessage: { message: string; code: number } | null = null;
   try {
-    const response = await fetch(`${baseUrl}/api/products`);
+    const response = await fetch(
+      `${baseUrl}/api/products` +
+        (query ? `?q=${query}${c ? `&c=${c}` : ""}` : "")
+    );
     const dataResponse = (await response.json()) as ResponsePayload<
       DataProduct[]
     >;
@@ -68,7 +86,9 @@ export default async function ProductsDashboardPage() {
           {errorMessage && !dataProducts ? (
             <Error code={errorMessage.code} message={errorMessage.message} />
           ) : isEmpty && !errorMessage ? (
-            <EmptyProduct />
+            <EmptyProduct
+              message={query ? query + " is not found" : "Product still empty"}
+            />
           ) : (
             <>
               <ProductHeader />

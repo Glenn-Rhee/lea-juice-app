@@ -68,10 +68,11 @@ export default function DialogProduct() {
 
     try {
       const uploaded = await startUpload(imgFile, {
-        image: data.image_url,
+        image: null,
       });
 
       if (!uploaded || uploaded.length === 0) {
+        console.log(uploaded);
         throw new ResponseError(500, "Image upload failed! Please try again.");
       }
 
@@ -168,7 +169,6 @@ export default function DialogProduct() {
                         setDisplayPrice(formatted);
                         field.onChange(Number(raw));
                       }}
-                      pattern="[0-9]*"
                       type="text"
                       inputMode="numeric"
                     />

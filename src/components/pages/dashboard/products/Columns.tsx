@@ -127,7 +127,7 @@ export const columns: ColumnDef<DataProduct>[] = [
   },
   {
     id: "actions",
-    cell: ({}) => (
+    cell: () => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 cursor-pointer w-8 p-0">

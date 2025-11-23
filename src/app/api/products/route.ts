@@ -54,6 +54,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     const query = req.nextUrl.searchParams;
+    console.log(query);
     const category = query.get("c") as CATEGORY | null;
     if (category) {
       const CATEGORIES = ["JUICE", "FRUIT", "SALAD"] as const;
