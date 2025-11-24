@@ -65,7 +65,7 @@ export default function ProductPurchaseBar(props: ProductPurchaseBarProps) {
         type="button"
         onClick={handleCheckout}
         className={cn(
-          "px-4 py-1 border w-lg transition-colors duration-200 rounded-xl",
+          "px-4 py-1 border w-[10rem] transition-colors duration-200 rounded-xl",
           {
             "border-orange-600 cursor-pointer text-orange-500 hover:border-transparent hover:bg-orange-600 hover:text-white":
               !createCart.isPending,
