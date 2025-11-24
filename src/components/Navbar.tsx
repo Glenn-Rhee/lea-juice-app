@@ -12,6 +12,7 @@ import SheetShop from "./pages/shop/SheetShop";
 import Searchbar from "./Searchbar";
 import UserProfile from "./UserProfile";
 import { cn } from "@/lib/utils";
+import { useCartItems } from "@/lib/product-queries";
 
 interface NavbarProps {
   token: Session | null;
@@ -21,6 +22,7 @@ export default function Navbar(props: NavbarProps) {
   const { token } = props;
   const pathname = usePathname();
   const [loading, setLoading] = useState(false);
+  const { data, isLoading } = useCartItems();
 
   if (pathname.includes("/auth")) return null;
   if (pathname.includes("/dashboard")) return null;
@@ -126,9 +128,17 @@ export default function Navbar(props: NavbarProps) {
                   <SheetShop>
                     <button className="cursor-pointer relative text-stone-700 hover:text-slate-900 transition-colors">
                       <IconShoppingCart />
-                      <span className="w-6 h-6 text-xs font-medium text-white flex items-center justify-center rounded-full absolute -top-2 -right-3 bg-orange-600 aspect-square">
-                        9+
-                      </span>
+                      {!isLoading && data ? (
+                        data.length > 9 ? (
+                          <span className="w-6 h-6 text-xs font-medium text-white flex items-center justify-center rounded-full absolute -top-2 -right-3 bg-orange-600 aspect-square">
+                            9+
+                          </span>
+                        ) : (
+                          <span className="w-6 h-6 text-xs font-medium text-white flex items-center justify-center rounded-full absolute -top-2 -right-3 bg-orange-600 aspect-square">
+                            {data.length}
+                          </span>
+                        )
+                      ) : null}
                     </button>
                   </SheetShop>
                 )}
