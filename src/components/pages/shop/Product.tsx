@@ -1,8 +1,14 @@
 "use client";
-import { DataProduct } from "@/types";
+import Loader from "@/components/icons/Loader";
+import ResponseError from "@/error/ResponseError";
+import { cn } from "@/lib/utils";
+import { useProductStore } from "@/store/product-store";
+import { DataProduct, ResponsePayload } from "@/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 interface ProductProps {
@@ -13,27 +19,60 @@ export default function Product(props: ProductProps) {
   const { data } = props;
   const { data: session } = useSession();
   let isCooldown = false;
+  const { quantity } = useProductStore();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   async function handleCheckout() {
-    if (isCooldown) {
-      toast.dismiss();
-      toast.error("Please wait a moment before checkout again!");
-      return;
-    }
+    setLoading(true);
+    try {
+      if (isCooldown) {
+        throw new ResponseError(
+          401,
+          "Please wait a moment before checkout again!"
+        );
+      }
 
-    isCooldown = true;
-    setTimeout(() => {
-      isCooldown = false;
-    }, 2000);
+      isCooldown = true;
+      setTimeout(() => {
+        isCooldown = false;
+      }, 2000);
 
-    if (!session) {
-      toast.dismiss();
-      toast.error("Oops! Login first to checkout your juice!");
-    }
+      if (!session) {
+        throw new ResponseError(
+          401,
+          "Oops! Login first to checkout your juice!"
+        );
+      }
 
-    if (session?.user.role === "ADMIN") {
+      if (session?.user.role === "ADMIN") {
+        throw new ResponseError(403, "Oops! Admin can not checkout product!");
+      }
+
+      const response = await fetch("/api/cart", {
+        method: "POST",
+        body: JSON.stringify({
+          product_id: data.id,
+          quantity,
+        }),
+      });
+
+      const dataResponse = (await response.json()) as ResponsePayload;
+      if (dataResponse.status === "failed") {
+        throw new ResponseError(dataResponse.code, dataResponse.message);
+      }
+
+      toast.success(dataResponse.message);
+      router.refresh();
+    } catch (error) {
       toast.dismiss();
-      toast.error("Oops! Admin can not checkout product!");
+      if (error instanceof ResponseError) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occured! Please try again later");
+      }
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -57,10 +96,22 @@ export default function Product(props: ProductProps) {
         </div>
       </Link>
       <button
+        disabled={loading}
         onClick={handleCheckout}
-        className="w-full mt-4 bg-white border py-2 rounded-full cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white transition-colors duration-300"
+        className={cn(
+          "w-full mt-4 bg-white border py-2 rounded-full transition-colors duration-300",
+          {
+            "cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white":
+              !loading,
+            "cursor-not-allowed border-orange-400/40 text-gray-400": loading,
+          }
+        )}
       >
-        Add to chart
+        {loading ? (
+          <Loader className="text-gray-700 text-center mx-auto" />
+        ) : (
+          "Add to chart"
+        )}
       </button>
     </div>
   );

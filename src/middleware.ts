@@ -47,6 +47,26 @@ export async function middleware(req: NextRequest) {
         });
       }
     }
+
+    if (url.includes("/cart")) {
+      if (!token) {
+        return NextResponse.json<ResponsePayload>({
+          code: 403,
+          data: null,
+          status: "failed",
+          message: "Forbidden! You don't have an access!",
+        });
+      }
+
+      if (token.role === "ADMIN") {
+        return NextResponse.json<ResponsePayload>({
+          code: 403,
+          data: null,
+          message: "Forbidden! Admin can't checkout product!",
+          status: "failed",
+        });
+      }
+    }
   } else {
     if (url.includes("/auth") && token) {
       return NextResponse.redirect(new URL("/shop", req.url));

@@ -1,4 +1,6 @@
+import z from "zod";
 import { CATEGORY, Product } from "../../generated/prisma";
+import CartValidation from "@/validation/cart-validation";
 
 export interface ResponsePayload<T = unknown> {
   status: "success" | "failed";
@@ -55,6 +57,10 @@ export interface DataUser extends PatchUser {
 export interface DataProduct extends Product {
   category: {
     id: string;
-    category_name: CATEGORY
-  }
+    category_name: CATEGORY;
+  };
+}
+
+export interface DataCart extends z.infer<typeof CartValidation.CREATECART> {
+  cart_id: string;
 }
