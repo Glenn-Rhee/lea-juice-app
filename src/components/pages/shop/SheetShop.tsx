@@ -9,44 +9,14 @@ import {
 import EmptyChart from "./EmptyChart";
 import Chart from "./Chart";
 import { Separator } from "@/components/ui/separator";
-import { useEffect, useState } from "react";
-import { Cart, ResponsePayload } from "@/types";
-import ResponseError from "@/error/ResponseError";
-import toast from "react-hot-toast";
 import { useProductStore } from "@/store/product-store";
+import { useCartItems } from "@/lib/product-queries";
+import { useCartSync } from "@/hooks/useCartSync";
 
 export default function SheetShop({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
-  const { items, setItems, total } = useProductStore();
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch("/api/cart", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        const dataRes = (await res.json()) as ResponsePayload<Cart[]>;
-        if (dataRes.status === "failed") {
-          throw new ResponseError(dataRes.code, dataRes.message);
-        }
-
-        setItems(dataRes.data);
-      } catch (error) {
-        if (error instanceof ResponseError) {
-          toast.error(error.message);
-        } else {
-          toast.error("An error occured!");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [setItems]);
-
+  const { total } = useProductStore();
+  const { data, isLoading } = useCartItems();
+  useCartSync();
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -56,19 +26,19 @@ export default function SheetShop({ children }: { children: React.ReactNode }) {
           <Separator className="bg-slate-600" />
         </SheetHeader>
 
-        {loading ? (
+        {isLoading ? (
           <div className="h-full flex items-center justify-center flex-col">
             <span className="text-sm text-stone-900 font-medium">
               Loading data...
             </span>
           </div>
-        ) : items.length === 0 ? (
+        ) : !data || data.length === 0 ? (
           <EmptyChart />
         ) : (
-          <Chart dataCart={items} />
+          <Chart dataCart={data} />
         )}
 
-        {items.length !== 0 && (
+        {data && data.length !== 0 && (
           <SheetFooter>
             <div className="w-full flex items-center justify-between">
               <span className="text-xl font-semibold text-stone-900">

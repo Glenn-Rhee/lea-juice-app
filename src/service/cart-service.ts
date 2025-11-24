@@ -30,13 +30,13 @@ export default class CartService {
     }
 
     const existingItem = await prisma.cartItem.findFirst({
-      where: { product_id: data.product_id },
+      where: { product_id: data.product_id, cart_id: cart.id },
     });
 
     if (existingItem) {
       await prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + data.quantity },
+        data: { quantity: data.quantity },
       });
     } else {
       await prisma.cartItem.create({
@@ -48,10 +48,15 @@ export default class CartService {
       });
     }
 
+    const cartItems = await prisma.cartItem.findMany({
+      where: { cart_id: cart.id },
+      include: { product: true },
+    });
+
     return {
       status: "success",
       code: 201,
-      data: null,
+      data: cartItems,
       message: "Successfully add to cart!",
     };
   }
@@ -59,10 +64,12 @@ export default class CartService {
   static async getCart(user_id: string): Promise<ResponsePayload> {
     const existingCart = await prisma.cart.findFirst({ where: { user_id } });
     if (!existingCart) {
-      throw new ResponseError(
-        404,
-        "Oops! User not found. Try add to chart first!"
-      );
+      return {
+        code: 200,
+        data: [],
+        message: "Successfully get cart Items!",
+        status: "success",
+      };
     }
 
     const cartItems = await prisma.cartItem.findMany({

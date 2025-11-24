@@ -3,11 +3,10 @@ import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Toaster } from "react-hot-toast";
 import Providers from "@/components/Providers";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
-import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,19 +40,12 @@ export default async function RootLayout({
       <body
         className={`${inter.variable} ${cormorant.variable} font-sans bg-stone-50 text-white overflow-x-hidden`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>
-            <Toaster />
-            <Navbar token={token} />
-            {children}
-            <Footer />
-          </Providers>
-        </ThemeProvider>
+        <Providers>
+          <Toaster />
+          <Navbar token={token} />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

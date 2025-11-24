@@ -9,7 +9,6 @@ interface ChartProps {
 
 export default function Chart(props: ChartProps) {
   const { dataCart } = props;
-
   return (
     <div className="w-full max-h-screen overflow-scroll px-3 flex flex-col gap-y-3">
       {dataCart.map((d, i) => (

@@ -10,7 +10,18 @@ interface ProductStore {
 
 export const useProductStore = create<ProductStore>((set) => ({
   items: [],
-  setItems: (v) => set({ items: v }),
+  setItems: (items) =>
+    set(() => {
+      const total = items.reduce(
+        (acc, item) => acc + item.quantity * item.product.price,
+        0
+      );
+
+      return {
+        items,
+        total,
+      };
+    }),
   total: 0,
   updateQty: (item_id, qty) =>
     set((state) => {
@@ -18,14 +29,11 @@ export const useProductStore = create<ProductStore>((set) => ({
         item.id === item_id ? { ...item, quantity: qty } : item
       );
 
-      const newTotal = updated.reduce(
+      const total = updated.reduce(
         (acc, item) => acc + item.quantity * item.product.price,
         0
       );
 
-      return {
-        items: updated,
-        total: newTotal,
-      };
+      return { items: updated, total };
     }),
 }));

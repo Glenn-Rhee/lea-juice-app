@@ -1,10 +1,9 @@
 "use client";
 import Counter from "@/components/Counter";
-import { useProductStore } from "@/store/product-store";
 import { Cart } from "@/types";
 import { IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface ChartItemProps {
   data: Cart;
@@ -13,11 +12,6 @@ interface ChartItemProps {
 export default function ChartItem(props: ChartItemProps) {
   const { data } = props;
   const [qty, setQty] = useState(data.quantity);
-  const { updateQty } = useProductStore();
-
-  useEffect(() => {
-    updateQty(data.id, qty);
-  }, [qty, data.id, updateQty]);
 
   return (
     <div className="flex justify-between w-full">
@@ -39,7 +33,11 @@ export default function ChartItem(props: ChartItemProps) {
         </div>
       </div>
       <div className="flex flex-col items-end justify-between gap-y-2">
-        <Counter maxStock={data.product.stock} stateQty={[qty, setQty]} />
+        <Counter
+          dataCart={data}
+          maxStock={data.product.stock}
+          stateQty={[qty, setQty]}
+        />
         <button
           type="button"
           className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
