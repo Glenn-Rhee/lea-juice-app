@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Products from "./Products";
 import { DataProduct } from "@/types";
+import { useSearchParams } from "next/navigation";
 
 interface TabShopProps {
   data: DataProduct[];
@@ -10,7 +11,9 @@ interface TabShopProps {
 
 export default function TabShop(props: TabShopProps) {
   const { data } = props;
-  const [activeTab, setActiveTab] = useState("all");
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  const [activeTab, setActiveTab] = useState(category || "all");
   const [dataProduct, setDataProduct] = useState(data);
 
   useEffect(() => {
