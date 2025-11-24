@@ -12,8 +12,20 @@ interface ProductProps {
 export default function Product(props: ProductProps) {
   const { data } = props;
   const { data: session } = useSession();
+  let isCooldown = false;
 
   async function handleCheckout() {
+    if (isCooldown) {
+      toast.dismiss();
+      toast.error("Please wait a moment before checkout again!");
+      return;
+    }
+
+    isCooldown = true;
+    setTimeout(() => {
+      isCooldown = false;
+    }, 2000);
+
     if (!session) {
       toast.dismiss();
       toast.error("Oops! Login first to checkout your juice!");

@@ -96,6 +96,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   userDetail    UserDetail?
+  cart          Cart?
 }
 
 model UserDetail {
@@ -124,6 +125,7 @@ model Product {
   category     Category       @relation(fields: [category_id], references: [id])
   Detail_Order Detail_Order[]
   Review       Review[]
+  cartItems    CartItem[]
 }
 
 model Category {
@@ -173,4 +175,21 @@ model Review {
   created_at DateTime @default(now())
   user       User     @relation(fields: [user_id], references: [id])
   product    Product  @relation(fields: [product_id], references: [id])
+}
+
+model Cart {
+  id        String     @id @default(uuid())
+  user_id   String     @unique
+  user      User       @relation(fields: [user_id], references: [id])
+  cartItems CartItem[]
+}
+
+model CartItem {
+  id         String @id @default(uuid())
+  cart_id    String
+  product_id String
+  quantity   Int
+
+  cart    Cart    @relation(fields: [cart_id], references: [id])
+  product Product @relation(fields: [product_id], references: [id])
 }
