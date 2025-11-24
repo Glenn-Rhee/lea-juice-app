@@ -48,6 +48,7 @@ export default class ProductService {
   static async getProduct(query: URLSearchParams): Promise<ResponsePayload> {
     const q = query.get("q");
     const category = query.get("c") as CATEGORY | null;
+    const id = query.get("id");
     let products = await prisma.product.findMany({
       include: {
         category: true,
@@ -129,6 +130,19 @@ export default class ProductService {
         },
         orderBy: { product_name: "asc" },
       });
+    }
+    if (id) {
+      const product = await prisma.product.findUnique({
+        where: { id },
+        include: { category: true },
+      });
+
+      return {
+        code: 200,
+        data: product,
+        message: "Successfully get product!",
+        status: "success",
+      };
     }
 
     return {
