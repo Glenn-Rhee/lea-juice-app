@@ -1,5 +1,6 @@
 "use client";
 import Counter from "@/components/Counter";
+import { useDeleteCart } from "@/lib/product-mutation";
 import { Cart } from "@/types";
 import { IconTrash } from "@tabler/icons-react";
 import Image from "next/image";
@@ -12,6 +13,7 @@ interface ChartItemProps {
 export default function ChartItem(props: ChartItemProps) {
   const { data } = props;
   const [qty, setQty] = useState(data.quantity);
+  const deleteItem = useDeleteCart();
 
   return (
     <div className="flex justify-between w-full">
@@ -39,6 +41,8 @@ export default function ChartItem(props: ChartItemProps) {
           stateQty={[qty, setQty]}
         />
         <button
+          disabled={deleteItem.isPending}
+          onClick={() => deleteItem.mutate(data.id)}
           type="button"
           className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded-md"
         >

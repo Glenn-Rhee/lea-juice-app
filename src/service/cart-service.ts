@@ -34,19 +34,16 @@ export default class CartService {
     });
 
     if (existingItem) {
-      await prisma.cartItem.update({
-        where: { id: existingItem.id },
-        data: { quantity: data.quantity },
-      });
-    } else {
-      await prisma.cartItem.create({
-        data: {
-          quantity: data.quantity,
-          product_id: data.product_id,
-          cart_id: cart.id,
-        },
-      });
+      throw new ResponseError(401, "Oops! This item already add to cart");
     }
+
+    await prisma.cartItem.create({
+      data: {
+        quantity: data.quantity,
+        product_id: data.product_id,
+        cart_id: cart.id,
+      },
+    });
 
     const cartItems = await prisma.cartItem.findMany({
       where: { cart_id: cart.id },
@@ -81,6 +78,67 @@ export default class CartService {
       code: 200,
       data: cartItems,
       message: "Successfully get cart items!",
+      status: "success",
+    };
+  }
+
+  static async deleteCart(
+    item_id: string,
+    user_id: string
+  ): Promise<ResponsePayload> {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: user_id },
+    });
+
+    if (!existingUser) {
+      throw new ResponseError(404, "Oops! user is not found!");
+    }
+
+    const existingCartItem = await prisma.cartItem.findUnique({
+      where: { id: item_id },
+    });
+
+    if (!existingCartItem) {
+      throw new ResponseError(404, "Oops! Cart item is missing or deleted!");
+    }
+
+    await prisma.cartItem.delete({ where: { id: item_id } });
+
+    return {
+      code: 201,
+      data: null,
+      message: "Successfully delete cart item",
+      status: "success",
+    };
+  }
+
+  static async updateCart(
+    data: z.infer<typeof CartValidation.UPDATECART>
+  ): Promise<ResponsePayload> {
+    const existingCart = await prisma.cartItem.findUnique({
+      where: { id: data.item_id },
+    });
+
+    if (!existingCart) {
+      throw new ResponseError(
+        404,
+        "Item cart is not found! Item is missing or has been deleted!"
+      );
+    }
+
+    await prisma.cartItem.update({
+      where: { id: data.item_id },
+      data: { quantity: data.quantity },
+    });
+
+    const cartItems = await prisma.cartItem.findMany({
+      where: { cart_id: existingCart.cart_id },
+    });
+
+    return {
+      code: 201,
+      data: cartItems,
+      message: "Successfully update cart item",
       status: "success",
     };
   }

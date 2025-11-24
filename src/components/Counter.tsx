@@ -28,7 +28,7 @@ export default function Counter(props: CounterProps) {
             if (dataCart) {
               updateQuantity(dataCart.id, newQty);
               updateQty.mutate({
-                product_id: dataCart.product_id,
+                item_id: dataCart.id,
                 quantity: newQty,
               });
             }
@@ -51,7 +51,7 @@ export default function Counter(props: CounterProps) {
             if (dataCart) {
               updateQuantity(dataCart.id, newQty);
               updateQty.mutate({
-                product_id: dataCart.product_id,
+                item_id: dataCart.id,
                 quantity: newQty,
               });
             }

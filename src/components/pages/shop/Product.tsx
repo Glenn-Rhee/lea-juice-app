@@ -1,13 +1,12 @@
 "use client";
 import Loader from "@/components/icons/Loader";
 import ResponseError from "@/error/ResponseError";
+import { useCreateCart } from "@/lib/product-mutation";
 import { cn } from "@/lib/utils";
-import { DataProduct, ResponsePayload } from "@/types";
+import { DataProduct } from "@/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 import toast from "react-hot-toast";
 
 interface ProductProps {
@@ -18,11 +17,9 @@ export default function Product(props: ProductProps) {
   const { data } = props;
   const { data: session } = useSession();
   let isCooldown = false;
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const createCart = useCreateCart();
 
   async function handleCheckout() {
-    setLoading(true);
     try {
       if (isCooldown) {
         throw new ResponseError(
@@ -47,21 +44,7 @@ export default function Product(props: ProductProps) {
         throw new ResponseError(403, "Oops! Admin can not checkout product!");
       }
 
-      const response = await fetch("/api/cart", {
-        method: "POST",
-        body: JSON.stringify({
-          product_id: data.id,
-          quantity: 1,
-        }),
-      });
-
-      const dataResponse = (await response.json()) as ResponsePayload;
-      if (dataResponse.status === "failed") {
-        throw new ResponseError(dataResponse.code, dataResponse.message);
-      }
-
-      toast.success(dataResponse.message);
-      router.refresh();
+      createCart.mutate({ product_id: data.id, quantity: 1 });
     } catch (error) {
       toast.dismiss();
       if (error instanceof ResponseError) {
@@ -69,8 +52,6 @@ export default function Product(props: ProductProps) {
       } else {
         toast.error("An error occured! Please try again later");
       }
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -94,18 +75,19 @@ export default function Product(props: ProductProps) {
         </div>
       </Link>
       <button
-        disabled={loading}
+        disabled={createCart.isPending}
         onClick={handleCheckout}
         className={cn(
           "w-full mt-4 bg-white border py-2 rounded-full transition-colors duration-300",
           {
             "cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white":
-              !loading,
-            "cursor-not-allowed border-orange-400/40 text-gray-400": loading,
+              !createCart.isPending,
+            "cursor-not-allowed border-orange-400/40 text-gray-400":
+              createCart.isPending,
           }
         )}
       >
-        {loading ? (
+        {createCart.isPending ? (
           <Loader className="text-gray-700 text-center mx-auto" />
         ) : (
           "Add to chart"
