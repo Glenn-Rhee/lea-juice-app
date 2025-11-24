@@ -137,6 +137,10 @@ export default class ProductService {
         include: { category: true },
       });
 
+      if (!product) {
+        throw new ResponseError(404, "Product is not found!");
+      }
+
       return {
         code: 200,
         data: product,

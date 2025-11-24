@@ -27,7 +27,7 @@ export default function Product(props: ProductProps) {
 
   return (
     <div className="shadow-lg p-4 rounded-lg">
-      <Link href={"/product/1"}>
+      <Link href={"/product/" + data.id}>
         <Image
           src={data.image_url}
           alt={data.product_name}
