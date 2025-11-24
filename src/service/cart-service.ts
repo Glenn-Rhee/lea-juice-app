@@ -55,4 +55,26 @@ export default class CartService {
       message: "Successfully add to cart!",
     };
   }
+
+  static async getCart(user_id: string): Promise<ResponsePayload> {
+    const existingCart = await prisma.cart.findFirst({ where: { user_id } });
+    if (!existingCart) {
+      throw new ResponseError(
+        404,
+        "Oops! User not found. Try add to chart first!"
+      );
+    }
+
+    const cartItems = await prisma.cartItem.findMany({
+      where: { cart_id: existingCart.id },
+      include: { product: true },
+    });
+
+    return {
+      code: 200,
+      data: cartItems,
+      message: "Successfully get cart items!",
+      status: "success",
+    };
+  }
 }

@@ -1,14 +1,15 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useProductStore } from "@/store/product-store";
+import { Dispatch, SetStateAction } from "react";
 
 interface CounterProps {
   maxStock: number;
+  stateQty: [number, Dispatch<SetStateAction<number>>];
 }
 
 export default function Counter(props: CounterProps) {
   const { maxStock } = props;
-  const { quantity, setQuantity } = useProductStore();
+  const [quantity, setQuantity] = props.stateQty;
 
   return (
     <div className="flex items-center gap-x-4 text-sm py-1 font-semibold text-stone-800 bg-gray-200 px-2 rounded-sm">

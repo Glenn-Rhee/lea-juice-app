@@ -2,7 +2,6 @@
 import Loader from "@/components/icons/Loader";
 import ResponseError from "@/error/ResponseError";
 import { cn } from "@/lib/utils";
-import { useProductStore } from "@/store/product-store";
 import { DataProduct, ResponsePayload } from "@/types";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -19,7 +18,6 @@ export default function Product(props: ProductProps) {
   const { data } = props;
   const { data: session } = useSession();
   let isCooldown = false;
-  const { quantity } = useProductStore();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -53,7 +51,7 @@ export default function Product(props: ProductProps) {
         method: "POST",
         body: JSON.stringify({
           product_id: data.id,
-          quantity,
+          quantity: 1,
         }),
       });
 

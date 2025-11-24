@@ -1,77 +1,20 @@
 import { Separator } from "@/components/ui/separator";
 import ChartItem from "./ChartItem";
 import React from "react";
+import { Cart } from "@/types";
 
-const data = [
-  {
-    id: 1,
-    name: "Mango Delight",
-    quantity: 2,
-    price: 12000,
-  },
-  {
-    id: 2,
-    name: "Juice Alpukat",
-    quantity: 1,
-    price: 20000,
-  },
-  {
-    id: 3,
-    name: "Strawberry Bliss",
-    quantity: 3,
-    price: 15000,
-  },
-  {
-    id: 4,
-    name: "Banana Smoothie",
-    quantity: 1,
-    price: 18000,
-  },
-  {
-    id: 5,
-    name: "Green Detox",
-    quantity: 2,
-    price: 17000,
-  },
-  {
-    id: 6,
-    name: "Orange Sunrise",
-    quantity: 1,
-    price: 14000,
-  },
-  {
-    id: 7,
-    name: "Pineapple Fresh",
-    quantity: 4,
-    price: 16000,
-  },
-  {
-    id: 8,
-    name: "Watermelon Chill",
-    quantity: 1,
-    price: 13000,
-  },
-  {
-    id: 9,
-    name: "Blueberry Spark",
-    quantity: 2,
-    price: 19000,
-  },
-  {
-    id: 10,
-    name: "Apple Fusion",
-    quantity: 1,
-    price: 15000,
-  },
-];
+interface ChartProps {
+  dataCart: Cart[];
+}
 
-export default function Chart() {
-  const length = 8;
+export default function Chart(props: ChartProps) {
+  const { dataCart } = props;
+
   return (
     <div className="w-full max-h-screen overflow-scroll px-3 flex flex-col gap-y-3">
-      {data.map((d, i) => (
+      {dataCart.map((d, i) => (
         <React.Fragment key={d.id}>
-          <ChartItem />
+          <ChartItem data={d} />
           {i !== length - 1 && <Separator />}
         </React.Fragment>
       ))}
