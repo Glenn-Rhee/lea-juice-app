@@ -1,7 +1,7 @@
 import { ResponsePayload } from "@/types";
 import OrderValidation from "@/validation/order-validation";
 import z from "zod";
-import midtransClient from "midtrans-client";
+import midtransClient, { SnapTransactionParameters } from "midtrans-client";
 import { prisma } from "@/lib/prisma";
 import ResponseError from "@/error/ResponseError";
 import { Product } from "../../generated/prisma";
@@ -11,7 +11,7 @@ export default class OrderService {
     data: z.infer<typeof OrderValidation.CREATEORDER>,
     user_id: string
   ): Promise<ResponsePayload> {
-    await prisma.$transaction(async (tx) => {
+    const order = await prisma.$transaction(async (tx) => {
       const cartUser = await tx.cart.findUnique({ where: { user_id } });
       if (!cartUser) {
         throw new ResponseError(404, "Oops you don't have a chart yet!");
@@ -34,12 +34,7 @@ export default class OrderService {
       const productMap = new Map();
       products.forEach((p) => productMap.set(p.id, p));
 
-      let userOrder = await tx.order.findUnique({ where: { user_id } });
-      if (!userOrder) {
-        userOrder = await tx.order.create({
-          data: { user_id },
-        });
-      }
+      const userOrder = await tx.order.create({ data: { user_id } });
 
       for (const c of cartItems) {
         const product = productMap.get(c.product_id) as Product;
@@ -72,24 +67,32 @@ export default class OrderService {
       }
 
       await tx.cartItem.deleteMany({ where: { cart_id: cartUser.id } });
+
+      return userOrder;
     });
 
-    // const snap = new midtransClient.Snap({
-    //   isProduction: false,
-    //   serverKey: process.env.MIDTRANS_SERVER_KEY!,
-    //   clientKey: process.env.MIDTRANS_CLIENT_KEY!,
-    // });
+    const snap = new midtransClient.Snap({
+      isProduction: false,
+      serverKey: process.env.MIDTRANS_SERVER_KEY!,
+      clientKey: process.env.MIDTRANS_CLIENT_KEY!,
+    });
 
-    // const parameter = {
-    //     transaction_details: {
-    //         order_id: data.
-    //     }
-    // }
+    const parameter: SnapTransactionParameters = {
+      transaction_details: {
+        order_id: order.id,
+        gross_amount: data.total_price,
+      },
+      
+    };
 
+    const transaction = await snap.createTransaction(parameter);
+    console.log(transaction.redirect_url);
     return {
       status: "success",
       code: 201,
-      data: null,
+      data: {
+        url: transaction.redirect_url,
+      },
       message: "Successfully checkout!",
     };
   }

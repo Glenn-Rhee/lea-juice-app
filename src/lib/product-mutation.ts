@@ -1,6 +1,7 @@
 import ResponseError from "@/error/ResponseError";
 import { ResponsePayload } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 export function useUpdateCartQuantity() {
@@ -93,7 +94,7 @@ export function useCreateCart() {
 
 export function useCheckoutCart() {
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   return useMutation({
     mutationFn: async (total_price: number) => {
       try {
@@ -107,12 +108,13 @@ export function useCheckoutCart() {
           }),
         });
 
-        const dataJson = (await res.json()) as ResponsePayload;
+        const dataJson = (await res.json()) as ResponsePayload<{ url: string }>;
         if (dataJson.status === "failed") {
           throw new ResponseError(dataJson.code, dataJson.message);
         }
 
         toast.success(dataJson.message);
+        router.push(dataJson.data.url);
       } catch (error) {
         if (error instanceof ResponseError) {
           toast.error(error.message);
