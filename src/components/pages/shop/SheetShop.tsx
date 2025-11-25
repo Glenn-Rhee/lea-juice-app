@@ -12,11 +12,16 @@ import { Separator } from "@/components/ui/separator";
 import { useProductStore } from "@/store/product-store";
 import { useCartItems } from "@/lib/product-queries";
 import { useCartSync } from "@/hooks/useCartSync";
+import { useCheckoutCart } from "@/lib/product-mutation";
+import Loader from "@/components/icons/Loader";
 
 export default function SheetShop({ children }: { children: React.ReactNode }) {
   const { total } = useProductStore();
+  const checkoutCart = useCheckoutCart();
   const { data, isLoading } = useCartItems();
+
   useCartSync();
+
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -49,10 +54,16 @@ export default function SheetShop({ children }: { children: React.ReactNode }) {
               </span>
             </div>
             <button
-              type="submit"
+              onClick={() => checkoutCart.mutate(total)}
+              type="button"
+              disabled={checkoutCart.isPending}
               className="cursor-pointer w-full bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 text-white rounded-lg hover:opacity-90 active:scale-95 py-2"
             >
-              Checkout
+              {checkoutCart.isPending ? (
+                <Loader className="text-white mx-auto" />
+              ) : (
+                "Checkout"
+              )}
             </button>
           </SheetFooter>
         )}

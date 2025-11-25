@@ -97,26 +97,26 @@ model Category {
 }
 
 model Order {
-  id             String         @id @default(uuid())
-  user_id        String
-  total_price    Float
-  status         STATUSORDER
-  payment_method String
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  Detail_Order   Detail_Order[]
-  user           User           @relation(fields: [user_id], references: [id])
-  Payment        Payment?
+  id           String         @id @default(uuid())
+  user_id      String         @unique
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  Detail_Order Detail_Order[]
+  user         User           @relation(fields: [user_id], references: [id])
+  Payment      Payment?
 }
 
 model Detail_Order {
-  id         String  @id @default(uuid())
-  order_id   String
-  product_id String
-  quantity   Int
-  price      Float
-  order      Order   @relation(fields: [order_id], references: [id])
-  product    Product @relation(fields: [product_id], references: [id])
+  id             String      @id @default(uuid())
+  order_id       String
+  product_id     String
+  quantity       Int
+  total_price    Float
+  status         STATUSORDER
+  payment_method String
+  created_at     DateTime    @default(now())
+  order          Order       @relation(fields: [order_id], references: [id])
+  product        Product     @relation(fields: [product_id], references: [id])
 }
 
 model Payment {

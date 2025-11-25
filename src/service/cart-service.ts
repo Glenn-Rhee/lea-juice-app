@@ -37,6 +37,13 @@ export default class CartService {
       throw new ResponseError(401, "Oops! This item already add to cart");
     }
 
+    if (isProductRegist.stock < data.quantity) {
+      throw new ResponseError(
+        401,
+        `Stock for ${isProductRegist.product_name} is run out!`
+      );
+    }
+
     await prisma.cartItem.create({
       data: {
         quantity: data.quantity,
@@ -126,6 +133,21 @@ export default class CartService {
       );
     }
 
+    const product = await prisma.product.findUnique({
+      where: { id: existingCart.product_id },
+    });
+
+    if (!product) {
+      throw new ResponseError(404, "Product is not found!");
+    }
+
+    if (product.stock < data.quantity) {
+      throw new ResponseError(
+        401,
+        `Stock for ${product.product_name} is run out!`
+      );
+    }
+    
     await prisma.cartItem.update({
       where: { id: data.item_id },
       data: { quantity: data.quantity },

@@ -1,3 +1,4 @@
+import ResponseError from "@/error/ResponseError";
 import { ResponsePayload } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -81,6 +82,44 @@ export function useCreateCart() {
       }
 
       return dataJson;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["cart-items"],
+      });
+    },
+  });
+}
+
+export function useCheckoutCart() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (total_price: number) => {
+      try {
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          credentials: "include",
+          body: JSON.stringify({
+            total_price,
+            status: "PENDING",
+            payment_method: "Midtrans",
+          }),
+        });
+
+        const dataJson = (await res.json()) as ResponsePayload;
+        if (dataJson.status === "failed") {
+          throw new ResponseError(dataJson.code, dataJson.message);
+        }
+
+        toast.success(dataJson.message);
+      } catch (error) {
+        if (error instanceof ResponseError) {
+          toast.error(error.message);
+        } else {
+          toast.error("An error occured while checkout!");
+        }
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
