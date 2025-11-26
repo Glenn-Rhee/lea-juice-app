@@ -25,6 +25,7 @@ export const columns: ColumnDef<Transaction>[] = [
   {
     accessorKey: "id",
     header: "Transaction ID",
+    cell: ({ row }) => <span>{row.original.id.slice(0, 8)}</span>,
   },
   {
     accessorKey: "productName",
@@ -48,6 +49,9 @@ export const columns: ColumnDef<Transaction>[] = [
         Amount
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
+    ),
+    cell: ({ row }) => (
+      <span>Rp{row.original.amount.toLocaleString("id-ID")}</span>
     ),
   },
   {
@@ -74,7 +78,7 @@ export const columns: ColumnDef<Transaction>[] = [
       </button>
     ),
     cell: ({ row }) => (
-      <span>{row.original.date.toLocaleDateString("id-ID")}</span>
+      <span>{new Date(row.original.date).toLocaleDateString("id-ID")}</span>
     ),
   },
   {

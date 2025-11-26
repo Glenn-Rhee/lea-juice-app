@@ -67,6 +67,15 @@ export async function middleware(req: NextRequest) {
         });
       }
     }
+
+    if (url.includes("/checkout") && !token) {
+      return NextResponse.json<ResponsePayload>({
+        code: 403,
+        data: null,
+        message: "Forbidden! You don't have any acces for this action!",
+        status: "failed",
+      });
+    }
   } else {
     if (url.includes("/auth") && token) {
       return NextResponse.redirect(new URL("/shop", req.url));
@@ -88,6 +97,10 @@ export async function middleware(req: NextRequest) {
       (url === "/profile" || url === "/transaction")
     ) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
+    if (url.includes("/transaction") && !token) {
+      return NextResponse.redirect(new URL("/shop", req.url));
     }
   }
   return NextResponse.next();
