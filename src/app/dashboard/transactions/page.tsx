@@ -1,91 +1,54 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DataTable } from "@/components/data-table";
-import { TransactionDashboard } from "@/types";
+import { ResponsePayload, TransactionDashboard } from "@/types";
 import { filterTransaction } from "@/helper/transaction-dashboard";
 import StatsCard from "@/components/pages/dashboard/transactions/StatsCard";
 import FilterTransaction from "@/components/pages/dashboard/transactions/FilterTransaction";
 import { STATUSORDER } from "../../../../generated/prisma";
+import ResponseError from "@/error/ResponseError";
+import toast from "react-hot-toast";
 
 export default function TransactionsDashboardPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<"all" | STATUSORDER>(
     "PENDING"
   );
-  const transactions: TransactionDashboard[] = [
-    {
-      id: 1,
-      transactionId: "TRX-2024-001",
-      product: "Lemon Mint Fresh",
-      productType: "Juice Original",
-      customerName: "Budi Santoso",
-      amount: 25000,
-      quantity: 2,
-      date: "2024-11-19",
-      status: "COMPLETED",
-    },
-    {
-      id: 2,
-      transactionId: "TRX-2024-002",
-      product: "Orange Blast",
-      productType: "Juice Mix",
-      customerName: "Siti Aminah",
-      amount: 30000,
-      quantity: 1,
-      date: "2024-11-19",
-      status: "PENDING",
-    },
-    {
-      id: 3,
-      transactionId: "TRX-2024-003",
-      product: "Apple Carrot Smoothie",
-      productType: "Smoothie",
-      customerName: "Andi Wijaya",
-      amount: 35000,
-      quantity: 3,
-      date: "2024-11-18",
-      status: "COMPLETED",
-    },
-    {
-      id: 4,
-      transactionId: "TRX-2024-004",
-      product: "Mango Paradise",
-      productType: "Juice Original",
-      customerName: "Dewi Lestari",
-      amount: 28000,
-      quantity: 2,
-      date: "2024-11-18",
-      status: "CANCELLED",
-    },
-    {
-      id: 5,
-      transactionId: "TRX-2024-005",
-      product: "Strawberry Delight",
-      productType: "Smoothie",
-      customerName: "Ahmad Rizki",
-      amount: 32000,
-      quantity: 1,
-      date: "2024-11-17",
-      status: "COMPLETED",
-    },
-    {
-      id: 6,
-      transactionId: "TRX-2024-006",
-      product: "Green Detox",
-      productType: "Juice Mix",
-      customerName: "Linda Wijaya",
-      amount: 40000,
-      quantity: 2,
-      date: "2024-11-17",
-      status: "PENDING",
-    },
-  ];
-
+  const [transactions, setTransaction] = useState<TransactionDashboard[]>([]);
   const filteredTransactions = filterTransaction(
     transactions,
     searchTerm,
     selectedStatus
   );
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/transaction", { credentials: "include" });
+        const data = (await res.json()) as ResponsePayload<
+          TransactionDashboard[]
+        >;
+        if (data.status === "failed") {
+          throw new ResponseError(data.code, data.message);
+        }
+
+        setTransaction(data.data);
+      } catch (error) {
+        toast.dismiss();
+        if (error instanceof ResponseError) {
+          toast.error(error.message);
+        } else {
+          toast.error("An error occured! Please try again later!");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const totalAmount = filteredTransactions.reduce(
     (sum, trx) => sum + trx.amount,
@@ -121,7 +84,7 @@ export default function TransactionsDashboardPage() {
             totalAmount={totalAmount}
           />
           {/* DataTable - Pass filtered data */}
-          <DataTable data={filteredTransactions} />
+          <DataTable loading={loading} data={filteredTransactions} />
         </div>
       </div>
     </div>

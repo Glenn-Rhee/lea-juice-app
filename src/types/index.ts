@@ -75,10 +75,10 @@ export interface Cart extends CartItem {
 }
 
 export interface TransactionDashboard {
-  id: number;
+  id: string;
   transactionId: string;
   product: string;
-  productType: string;
+  productType: CATEGORY;
   customerName: string;
   amount: number;
   quantity: number;

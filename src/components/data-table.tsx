@@ -32,6 +32,8 @@ import {
   IconLayoutColumns,
   IconClock,
   IconX,
+  IconTruck,
+  IconRefresh,
 } from "@tabler/icons-react";
 import {
   ColumnDef,
@@ -59,7 +61,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -91,6 +92,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { STATUSORDER } from "../../generated/prisma";
+import Loader from "./icons/Loader";
 
 // Extend TableMeta untuk support update callback
 declare module "@tanstack/react-table" {
@@ -101,19 +104,19 @@ declare module "@tanstack/react-table" {
 }
 
 export const schema = z.object({
-  id: z.number(),
+  id: z.string(),
   transactionId: z.string(),
   product: z.string(),
-  productType: z.string(),
+  productType: z.enum(["JUICE", "FRUIT", "SALAD"]),
   customerName: z.string(),
   amount: z.number(),
   quantity: z.number(),
   date: z.string(),
-  status: z.string(),
+  status: z.enum(STATUSORDER),
 });
 
 // Create a separate component for the drag handle
-function DragHandle({ id }: { id: number }) {
+function DragHandle({ id }: { id: string }) {
   const { attributes, listeners } = useSortable({
     id,
   });
@@ -141,7 +144,7 @@ function TableCellViewer({
 }) {
   const isMobile = useIsMobile();
   const [formData, setFormData] = React.useState(item);
-
+  console.log(typeof formData.date);
   const handleSave = () => {
     if (onUpdate) {
       onUpdate(formData);
@@ -158,7 +161,6 @@ function TableCellViewer({
       <DrawerContent>
         <DrawerHeader className="gap-1">
           <DrawerTitle>Transaction Details</DrawerTitle>
-          <DrawerDescription>{item.transactionId}</DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           <form className="flex flex-col gap-4">
@@ -173,34 +175,20 @@ function TableCellViewer({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="product">Product</Label>
-              <Input
-                id="product"
-                value={formData.product}
-                onChange={(e) =>
-                  setFormData({ ...formData, product: e.target.value })
-                }
-              />
+              <Input id="product" value={formData.product} disabled />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="productType">Jenis Product</Label>
-                <Select
-                  value={formData.productType}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, productType: value })
-                  }
-                >
+                <Select value={formData.productType} disabled>
                   <SelectTrigger id="productType">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Juice Original">
-                      Juice Original
-                    </SelectItem>
-                    <SelectItem value="Juice Mix">Juice Mix</SelectItem>
-                    <SelectItem value="Smoothie">Smoothie</SelectItem>
-                    <SelectItem value="Package">Package</SelectItem>
+                    <SelectItem value="JUICE">Juice</SelectItem>
+                    <SelectItem value="FRUIT">Fruit</SelectItem>
+                    <SelectItem value="SALAD">Salad</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -210,29 +198,41 @@ function TableCellViewer({
                 <Select
                   value={formData.status}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, status: value })
+                    setFormData({ ...formData, status: value as STATUSORDER })
                   }
                 >
                   <SelectTrigger id="status">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="completed">
+                    <SelectItem value="COMPLETED">
                       <div className="flex items-center gap-2">
                         <IconCircleCheckFilled className="size-4 fill-green-500" />
                         Completed
                       </div>
                     </SelectItem>
-                    <SelectItem value="pending">
+                    <SelectItem value="PENDING">
                       <div className="flex items-center gap-2">
                         <IconClock className="size-4 text-yellow-500" />
                         Pending
                       </div>
                     </SelectItem>
-                    <SelectItem value="cancelled">
+                    <SelectItem value="CANCELLED">
                       <div className="flex items-center gap-2">
                         <IconX className="size-4 text-red-500" />
                         Cancelled
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="SHIPPED">
+                      <div className="flex items-center gap-2">
+                        <IconTruck className="size-4 text-blue-500" />
+                        Shipped
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="PROCESSING">
+                      <div className="flex items-center gap-2">
+                        <IconRefresh className="size-4 text-orange-500" />
+                        Processing
                       </div>
                     </SelectItem>
                   </SelectContent>
@@ -242,13 +242,7 @@ function TableCellViewer({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="customerName">Nama Pembeli</Label>
-              <Input
-                id="customerName"
-                value={formData.customerName}
-                onChange={(e) =>
-                  setFormData({ ...formData, customerName: e.target.value })
-                }
-              />
+              <Input id="customerName" disabled value={formData.customerName} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -256,14 +250,9 @@ function TableCellViewer({
                 <Label htmlFor="quantity">Quantity</Label>
                 <Input
                   id="quantity"
+                  disabled
                   type="number"
                   value={formData.quantity}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      quantity: parseInt(e.target.value) || 0,
-                    })
-                  }
                 />
               </div>
 
@@ -285,10 +274,8 @@ function TableCellViewer({
               <Input
                 id="date"
                 type="date"
-                value={formData.date}
-                onChange={(e) =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
+                disabled
+                value={new Date(formData.date).toISOString().split("T")[0]}
               />
             </div>
           </form>
@@ -342,7 +329,11 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "transactionId",
     header: "Transaction ID",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.original.transactionId}</div>;
+      return (
+        <div className="font-medium">
+          {row.original.transactionId.slice(0, 8)}
+        </div>
+      );
     },
     enableHiding: false,
   },
@@ -480,7 +471,6 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem>View Details</DropdownMenuItem>
-            <DropdownMenuItem>Print Invoice</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleStatusChange("completed")}>
               <IconCircleCheckFilled className="size-4 fill-green-500 mr-2" />
@@ -531,8 +521,10 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
 
 export function DataTable({
   data: initialData,
+  loading,
 }: {
   data: z.infer<typeof schema>[];
+  loading: boolean;
 }) {
   const [data, setData] = React.useState(() => initialData);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -706,7 +698,7 @@ export function DataTable({
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No results.
+                      {loading ? <Loader className="mx-auto" /> : "No results."}
                     </TableCell>
                   </TableRow>
                 )}
