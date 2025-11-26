@@ -1,5 +1,10 @@
 import z from "zod";
-import { CartItem, CATEGORY, Product } from "../../generated/prisma";
+import {
+  CartItem,
+  CATEGORY,
+  Product,
+  STATUSORDER,
+} from "../../generated/prisma";
 import CartValidation from "@/validation/cart-validation";
 
 export interface ResponsePayload<T = unknown> {
@@ -66,5 +71,17 @@ export interface DataCart extends z.infer<typeof CartValidation.CREATECART> {
 }
 
 export interface Cart extends CartItem {
-  product: Product
+  product: Product;
+}
+
+export interface TransactionDashboard {
+  id: number;
+  transactionId: string;
+  product: string;
+  productType: string;
+  customerName: string;
+  amount: number;
+  quantity: number;
+  date: string;
+  status: STATUSORDER;
 }

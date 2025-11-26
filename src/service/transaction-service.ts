@@ -10,6 +10,30 @@ export default class TransactionService {
       throw new ResponseError(404, "Oops! User is not found!");
     }
 
+    if (user.role === "ADMIN") {
+      const ordersUser = await prisma.order.findMany({
+        include: {
+          Detail_Order: {
+            include: { product: true },
+          },
+          user: true,
+        },
+      });
+      const datatemp = ordersUser.flatMap((o) => ({
+        ...o.Detail_Order,
+        ...o.user,
+      }));
+
+      console.log(datatemp);
+
+      return {
+        status: "success",
+        code: 200,
+        data: null,
+        message: "Successfully get transaction!",
+      };
+    }
+
     const ordersUser = await prisma.order.findMany({
       where: { user_id },
       include: {
