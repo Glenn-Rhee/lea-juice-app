@@ -147,7 +147,7 @@ export default class CartService {
         `Stock for ${product.product_name} is run out!`
       );
     }
-    
+
     await prisma.cartItem.update({
       where: { id: data.item_id },
       data: { quantity: data.quantity },

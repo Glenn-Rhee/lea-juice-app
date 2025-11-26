@@ -1,22 +1,27 @@
 import { ResponsePayload } from "@/types";
 import OrderValidation from "@/validation/order-validation";
 import z from "zod";
-import midtransClient, { SnapTransactionParameters } from "midtrans-client";
+import midtransClient, {
+  SnapTransactionParameters,
+  SnapTransactionResponse,
+} from "midtrans-client";
 import { prisma } from "@/lib/prisma";
 import ResponseError from "@/error/ResponseError";
-import { Product } from "../../generated/prisma";
+import { CartItem, Product } from "../../generated/prisma";
 
 export default class OrderService {
   static async createOrder(
     data: z.infer<typeof OrderValidation.CREATEORDER>,
     user_id: string
   ): Promise<ResponsePayload> {
+    let cartItems: CartItem[] = [];
+
     const order = await prisma.$transaction(async (tx) => {
       const cartUser = await tx.cart.findUnique({ where: { user_id } });
       if (!cartUser) {
         throw new ResponseError(404, "Oops you don't have a chart yet!");
       }
-      const cartItems = await tx.cartItem.findMany({
+      cartItems = await tx.cartItem.findMany({
         where: { cart_id: cartUser.id },
       });
 
@@ -71,27 +76,45 @@ export default class OrderService {
       return userOrder;
     });
 
-    const snap = new midtransClient.Snap({
-      isProduction: false,
-      serverKey: process.env.MIDTRANS_SERVER_KEY!,
-      clientKey: process.env.MIDTRANS_CLIENT_KEY!,
-    });
+    let transaction: SnapTransactionResponse | null = null;
+    try {
+      const snap = new midtransClient.Snap({
+        isProduction: false,
+        serverKey: process.env.MIDTRANS_SERVER_KEY!,
+        clientKey: process.env.MIDTRANS_CLIENT_KEY!,
+      });
 
-    const parameter: SnapTransactionParameters = {
-      transaction_details: {
-        order_id: order.id,
-        gross_amount: data.total_price,
-      },
-      
-    };
+      const parameter: SnapTransactionParameters = {
+        transaction_details: {
+          order_id: order.id,
+          gross_amount: data.total_price,
+        },
+      };
 
-    const transaction = await snap.createTransaction(parameter);
-    console.log(transaction.redirect_url);
+      transaction = await snap.createTransaction(parameter);
+    } catch (error) {
+      console.log("Error while create transaction:", error);
+      await prisma.$transaction(async (tx) => {
+        await tx.cartItem.createMany({ data: cartItems });
+
+        for (const c of cartItems) {
+          await tx.product.update({
+            where: { id: c.product_id },
+            data: {
+              stock: { increment: c.quantity },
+            },
+          });
+        }
+      });
+
+      throw new ResponseError(500, "An error while create transaction!");
+    }
+
     return {
       status: "success",
       code: 201,
       data: {
-        url: transaction.redirect_url,
+        url: transaction ? transaction.redirect_url : "/shop",
       },
       message: "Successfully checkout!",
     };
