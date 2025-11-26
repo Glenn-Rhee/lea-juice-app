@@ -14,6 +14,24 @@ export default class OrderService {
     data: z.infer<typeof OrderValidation.CREATEORDER>,
     user_id: string
   ): Promise<ResponsePayload> {
+    const dataUser = await prisma.userDetail.findUnique({
+      where: { userId: user_id },
+    });
+
+    if (!dataUser) {
+      throw new ResponseError(404, "Oops user is not found!");
+    }
+
+    if (
+      !dataUser.address ||
+      !dataUser.phoneNumber ||
+      !dataUser.city ||
+      !dataUser.province ||
+      !dataUser.postalCode
+    ) {
+      throw new ResponseError(400, "Please fill your profile data first!");
+    }
+
     let cartItems: CartItem[] = [];
 
     const order = await prisma.$transaction(async (tx) => {
