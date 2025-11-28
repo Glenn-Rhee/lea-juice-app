@@ -26,19 +26,23 @@ export default class TransactionService {
         },
       });
 
-      const data: TransactionDashboard[] = ordersUser.flatMap((o) =>
-        o.Detail_Order.map<TransactionDashboard>((d) => ({
-          id: d.order_id,
-          transactionId: o.id,
-          product: d.product.product_name,
-          productType: d.product.category.category_name,
-          customerName: o.user.name || "",
-          amount: d.total_price,
-          quantity: d.quantity,
-          date: d.created_at.toISOString(),
-          status: d.status,
-        }))
-      );
+      const data: TransactionDashboard[] = ordersUser
+        .flatMap((o) =>
+          o.Detail_Order.map<TransactionDashboard>((d) => ({
+            id: d.order_id,
+            transactionId: o.id,
+            product: d.product.product_name,
+            productType: d.product.category.category_name,
+            customerName: o.user.name || "",
+            amount: d.total_price,
+            quantity: d.quantity,
+            date: d.created_at.toISOString(),
+            status: d.status,
+          }))
+        )
+        .toSorted(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
 
       return {
         status: "success",
