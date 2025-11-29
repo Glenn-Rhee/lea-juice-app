@@ -8,6 +8,7 @@ import FilterTransaction from "@/components/pages/dashboard/transactions/FilterT
 import { STATUSORDER } from "../../../../generated/prisma";
 import ResponseError from "@/error/ResponseError";
 import toast from "react-hot-toast";
+import { columnsTransaction } from "@/components/pages/dashboard/transactions/columns";
 
 export default function TransactionsDashboardPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -84,7 +85,11 @@ export default function TransactionsDashboardPage() {
             totalAmount={totalAmount}
           />
           {/* DataTable - Pass filtered data */}
-          <DataTable loading={loading} data={filteredTransactions} />
+          <DataTable
+            columns={columnsTransaction}
+            loading={loading}
+            data={filteredTransactions}
+          />
         </div>
       </div>
     </div>

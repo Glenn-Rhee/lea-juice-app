@@ -4,6 +4,7 @@ import { ResponsePayload, TransactionDashboard } from "@/types";
 import ResponseError from "@/error/ResponseError";
 import toast from "react-hot-toast";
 import { DataTable } from "@/components/data-table";
+import { columnsTransaction } from "./ColumnsTransaction";
 
 export default function TableTransaction() {
   const [transactions, setTransaction] = useState<TransactionDashboard[]>([]);
@@ -35,5 +36,11 @@ export default function TableTransaction() {
 
     fetchData();
   }, []);
-  return <DataTable loading={loading} data={transactions.slice(0, 5)} />;
+  return (
+    <DataTable
+      columns={columnsTransaction}
+      loading={loading}
+      data={transactions.slice(0, 5)}
+    />
+  );
 }
