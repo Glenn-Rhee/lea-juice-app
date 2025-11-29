@@ -176,6 +176,20 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "actions",
     cell: ({ row, table }) => {
+      const handleUpdate = (updatedTransaction: z.infer<typeof schema>) => {
+        if (updateData) {
+          // Update semua field yang berubah
+          Object.keys(updatedTransaction).forEach((key) => {
+            if (key !== "id") {
+              updateData(
+                row.index,
+                key,
+                updatedTransaction[key as keyof typeof updatedTransaction]
+              );
+            }
+          });
+        }
+      };
       const updateData = table.options.meta?.updateData;
 
       const handleStatusChange = (newStatus: string) => {
@@ -197,7 +211,13 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuItem>View Details</DropdownMenuItem>
+            <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+              <TableCellViewer
+                isForAction
+                item={row.original}
+                onUpdate={handleUpdate}
+              />
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleStatusChange("completed")}>
               <IconCircleCheckFilled className="size-4 fill-green-500 mr-2" />

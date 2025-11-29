@@ -110,6 +110,14 @@ export default class OrderService {
       };
 
       transaction = await snap.createTransaction(parameter);
+
+      await prisma.payment.create({
+        data: {
+          payment_status: "SUCCESS",
+          order_id: order.id,
+          transaction_id: transaction.token,
+        },
+      });
     } catch (error) {
       console.log("Error while create transaction:", error);
       await prisma.$transaction(async (tx) => {

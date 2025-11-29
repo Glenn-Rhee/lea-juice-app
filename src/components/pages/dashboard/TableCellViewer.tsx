@@ -29,13 +29,17 @@ import {
   IconTruck,
   IconX,
 } from "@tabler/icons-react";
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/helper/formatDate";
 
 export default function TableCellViewer({
   item,
   onUpdate,
+  isForAction,
 }: {
   item: z.infer<typeof schema>;
   onUpdate?: (transaction: z.infer<typeof schema>) => void;
+  isForAction?: boolean;
 }) {
   const isMobile = useIsMobile();
   const [formData, setFormData] = useState(item);
@@ -48,8 +52,13 @@ export default function TableCellViewer({
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
-        <Button variant="link" className="text-foreground w-fit px-0 text-left">
-          {item.product}
+        <Button
+          variant="link"
+          className={cn("text-foreground w-fit px-0 text-left", {
+            "w-full h-full flex items-center justify-start": isForAction,
+          })}
+        >
+          {isForAction ? "View Detail" : item.product}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
@@ -165,12 +174,7 @@ export default function TableCellViewer({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="date">Date</Label>
-              <Input
-                id="date"
-                type="date"
-                disabled
-                value={new Date(formData.date).toISOString().split("T")[0]}
-              />
+              <span>{formatDate(formData.date)}</span>
             </div>
           </form>
         </div>

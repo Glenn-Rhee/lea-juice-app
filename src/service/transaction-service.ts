@@ -22,14 +22,15 @@ export default class TransactionService {
               },
             },
           },
+          Payment: true,
           user: true,
         },
       });
-
+      
       const data: TransactionDashboard[] = ordersUser
         .flatMap((o) =>
           o.Detail_Order.map<TransactionDashboard>((d) => ({
-            id: d.order_id,
+            id: d.id,
             transactionId: o.id,
             product: d.product.product_name,
             productType: d.product.category.category_name,
