@@ -19,7 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 import { STATUSORDER } from "../../../../generated/prisma";
 import {
@@ -32,26 +32,31 @@ import {
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/helper/formatDate";
 import { Badge } from "@/components/ui/badge";
+import Loader from "@/components/icons/Loader";
+import { useUpdateStatusTransaction } from "@/lib/transaction-mutation";
 
 export default function TableCellViewer({
   item,
-  onUpdate,
   isForAction,
 }: {
   item: z.infer<typeof schema>;
-  onUpdate?: (transaction: z.infer<typeof schema>) => void;
   isForAction?: boolean;
 }) {
   const isMobile = useIsMobile();
-  const [formData, setFormData] = useState(item);
-  const handleSave = () => {
-    if (onUpdate) {
-      onUpdate(formData);
+  const [open, setOpen] = useState(false);
+  const updateStatus = useUpdateStatusTransaction();
+  const [status, setStatus] = useState<STATUSORDER>(item.status);
+  useEffect(() => {
+    if (!updateStatus.isPending) {
+      setOpen(false);
     }
-  };
-
+  }, [updateStatus.isPending]);
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
+    <Drawer
+      open={open}
+      onOpenChange={setOpen}
+      direction={isMobile ? "bottom" : "right"}
+    >
       <DrawerTrigger asChild>
         <Button
           variant="link"
@@ -79,13 +84,13 @@ export default function TableCellViewer({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="product">Product</Label>
-              <Input id="product" value={formData.product} disabled />
+              <Input id="product" value={item.product} disabled />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
                 <Label htmlFor="productType">Jenis Product</Label>
-                <Select value={formData.productType} disabled>
+                <Select value={item.productType} disabled>
                   <SelectTrigger id="productType">
                     <SelectValue />
                   </SelectTrigger>
@@ -100,10 +105,8 @@ export default function TableCellViewer({
               <div className="flex flex-col gap-3">
                 <Label htmlFor="status">Status</Label>
                 <Select
-                  value={formData.status}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, status: value as STATUSORDER })
-                  }
+                  value={status}
+                  onValueChange={(value) => setStatus(value as STATUSORDER)}
                 >
                   <SelectTrigger id="status">
                     <SelectValue />
@@ -146,7 +149,7 @@ export default function TableCellViewer({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="customerName">Nama Pembeli</Label>
-              <Input id="customerName" disabled value={formData.customerName} />
+              <Input id="customerName" disabled value={item.customerName} />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -156,7 +159,7 @@ export default function TableCellViewer({
                   id="quantity"
                   disabled
                   type="number"
-                  value={formData.quantity}
+                  value={item.quantity}
                 />
               </div>
 
@@ -175,7 +178,7 @@ export default function TableCellViewer({
 
             <div className="flex flex-col gap-3">
               <Label htmlFor="date">Date</Label>
-              <span>{formatDate(formData.date)}</span>
+              <span>{formatDate(item.date)}</span>
             </div>
 
             <h4 className="mt-8 font-medium text-lg">Payment Details</h4>
@@ -192,9 +195,12 @@ export default function TableCellViewer({
           </form>
         </div>
         <DrawerFooter>
-          <DrawerClose asChild>
-            <Button onClick={handleSave}>Save Changes</Button>
-          </DrawerClose>
+          <Button
+            onClick={() => updateStatus.mutate({ id: item.id, status })}
+            disabled={updateStatus.isPending}
+          >
+            {updateStatus.isPending ? <Loader /> : "Save Changes"}
+          </Button>
           <DrawerClose asChild>
             <Button variant="outline">Close</Button>
           </DrawerClose>

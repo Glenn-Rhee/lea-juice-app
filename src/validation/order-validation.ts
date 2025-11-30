@@ -1,4 +1,5 @@
 import z from "zod";
+import { STATUSORDER } from "../../generated/prisma";
 
 export default class OrderValidation {
   static readonly CREATEORDER = z.object({
@@ -13,5 +14,9 @@ export default class OrderValidation {
       "PROCESSING",
     ]),
     payment_method: z.string({ error: "Please fill payment method properly!" }),
+  });
+
+  static readonly PATCHORDER = z.object({
+    status: z.enum(STATUSORDER),
   });
 }

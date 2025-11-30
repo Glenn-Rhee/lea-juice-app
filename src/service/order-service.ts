@@ -145,4 +145,34 @@ export default class OrderService {
       message: "Successfully checkout!",
     };
   }
+
+  static async patchOrder(
+    orderDetailId: string,
+    data: z.infer<typeof OrderValidation.PATCHORDER>
+  ): Promise<ResponsePayload> {
+    const isExist = await prisma.detail_Order.findUnique({
+      where: { id: orderDetailId },
+    });
+
+    if (!isExist) {
+      throw new ResponseError(
+        404,
+        "Oops! Detail order is missing or have been delete!"
+      );
+    }
+
+    await prisma.detail_Order.update({
+      where: { id: orderDetailId },
+      data: {
+        status: data.status,
+      },
+    });
+
+    return {
+      status: "success",
+      code: 201,
+      message: "Successfully update status!",
+      data: null,
+    };
+  }
 }

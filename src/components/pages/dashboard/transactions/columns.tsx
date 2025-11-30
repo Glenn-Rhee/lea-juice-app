@@ -5,6 +5,8 @@ import {
   IconCircleCheckFilled,
   IconClock,
   IconDotsVertical,
+  IconRefresh,
+  IconTruck,
   IconX,
 } from "@tabler/icons-react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -19,6 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import TableCellViewer from "../TableCellViewer";
 import DragHandle from "../DragHandle";
+import MarkAsItem from "./MarkAsItem";
 
 export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
   {
@@ -67,24 +70,8 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "product",
     header: "Product",
-    cell: ({ row, table }) => {
-      const updateData = table.options.meta?.updateData;
-      const handleUpdate = (updatedTransaction: z.infer<typeof schema>) => {
-        if (updateData) {
-          // Update semua field yang berubah
-          Object.keys(updatedTransaction).forEach((key) => {
-            if (key !== "id") {
-              updateData(
-                row.index,
-                key,
-                updatedTransaction[key as keyof typeof updatedTransaction]
-              );
-            }
-          });
-        }
-      };
-
-      return <TableCellViewer item={row.original} onUpdate={handleUpdate} />;
+    cell: ({ row }) => {
+      return <TableCellViewer item={row.original} />;
     },
   },
   {
@@ -157,6 +144,18 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
           className: "text-red-500",
           badgeVariant: "destructive" as const,
         },
+        shipped: {
+          label: "Shipped",
+          icon: IconTruck,
+          className: "text-blue-500",
+          badgeVariant: "outline" as const,
+        },
+        processing: {
+          label: "Processing",
+          icon: IconRefresh,
+          className: "text-orange-500",
+          badgeVariant: "outline" as const,
+        },
       };
 
       const status = row.original.status.toLowerCase();
@@ -166,7 +165,7 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
       const Icon = config.icon;
 
       return (
-        <Badge variant={config.badgeVariant} className="px-1.5">
+        <Badge variant={config.badgeVariant} className="px-2">
           <Icon className={`size-4 ${config.className}`} />
           {config.label}
         </Badge>
@@ -175,29 +174,7 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: ({ row, table }) => {
-      const handleUpdate = (updatedTransaction: z.infer<typeof schema>) => {
-        if (updateData) {
-          // Update semua field yang berubah
-          Object.keys(updatedTransaction).forEach((key) => {
-            if (key !== "id") {
-              updateData(
-                row.index,
-                key,
-                updatedTransaction[key as keyof typeof updatedTransaction]
-              );
-            }
-          });
-        }
-      };
-      const updateData = table.options.meta?.updateData;
-
-      const handleStatusChange = (newStatus: string) => {
-        if (updateData) {
-          updateData(row.index, "status", newStatus);
-        }
-      };
-
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -212,27 +189,29 @@ export const columnsTransaction: ColumnDef<z.infer<typeof schema>>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-              <TableCellViewer
-                isForAction
-                item={row.original}
-                onUpdate={handleUpdate}
-              />
+              <TableCellViewer isForAction item={row.original} />
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleStatusChange("completed")}>
-              <IconCircleCheckFilled className="size-4 fill-green-500 mr-2" />
-              Mark as Completed
+            <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+              <MarkAsItem id={row.original.id} status={"COMPLETED"}>
+                <IconCircleCheckFilled className="size-4 fill-green-500 mr-2" />
+                Mark as Completed
+              </MarkAsItem>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleStatusChange("pending")}>
-              <IconClock className="size-4 text-yellow-500 mr-2" />
-              Mark as Pending
+            <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+              <MarkAsItem id={row.original.id} status={"PROCESSING"}>
+                <IconRefresh className="size-4 text-orange-500 mr-2" />
+                Mark as Processing
+              </MarkAsItem>
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => handleStatusChange("cancelled")}
+              onClick={(e) => e.preventDefault()}
             >
-              <IconX className="size-4 mr-2" />
-              Cancel Order
+              <MarkAsItem id={row.original.id} status={"CANCELLED"}>
+                <IconX className="size-4 mr-2" />
+                Cancel Order
+              </MarkAsItem>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

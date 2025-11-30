@@ -1,55 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { DataTable } from "@/components/data-table";
-import { ResponsePayload, TransactionDashboard } from "@/types";
 import { filterTransaction } from "@/helper/transaction-dashboard";
 import StatsCard from "@/components/pages/dashboard/transactions/StatsCard";
 import FilterTransaction from "@/components/pages/dashboard/transactions/FilterTransaction";
 import { STATUSORDER } from "../../../../generated/prisma";
-import ResponseError from "@/error/ResponseError";
-import toast from "react-hot-toast";
 import { columnsTransaction } from "@/components/pages/dashboard/transactions/columns";
+import { useTransactions } from "@/lib/transaction-queries";
 
 export default function TransactionsDashboardPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedStatus, setSelectedStatus] = useState<"all" | STATUSORDER>(
-    "PENDING"
+    "all"
   );
-  const [transactions, setTransaction] = useState<TransactionDashboard[]>([]);
+
+  const { data: transactions, isLoading } = useTransactions();
   const filteredTransactions = filterTransaction(
-    transactions,
+    transactions || [],
     searchTerm,
     selectedStatus
   );
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/transaction", { credentials: "include" });
-        const data = (await res.json()) as ResponsePayload<
-          TransactionDashboard[]
-        >;
-        if (data.status === "failed") {
-          throw new ResponseError(data.code, data.message);
-        }
-
-        setTransaction(data.data);
-      } catch (error) {
-        toast.dismiss();
-        if (error instanceof ResponseError) {
-          toast.error(error.message);
-        } else {
-          toast.error("An error occured! Please try again later!");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const totalAmount = filteredTransactions.reduce(
     (sum, trx) => sum + trx.amount,
@@ -72,7 +42,7 @@ export default function TransactionsDashboardPage() {
           <StatsCard
             filteredTransactions={filteredTransactions}
             totalAmount={totalAmount}
-            transactions={transactions}
+            transactions={transactions || []}
           />
 
           {/* Search and Filter */}
@@ -87,7 +57,7 @@ export default function TransactionsDashboardPage() {
           {/* DataTable - Pass filtered data */}
           <DataTable
             columns={columnsTransaction}
-            loading={loading}
+            loading={isLoading}
             data={filteredTransactions}
           />
         </div>

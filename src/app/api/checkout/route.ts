@@ -23,26 +23,86 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   } catch (error) {
     console.log("Error cart Route at POST method:", error);
     if (error instanceof ZodError) {
-      return NextResponse.json<ResponsePayload>({
-        status: "failed",
-        code: 401,
-        data: null,
-        message: error.issues[0].message,
-      });
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: 401,
+          data: null,
+          message: error.issues[0].message,
+        },
+        { status: 401 }
+      );
     } else if (error instanceof ResponseError) {
-      return NextResponse.json<ResponsePayload>({
-        status: "failed",
-        code: error.code,
-        data: null,
-        message: error.message,
-      });
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: error.code,
+          data: null,
+          message: error.message,
+        },
+        { status: error.code }
+      );
     } else {
-      return NextResponse.json<ResponsePayload>({
-        status: "failed",
-        code: 500,
-        data: null,
-        message: "An error occured! Please try again later",
-      });
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: 500,
+          data: null,
+          message: "An error occured! Please try again later",
+        },
+        { status: 500 }
+      );
+    }
+  }
+}
+
+export async function PATCH(req: NextRequest): Promise<NextResponse> {
+  try {
+    const searchParams = req.nextUrl.searchParams;
+    const detailOrderId = searchParams.get("id");
+    if (!detailOrderId) {
+      throw new ResponseError(401, "Detail order id is required!");
+    }
+
+    const dataJson = await req.text();
+    const dataStatus = await JSON.parse(dataJson);
+    const data = Validation.validate(OrderValidation.PATCHORDER, dataStatus)
+    const response = await OrderService.patchOrder(detailOrderId, data);
+    return NextResponse.json<ResponsePayload>(response, {
+      status: response.code,
+    });
+  } catch (error) {
+    console.log("Error cart Route at PATCH method:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: 401,
+          data: null,
+          message: error.issues[0].message,
+        },
+        { status: 401 }
+      );
+    } else if (error instanceof ResponseError) {
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: error.code,
+          data: null,
+          message: error.message,
+        },
+        { status: error.code }
+      );
+    } else {
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: 500,
+          data: null,
+          message: "An error occured! Please try again later",
+        },
+        { status: 500 }
+      );
     }
   }
 }
