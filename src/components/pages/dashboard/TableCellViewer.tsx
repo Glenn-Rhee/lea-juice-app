@@ -150,6 +150,44 @@ export default function TableCellViewer({
             <div className="flex flex-col gap-3">
               <Label htmlFor="customerName">Nama Pembeli</Label>
               <Input id="customerName" disabled value={item.customerName} />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="w-full">
+                  <Label htmlFor="phoneNumber">Phone Number</Label>
+                  <Input
+                    id="phoneNumber"
+                    disabled
+                    className="mt-3"
+                    value={item.phoneNumber || ""}
+                  />
+                </div>
+                <div className="w-full">
+                  <Label htmlFor="city">City</Label>
+                  <Input
+                    id="city"
+                    disabled
+                    className="mt-3"
+                    value={item.city || ""}
+                  />
+                </div>
+                <div className="w-full">
+                  <Label htmlFor="province">Province</Label>
+                  <Input
+                    id="province"
+                    disabled
+                    className="mt-3"
+                    value={item.province || ""}
+                  />
+                </div>
+                <div className="w-full">
+                  <Label htmlFor="postalCode">Postal Code</Label>
+                  <Input
+                    id="postalCode"
+                    disabled
+                    className="mt-3"
+                    value={item.postalCode || ""}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

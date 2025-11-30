@@ -89,6 +89,10 @@ export const schema = z.object({
   status: z.enum(STATUSORDER),
   statusPayment: z.enum(STATUSPAYMENT),
   paidAt: z.string(),
+  phoneNumber: z.string().nullable(),
+  city: z.string().nullable(),
+  province: z.string().nullable(),
+  postalCode: z.string().nullable(),
 });
 
 export function DataTable({

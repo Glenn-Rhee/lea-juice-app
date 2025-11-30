@@ -23,7 +23,11 @@ export default class TransactionService {
             },
           },
           Payment: true,
-          user: true,
+          user: {
+            include: {
+              userDetail: true,
+            },
+          },
         },
       });
 
@@ -37,6 +41,10 @@ export default class TransactionService {
             customerName: o.user.name || "",
             amount: d.total_price,
             quantity: d.quantity,
+            city: o.user.userDetail ? o.user.userDetail.city : "",
+            phoneNumber: o.user.userDetail ? o.user.userDetail.phoneNumber : "",
+            province: o.user.userDetail ? o.user.userDetail.province : "",
+            postalCode: o.user.userDetail ? o.user.userDetail.postalCode : "",
             date: d.created_at.toISOString(),
             status: d.status,
             paidAt: o.Payment!.paid_at.toISOString(),

@@ -87,4 +87,8 @@ export interface TransactionDashboard {
   status: STATUSORDER;
   statusPayment: STATUSPAYMENT;
   paidAt: string;
+  phoneNumber: string | null;
+  city: string | null;
+  province: string | null;
+  postalCode: string | null;
 }
