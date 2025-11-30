@@ -9,7 +9,7 @@ interface StatsCardProps {
 export default function StatsCard(props: StatsCardProps) {
   const { filteredTransactions, transactions, totalAmount } = props;
   const completedCount = filteredTransactions.filter(
-    (trx) => trx.status === "completed"
+    (trx) => trx.status === "COMPLETED"
   ).length;
 
   return (

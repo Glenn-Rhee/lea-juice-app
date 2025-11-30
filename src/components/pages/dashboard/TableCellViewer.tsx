@@ -31,6 +31,7 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/helper/formatDate";
+import { Badge } from "@/components/ui/badge";
 
 export default function TableCellViewer({
   item,
@@ -175,6 +176,18 @@ export default function TableCellViewer({
             <div className="flex flex-col gap-3">
               <Label htmlFor="date">Date</Label>
               <span>{formatDate(formData.date)}</span>
+            </div>
+
+            <h4 className="mt-8 font-medium text-lg">Payment Details</h4>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-y-3">
+                <Label>Status Payment</Label>
+                <Badge>{item.statusPayment}</Badge>
+              </div>
+              <div className="flex flex-col gap-y-3">
+                <Label>Paid at</Label>
+                <span className="text-justify">{formatDate(item.paidAt)}</span>
+              </div>
             </div>
           </form>
         </div>

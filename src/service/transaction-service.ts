@@ -26,12 +26,12 @@ export default class TransactionService {
           user: true,
         },
       });
-      
+
       const data: TransactionDashboard[] = ordersUser
         .flatMap((o) =>
           o.Detail_Order.map<TransactionDashboard>((d) => ({
             id: d.id,
-            transactionId: o.id,
+            transactionId: o.Payment!.transaction_id,
             product: d.product.product_name,
             productType: d.product.category.category_name,
             customerName: o.user.name || "",
@@ -39,6 +39,8 @@ export default class TransactionService {
             quantity: d.quantity,
             date: d.created_at.toISOString(),
             status: d.status,
+            paidAt: o.Payment!.paid_at.toISOString(),
+            statusPayment: o.Payment!.payment_status,
           }))
         )
         .toSorted(

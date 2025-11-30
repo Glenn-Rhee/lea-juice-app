@@ -65,7 +65,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { STATUSORDER } from "../../generated/prisma";
+import { STATUSORDER, STATUSPAYMENT } from "../../generated/prisma";
 import Loader from "./icons/Loader";
 import DraggableRow from "./pages/dashboard/DraggableRow";
 
@@ -87,6 +87,8 @@ export const schema = z.object({
   quantity: z.number(),
   date: z.string(),
   status: z.enum(STATUSORDER),
+  statusPayment: z.enum(STATUSPAYMENT),
+  paidAt: z.string(),
 });
 
 export function DataTable({

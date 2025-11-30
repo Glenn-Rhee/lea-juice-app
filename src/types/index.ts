@@ -4,6 +4,7 @@ import {
   CATEGORY,
   Product,
   STATUSORDER,
+  STATUSPAYMENT,
 } from "../../generated/prisma";
 import CartValidation from "@/validation/cart-validation";
 
@@ -84,4 +85,6 @@ export interface TransactionDashboard {
   quantity: number;
   date: string;
   status: STATUSORDER;
+  statusPayment: STATUSPAYMENT;
+  paidAt: string;
 }
