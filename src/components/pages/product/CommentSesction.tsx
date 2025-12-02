@@ -16,14 +16,15 @@ import { useState } from "react";
 interface CommentSectionProps {
   product_id: string;
   token: RequestCookie | undefined;
+  imageUser: string | null;
 }
 export default function CommentSection(props: CommentSectionProps) {
-  const { product_id, token } = props;
+  const { product_id, token, imageUser } = props;
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const { data, isLoading } = useReviews(product_id);
   const commentUser = useComment();
-  
+
   return (
     <section className="max-w-6xl w-full mx-auto mt-8 flex gap-x-4 px-4 mb-8">
       <div className="w-full flex-1 h-fit sticky top-[6rem] bg-white border px-4 py-3 border-gray-300 rounded-sm shadow-sm">
@@ -65,9 +66,19 @@ export default function CommentSection(props: CommentSectionProps) {
       </div>
       <div className="flex-3 w-full flex flex-col gap-y-7 ps-4">
         <div className="w-full pb-3 flex items-center gap-x-4">
-          <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
-            <IconUserFilled className="text-orange-800" size={20} />
-          </div>
+          {imageUser ? (
+            <Image
+              src={imageUser}
+              alt={`Profile image user`}
+              width={40}
+              height={40}
+              className="aspect-square rounded-full object-cover"
+            />
+          ) : (
+            <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
+              <IconUserFilled className="text-orange-800" size={20} />
+            </div>
+          )}
           <div className="flex flex-col gap-y-2 w-full">
             <input
               type="text"

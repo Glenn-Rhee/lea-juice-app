@@ -58,6 +58,9 @@ export default async function ProductPage({ params }: Props) {
   try {
     const response = await fetch(baseUrl + "/api/products?id=" + id, {
       credentials: "include",
+      headers: {
+        Authorization: `Bearer ${token?.value || ""}`,
+      },
     });
 
     const dataResponse =
@@ -150,7 +153,11 @@ export default async function ProductPage({ params }: Props) {
       {dataProduct && (
         <>
           <SummaryReviewCard />
-          <CommentSection token={token} product_id={dataProduct.id} />
+          <CommentSection
+            token={token}
+            imageUser={dataProduct.imageUrlUser}
+            product_id={dataProduct.id}
+          />
         </>
       )}
     </div>

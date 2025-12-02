@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import z, { ZodError } from "zod";
 import { UTApi } from "uploadthing/server";
 import { CATEGORY } from "../../../../generated/prisma";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   const dataJson = await req.text();
@@ -53,6 +54,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
     const query = req.nextUrl.searchParams;
     const category = query.get("c") as CATEGORY | null;
     if (category) {
@@ -61,7 +64,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         throw new ResponseError(400, "Invalid category!");
       }
     }
-    const response = await ProductService.getProduct(query);
+    const response = await ProductService.getProduct(
+      query,
+      token ? token.id : null
+    );
     return NextResponse.json<ResponsePayload>(response);
   } catch (error) {
     console.log("Error product Route at POST method:", error);

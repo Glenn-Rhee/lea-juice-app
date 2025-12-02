@@ -45,7 +45,10 @@ export default class ProductService {
     };
   }
 
-  static async getProduct(query: URLSearchParams): Promise<ResponsePayload> {
+  static async getProduct(
+    query: URLSearchParams,
+    user_id: string | null | undefined
+  ): Promise<ResponsePayload> {
     const q = query.get("q");
     const category = query.get("c") as CATEGORY | null;
     const id = query.get("id");
@@ -55,6 +58,18 @@ export default class ProductService {
       },
       orderBy: { product_name: "asc" },
     });
+    let imageUrlUser: string | null = null;
+    if (user_id) {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: user_id,
+        },
+      });
+
+      if (user) {
+        imageUrlUser = user.image;
+      }
+    }
 
     if (q && category) {
       products = await prisma.product.findMany({
@@ -143,7 +158,7 @@ export default class ProductService {
 
       return {
         code: 200,
-        data: product,
+        data: { ...product, imageUrlUser },
         message: "Successfully get product!",
         status: "success",
       };
@@ -151,7 +166,7 @@ export default class ProductService {
 
     return {
       code: 200,
-      data: products,
+      data: { ...products, imageUrlUser },
       message: "Successfully get products!",
       status: "success",
     };

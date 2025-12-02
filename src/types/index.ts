@@ -65,6 +65,7 @@ export interface DataProduct extends Product {
     id: string;
     category_name: CATEGORY;
   };
+  imageUrlUser: string | null;
 }
 
 export interface DataCart extends z.infer<typeof CartValidation.CREATECART> {
