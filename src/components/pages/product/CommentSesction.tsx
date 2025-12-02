@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import ResponseError from "@/error/ResponseError";
 import { cn } from "@/lib/utils";
+import { ResponsePayload } from "@/types";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const data = [
   {
@@ -34,13 +37,39 @@ const data = [
     stars: 1,
   },
 ];
-export default function CommentSesction() {
+
+interface CommentSectionProps {
+  product_id: string;
+}
+export default function CommentSection(props: CommentSectionProps) {
+  const { product_id } = props;
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function handleComment() {
-    console.log("Comment: ", comment);
-    console.log("Rating: ", rating);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/review", {
+        method: "POST",
+        body: JSON.stringify({ comment, rating, product_id }),
+      });
+
+      const dataRes = (await res.json()) as ResponsePayload;
+      if (dataRes.status === "failed") {
+        throw new ResponseError(dataRes.code, dataRes.message);
+      }
+
+      toast.success(dataRes.message);
+    } catch (error) {
+      if (error instanceof ResponseError) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occured!");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <section className="max-w-6xl w-full mx-auto mt-8 flex gap-x-4 px-4 mb-8">
@@ -119,6 +148,7 @@ export default function CommentSesction() {
                 ))}
               </div>
               <Button
+                disabled={loading}
                 onClick={handleComment}
                 type="submit"
                 className="cursor-pointer"

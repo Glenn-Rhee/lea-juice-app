@@ -1,6 +1,6 @@
 import Error from "@/components/Error";
 import ButtonShare from "@/components/pages/product/ButtonShare";
-import CommentSesction from "@/components/pages/product/CommentSesction";
+import CommentSection from "@/components/pages/product/CommentSesction";
 import ProductPurchaseBar from "@/components/pages/product/ProductPurchaseBar";
 import SummaryReviewCard from "@/components/pages/product/SummaryReviewCard";
 import BreadcrumbShop, { Link } from "@/components/pages/shop/BreadcrumbShop";
@@ -142,8 +142,12 @@ export default async function ProductPage({ params }: Props) {
           )
         )}
       </div>
-      <SummaryReviewCard />
-      <CommentSesction />
+      {dataProduct && (
+        <>
+          <SummaryReviewCard />
+          <CommentSection product_id={dataProduct.id} />
+        </>
+      )}
     </div>
   );
 }
