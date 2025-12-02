@@ -96,17 +96,30 @@ export default function CommentSection(props: CommentSectionProps) {
                   </button>
                 ))}
               </div>
-              <Button
-                disabled={commentUser.isPending}
-                onClick={() =>
-                  commentUser.mutate({ comment, product_id, rating, token })
-                }
-                type="submit"
-                className="cursor-pointer"
-                size={"sm"}
-              >
-                Comment
-              </Button>
+              <div className="flex items-center gap-x-3">
+                {(rating > 0 || comment.length > 0) && (
+                  <button
+                    onClick={() => {
+                      setRating(0);
+                      setComment("");
+                    }}
+                    className="bg-transparent h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 text-stone-800 cursor-pointer hover:bg-gray-300 "
+                  >
+                    Cancel
+                  </button>
+                )}
+                <Button
+                  disabled={commentUser.isPending}
+                  onClick={() =>
+                    commentUser.mutate({ comment, product_id, rating, token })
+                  }
+                  type="submit"
+                  className="cursor-pointer"
+                  size={"sm"}
+                >
+                  Comment
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -166,7 +166,7 @@ export default class ProductService {
 
     return {
       code: 200,
-      data: { ...products, imageUrlUser },
+      data: products,
       message: "Successfully get products!",
       status: "success",
     };
