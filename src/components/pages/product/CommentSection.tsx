@@ -191,7 +191,7 @@ export default function CommentSection(props: CommentSectionProps) {
           reviews
             .sort((a, b) => b.rating - a.rating)
             .map((d, i) => (
-              <div key={i} className="space-y-1">
+              <div key={i} className="space-y-4">
                 <div className="flex items-center gap-x-2">
                   {d.imageUrl ? (
                     <Image

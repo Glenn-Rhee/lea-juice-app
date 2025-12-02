@@ -14,6 +14,7 @@ export function getAverageRating([
   };
 
   const totalReviews = Object.values(counts).reduce((a, b) => a + b, 0);
+  if (totalReviews === 0) return "5.0";
   const average =
     Object.entries(counts).reduce(
       (sum, [rating, qty]) => sum + Number(rating) * qty,
