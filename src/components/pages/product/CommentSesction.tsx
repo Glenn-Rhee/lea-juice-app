@@ -3,41 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import ResponseError from "@/error/ResponseError";
+import { Skeleton } from "@/components/ui/skeleton";
+import { timeAgo } from "@/helper/timeAgo";
+import { useComment } from "@/lib/review-mutation";
+import { useReviews } from "@/lib/review-queries";
 import { cn } from "@/lib/utils";
-import { ResponsePayload } from "@/types";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import Image from "next/image";
 import { useState } from "react";
-import toast from "react-hot-toast";
-
-const data = [
-  {
-    name: "Glenn Rhee",
-    commentAt: "7 Month Ago",
-    stars: 5,
-  },
-  {
-    name: "Glenn Rhee",
-    commentAt: "7 Month Ago",
-    stars: 4,
-  },
-  {
-    name: "Glenn Rhee",
-    commentAt: "7 Month Ago",
-    stars: 3,
-  },
-  {
-    name: "Glenn Rhee",
-    commentAt: "7 Month Ago",
-    stars: 2,
-  },
-  {
-    name: "Glenn Rhee",
-    commentAt: "7 Month Ago",
-    stars: 1,
-  },
-];
 
 interface CommentSectionProps {
   product_id: string;
@@ -47,35 +21,9 @@ export default function CommentSection(props: CommentSectionProps) {
   const { product_id, token } = props;
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-
-  async function handleComment() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/review", {
-        method: "POST",
-        body: JSON.stringify({ comment, rating, product_id }),
-        headers: {
-          Authorization: `Bearer ${token?.value || ""}`,
-        },
-      });
-
-      const dataRes = (await res.json()) as ResponsePayload;
-      if (dataRes.status === "failed") {
-        throw new ResponseError(dataRes.code, dataRes.message);
-      }
-
-      toast.success(dataRes.message);
-    } catch (error) {
-      if (error instanceof ResponseError) {
-        toast.error(error.message);
-      } else {
-        toast.error("An error occured!");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { data, isLoading } = useReviews(product_id);
+  const commentUser = useComment();
+  
   return (
     <section className="max-w-6xl w-full mx-auto mt-8 flex gap-x-4 px-4 mb-8">
       <div className="w-full flex-1 h-fit sticky top-[6rem] bg-white border px-4 py-3 border-gray-300 rounded-sm shadow-sm">
@@ -125,7 +73,8 @@ export default function CommentSection(props: CommentSectionProps) {
               type="text"
               value={comment}
               onKeyUp={(e) =>
-                e.key.toLowerCase() === "enter" && handleComment()
+                e.key.toLowerCase() === "enter" &&
+                commentUser.mutate({ comment, product_id, rating, token })
               }
               onChange={(e) => setComment(e.target.value)}
               className="border-b border-gray-500/40 w-full placeholder:text-stone-500 transition-colors text-stone-800 pb-2 placeholder:text-sm focus:border-b focus:outline-none focus:border-gray-600/70"
@@ -153,8 +102,10 @@ export default function CommentSection(props: CommentSectionProps) {
                 ))}
               </div>
               <Button
-                disabled={loading}
-                onClick={handleComment}
+                disabled={commentUser.isPending}
+                onClick={() =>
+                  commentUser.mutate({ comment, product_id, rating, token })
+                }
                 type="submit"
                 className="cursor-pointer"
                 size={"sm"}
@@ -164,25 +115,67 @@ export default function CommentSection(props: CommentSectionProps) {
             </div>
           </div>
         </div>
-        {data.map((d, i) => (
-          <div key={i} className="space-y-1">
-            <div className="flex items-center gap-x-2">
-              <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
-                <IconUserFilled className="text-orange-800" size={20} />
+        {isLoading ? (
+          Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="space-y-1">
+              <div className="flex items-center gap-x-2">
+                <Skeleton className="aspect-square rounded-full w-10 h-10 bg-gray-300" />
+                <Skeleton className="h-3 bg-gray-300 rounded-xs w-[10rem]" />
               </div>
-              <span className="text-stone-900 font-semibold">Glenn Rhee</span>
+              <Skeleton className="mt-4 bg-gray-300 w-[13rem] h-3" />
+              <Skeleton className="mt-4 bg-gray-300 w-[20rem] h-3" />
             </div>
-            <span className="flex items-center text-gray-600 font-semibold text-sm gap-x-2 mt-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <IconStarFilled size={18} key={i} className="text-yellow-500" />
-              ))}
-              7 bulan lalu
-            </span>
-            <p className="mt-4 text-gray-700 font-medium text-sm">
-              Rasa jus nya jeruk banget enak banget euy. Recomennded deh!
-            </p>
+          ))
+        ) : data && data.length === 0 ? (
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <Image
+              src={"/comment.png"}
+              alt="Empty cart image"
+              width={200}
+              height={200}
+            />
+            <h1 className="text-2xl font-bold text-stone-900">
+              Review still empty!
+            </h1>
           </div>
-        ))}
+        ) : (
+          data &&
+          data.map((d, i) => (
+            <div key={i} className="space-y-1">
+              <div className="flex items-center gap-x-2">
+                {d.imageUrl ? (
+                  <Image
+                    src={d.imageUrl}
+                    alt={`Profile image ${d.name}`}
+                    width={40}
+                    height={40}
+                    className="aspect-square rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
+                    <IconUserFilled className="text-orange-800" size={20} />
+                  </div>
+                )}
+                <span className="text-stone-900 font-semibold">{d.name}</span>
+              </div>
+              <span className="flex items-center text-gray-600 font-semibold text-sm gap-x-2 mt-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <IconStarFilled
+                    size={18}
+                    key={i}
+                    className={cn("text-gray-500", {
+                      "text-yellow-500": i + 1 <= d.rating,
+                    })}
+                  />
+                ))}
+                {timeAgo(d.createdAt)}
+              </span>
+              <p className="mt-4 text-gray-700 font-medium text-sm">
+                {d.comment}
+              </p>
+            </div>
+          ))
+        )}
       </div>
     </section>
   );

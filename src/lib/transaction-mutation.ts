@@ -21,7 +21,6 @@ export function useUpdateStatusTransaction() {
           throw new ResponseError(dataRes.code, dataRes.message);
         }
 
-        console.log(dataRes);
         toast.success(dataRes.message);
         return dataRes;
       } catch (error) {

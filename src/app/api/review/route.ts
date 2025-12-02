@@ -64,7 +64,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const searchParams = req.nextUrl.searchParams;
     const product_id = searchParams.get("product_id");
     if (!product_id) {
-      throw new ResponseError(401, "Product id is not found! Please fill it!");
+      throw new ResponseError(402, "Product id is not found! Please fill it!");
     }
 
     const response = await ReviewService.getReviews(product_id);
