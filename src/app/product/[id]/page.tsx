@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import ResponseError from "@/error/ResponseError";
 import { DataProduct, ResponsePayload } from "@/types";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 import Image from "next/image";
 
 type Props = {
@@ -47,6 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const id = (await params).id;
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
 
   let dataProduct: DataProduct | null = null;
   let errorMessage: { message: string; code: number } | null = null;
@@ -145,7 +150,7 @@ export default async function ProductPage({ params }: Props) {
       {dataProduct && (
         <>
           <SummaryReviewCard />
-          <CommentSection product_id={dataProduct.id} />
+          <CommentSection token={token} product_id={dataProduct.id} />
         </>
       )}
     </div>

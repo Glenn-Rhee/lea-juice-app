@@ -24,7 +24,55 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       status: response.code,
     });
   } catch (error) {
-    console.log("Error cart Route at PATCH method:", error);
+    console.log("Error review Route at POST method:", error);
+    if (error instanceof ZodError) {
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: 401,
+          data: null,
+          message: error.issues[0].message,
+        },
+        { status: 401 }
+      );
+    } else if (error instanceof ResponseError) {
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: error.code,
+          data: null,
+          message: error.message,
+        },
+        { status: error.code }
+      );
+    } else {
+      return NextResponse.json<ResponsePayload>(
+        {
+          status: "failed",
+          code: 500,
+          data: null,
+          message: "An error occured! Please try again later",
+        },
+        { status: 500 }
+      );
+    }
+  }
+}
+
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  try {
+    const searchParams = req.nextUrl.searchParams;
+    const product_id = searchParams.get("product_id");
+    if (!product_id) {
+      throw new ResponseError(401, "Product id is not found! Please fill it!");
+    }
+
+    const response = await ReviewService.getReviews(product_id);
+    return NextResponse.json<ResponsePayload>(response, {
+      status: response.code,
+    });
+  } catch (error) {
+    console.log("Error review Route at GET method:", error);
     if (error instanceof ZodError) {
       return NextResponse.json<ResponsePayload>(
         {

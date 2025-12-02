@@ -1,6 +1,6 @@
 import ResponseError from "@/error/ResponseError";
 import { prisma } from "@/lib/prisma";
-import { ResponsePayload } from "@/types";
+import { DataReview, ResponsePayload } from "@/types";
 import ReviewValidation from "@/validation/review-validation";
 import z from "zod";
 
@@ -24,6 +24,25 @@ export default class ReviewService {
       );
     }
 
+    const isAlreadyBuy = await prisma.order.findFirst({
+      where: {
+        user_id,
+        Detail_Order: {
+          some: {
+            product_id: data.product_id,
+            status: "COMPLETED",
+          },
+        },
+      },
+    });
+
+    if (!isAlreadyBuy) {
+      throw new ResponseError(
+        402,
+        "Oops! Please buy this product first and enjoy it!"
+      );
+    }
+
     await prisma.review.create({
       data: {
         comment: data.comment,
@@ -38,6 +57,42 @@ export default class ReviewService {
       code: 201,
       data: null,
       message: "Successfully create comment!",
+    };
+  }
+
+  static async getReviews(product_id: string): Promise<ResponsePayload> {
+    const existProduct = await prisma.product.findUnique({
+      where: { id: product_id },
+    });
+
+    if (!existProduct) {
+      throw new ResponseError(
+        404,
+        "Oops! Product is not found or already deleted!"
+      );
+    }
+
+    const reviews = await prisma.review.findMany({
+      where: { product_id },
+      include: {
+        user: true,
+      },
+    });
+
+    const data: DataReview[] = reviews.map((review) => ({
+      comment: review.comment,
+      createdAt: review.created_at,
+      id: review.id,
+      imageUrl: review.user.image,
+      name: review.user.name,
+      rating: review.rating,
+    }));
+
+    return {
+      code: 200,
+      data,
+      message: "Successfully get data reviews!",
+      status: "success",
     };
   }
 }

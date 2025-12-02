@@ -92,3 +92,12 @@ export interface TransactionDashboard {
   province: string | null;
   postalCode: string | null;
 }
+
+export interface DataReview {
+  id: string;
+  name: string | null;
+  imageUrl: string | null;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+}

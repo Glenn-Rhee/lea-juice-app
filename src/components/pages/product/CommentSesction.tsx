@@ -7,6 +7,7 @@ import ResponseError from "@/error/ResponseError";
 import { cn } from "@/lib/utils";
 import { ResponsePayload } from "@/types";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
+import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -40,9 +41,10 @@ const data = [
 
 interface CommentSectionProps {
   product_id: string;
+  token: RequestCookie | undefined;
 }
 export default function CommentSection(props: CommentSectionProps) {
-  const { product_id } = props;
+  const { product_id, token } = props;
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -53,6 +55,9 @@ export default function CommentSection(props: CommentSectionProps) {
       const res = await fetch("/api/review", {
         method: "POST",
         body: JSON.stringify({ comment, rating, product_id }),
+        headers: {
+          Authorization: `Bearer ${token?.value || ""}`,
+        },
       });
 
       const dataRes = (await res.json()) as ResponsePayload;
