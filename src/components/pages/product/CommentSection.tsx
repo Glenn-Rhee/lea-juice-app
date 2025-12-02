@@ -89,80 +89,82 @@ export default function CommentSection(props: CommentSectionProps) {
         </ul>
       </div>
       <div className="flex-3 w-full flex flex-col gap-y-7 ps-4">
-        <div className="w-full pb-3 flex items-center gap-x-4">
-          {imageUser ? (
-            <Image
-              src={imageUser}
-              alt={`Profile image user`}
-              width={40}
-              height={40}
-              className="aspect-square rounded-full object-cover"
-            />
-          ) : (
-            <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
-              <IconUserFilled className="text-orange-800" size={20} />
-            </div>
-          )}
-          <div className="flex flex-col gap-y-2 w-full">
-            <input
-              type="text"
-              value={comment}
-              onKeyUp={(e) =>
-                e.key.toLowerCase() === "enter" &&
-                commentUser.mutate({ comment, product_id, rating, token })
-              }
-              onChange={(e) => setComment(e.target.value)}
-              className="border-b border-gray-500/40 w-full placeholder:text-stone-500 transition-colors text-stone-800 pb-2 placeholder:text-sm focus:border-b focus:outline-none focus:border-gray-600/70"
-              placeholder="Add your comment..."
-            />
-            <div className="flex items-center w-full justify-between gap-x-2">
-              <div className="flex items-center gap-x-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => setRating(i + 1)}
-                  >
-                    <IconStarFilled
-                      size={18}
-                      className={cn(
-                        "transition-colors duration-200 cursor-pointer text-gray-500",
-                        {
-                          "text-gray-500": rating === 0,
-                          "text-yellow-500": i + 1 <= rating,
-                        }
-                      )}
-                    />
-                  </button>
-                ))}
+        {token && (
+          <div className="w-full pb-3 flex items-center gap-x-4">
+            {imageUser ? (
+              <Image
+                src={imageUser}
+                alt={`Profile image user`}
+                width={40}
+                height={40}
+                className="aspect-square rounded-full object-cover"
+              />
+            ) : (
+              <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
+                <IconUserFilled className="text-orange-800" size={20} />
               </div>
-              <div className="flex items-center gap-x-3">
-                {(rating > 0 || comment.length > 0) && (
-                  <button
-                    onClick={() => {
-                      setRating(0);
-                      setComment("");
-                    }}
-                    className="bg-transparent h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 text-stone-800 cursor-pointer hover:bg-gray-300 "
+            )}
+            <div className="flex flex-col gap-y-2 w-full">
+              <input
+                type="text"
+                value={comment}
+                onKeyUp={(e) =>
+                  e.key.toLowerCase() === "enter" &&
+                  commentUser.mutate({ comment, product_id, rating, token })
+                }
+                onChange={(e) => setComment(e.target.value)}
+                className="border-b border-gray-500/40 w-full placeholder:text-stone-500 transition-colors text-stone-800 pb-2 placeholder:text-sm focus:border-b focus:outline-none focus:border-gray-600/70"
+                placeholder="Add your comment..."
+              />
+              <div className="flex items-center w-full justify-between gap-x-2">
+                <div className="flex items-center gap-x-2">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setRating(i + 1)}
+                    >
+                      <IconStarFilled
+                        size={18}
+                        className={cn(
+                          "transition-colors duration-200 cursor-pointer text-gray-500",
+                          {
+                            "text-gray-500": rating === 0,
+                            "text-yellow-500": i + 1 <= rating,
+                          }
+                        )}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-x-3">
+                  {(rating > 0 || comment.length > 0) && (
+                    <button
+                      onClick={() => {
+                        setRating(0);
+                        setComment("");
+                      }}
+                      className="bg-transparent h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5 text-stone-800 cursor-pointer hover:bg-gray-300 "
+                    >
+                      Cancel
+                    </button>
+                  )}
+                  <Button
+                    disabled={commentUser.isPending}
+                    onClick={() =>
+                      commentUser.mutate({ comment, product_id, rating, token })
+                    }
+                    type="submit"
+                    className="cursor-pointer"
+                    size={"sm"}
                   >
-                    Cancel
-                  </button>
-                )}
-                <Button
-                  disabled={commentUser.isPending}
-                  onClick={() =>
-                    commentUser.mutate({ comment, product_id, rating, token })
-                  }
-                  type="submit"
-                  className="cursor-pointer"
-                  size={"sm"}
-                >
-                  Comment
-                </Button>
+                    Comment
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
         {isLoading ? (
           Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="space-y-1">
