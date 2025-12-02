@@ -8,10 +8,11 @@ import { timeAgo } from "@/helper/timeAgo";
 import { useComment } from "@/lib/review-mutation";
 import { useReviews } from "@/lib/review-queries";
 import { cn } from "@/lib/utils";
+import { DataReview } from "@/types";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface CommentSectionProps {
   product_id: string;
@@ -24,6 +25,39 @@ export default function CommentSection(props: CommentSectionProps) {
   const [comment, setComment] = useState<string>("");
   const { data, isLoading } = useReviews(product_id);
   const commentUser = useComment();
+  const [reviews, setReviews] = useState<DataReview[]>([]);
+  const [filter, setFilter] = useState({
+    1: false,
+    2: false,
+    3: false,
+    4: false,
+    5: false,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setReviews(data.dataReview);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const activeFilters = Object.entries(filter)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .filter(([_, isActive]) => isActive)
+      .map(([rating]) => Number(rating));
+
+    if (activeFilters.length === 0) {
+      setReviews(data ? data.dataReview : []);
+      return;
+    }
+
+    if (data) {
+      const filtered = data.dataReview.filter((r) =>
+        activeFilters.includes(r.rating)
+      );
+      setReviews(filtered);
+    }
+  }, [filter, data]);
 
   return (
     <section className="max-w-6xl w-full mx-auto mt-8 flex gap-x-4 px-4 mb-8">
@@ -36,6 +70,12 @@ export default function CommentSection(props: CommentSectionProps) {
             <li key={i} className="flex items-center gap-x-2">
               <Checkbox
                 id={(i + 1).toString()}
+                onCheckedChange={(e) => {
+                  setFilter((prev) => ({
+                    ...prev,
+                    [i + 1]: e,
+                  }));
+                }}
                 className="border border-gray-500 w-5 h-5"
               />
               <Label
@@ -134,7 +174,7 @@ export default function CommentSection(props: CommentSectionProps) {
               <Skeleton className="mt-4 bg-gray-300 w-[20rem] h-3" />
             </div>
           ))
-        ) : data && data.dataReview.length === 0 ? (
+        ) : data && reviews.length === 0 ? (
           <div className="w-full h-full flex flex-col items-center justify-center">
             <Image
               src={"/comment.png"}
@@ -148,41 +188,43 @@ export default function CommentSection(props: CommentSectionProps) {
           </div>
         ) : (
           data &&
-          data.dataReview.map((d, i) => (
-            <div key={i} className="space-y-1">
-              <div className="flex items-center gap-x-2">
-                {d.imageUrl ? (
-                  <Image
-                    src={d.imageUrl}
-                    alt={`Profile image ${d.name}`}
-                    width={40}
-                    height={40}
-                    className="aspect-square rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
-                    <IconUserFilled className="text-orange-800" size={20} />
-                  </div>
-                )}
-                <span className="text-stone-900 font-semibold">{d.name}</span>
+          reviews
+            .sort((a, b) => b.rating - a.rating)
+            .map((d, i) => (
+              <div key={i} className="space-y-1">
+                <div className="flex items-center gap-x-2">
+                  {d.imageUrl ? (
+                    <Image
+                      src={d.imageUrl}
+                      alt={`Profile image ${d.name}`}
+                      width={40}
+                      height={40}
+                      className="aspect-square rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
+                      <IconUserFilled className="text-orange-800" size={20} />
+                    </div>
+                  )}
+                  <span className="text-stone-900 font-semibold">{d.name}</span>
+                </div>
+                <span className="flex items-center text-gray-600 font-semibold text-sm gap-x-2 mt-4">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <IconStarFilled
+                      size={18}
+                      key={i}
+                      className={cn("text-gray-500", {
+                        "text-yellow-500": i + 1 <= d.rating,
+                      })}
+                    />
+                  ))}
+                  {timeAgo(d.createdAt)}
+                </span>
+                <p className="mt-4 text-gray-700 font-medium text-sm">
+                  {d.comment}
+                </p>
               </div>
-              <span className="flex items-center text-gray-600 font-semibold text-sm gap-x-2 mt-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <IconStarFilled
-                    size={18}
-                    key={i}
-                    className={cn("text-gray-500", {
-                      "text-yellow-500": i + 1 <= d.rating,
-                    })}
-                  />
-                ))}
-                {timeAgo(d.createdAt)}
-              </span>
-              <p className="mt-4 text-gray-700 font-medium text-sm">
-                {d.comment}
-              </p>
-            </div>
-          ))
+            ))
         )}
       </div>
     </section>
