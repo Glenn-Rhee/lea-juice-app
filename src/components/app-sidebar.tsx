@@ -7,7 +7,6 @@ import {
   IconInnerShadowTop,
   IconListDetails,
   IconUsers,
-  IconEdit,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -49,11 +48,6 @@ const data = {
       title: "Transactions",
       url: "/dashboard/transactions",
       icon: IconFolder,
-    },
-    {
-      title: "Edit Profile",
-      url: "/dashboard/profile",
-      icon: IconEdit,
     },
   ],
 };

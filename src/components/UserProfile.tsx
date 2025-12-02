@@ -98,11 +98,7 @@ export default function UserProfile(props: UserProfileProps) {
                 onSelect={(e) => e.preventDefault()}
               >
                 <Link
-                  href={
-                    token.user.role === "ADMIN"
-                      ? "/dashboard/profile"
-                      : "/profile"
-                  }
+                  href={"/profile"}
                   className="text-stone-700 w-full flex items-center py-2 text-sm gap-x-3 cursor-pointer"
                 >
                   <IconEdit size={16} className="text-stone-700" />

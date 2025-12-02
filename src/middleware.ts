@@ -92,10 +92,7 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/shop", req.url));
     }
 
-    if (
-      token?.role === "ADMIN" &&
-      (url === "/profile" || url === "/transaction")
-    ) {
+    if (token?.role === "ADMIN" && url === "/transaction") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
