@@ -68,6 +68,17 @@ export async function middleware(req: NextRequest) {
       }
     }
 
+    if (url.includes("/review")) {
+      if (req.method !== "GET" && !token) {
+        return NextResponse.json<ResponsePayload>({
+          code: 403,
+          data: null,
+          message: "Forbidden! You don't have any acces for this action!",
+          status: "failed",
+        });
+      }
+    }
+
     if (url.includes("/checkout") && !token) {
       return NextResponse.json<ResponsePayload>({
         code: 403,
