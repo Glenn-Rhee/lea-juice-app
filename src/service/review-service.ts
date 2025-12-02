@@ -1,6 +1,9 @@
 import ResponseError from "@/error/ResponseError";
+import { getAverageRating } from "@/helper/getAverageRating";
+import { getRating } from "@/helper/getRating";
+import { getSatisfiedBuyes } from "@/helper/getSatisfiedBuyers";
 import { prisma } from "@/lib/prisma";
-import { DataReview, ResponsePayload } from "@/types";
+import { DataReview, ResponsePayload, TotalReview } from "@/types";
 import ReviewValidation from "@/validation/review-validation";
 import z from "zod";
 
@@ -79,6 +82,8 @@ export default class ReviewService {
       },
     });
 
+    const avgRating = getAverageRating(getRating(reviews));
+
     const data: DataReview[] = reviews.map((review) => ({
       comment: review.comment,
       createdAt: review.created_at,
@@ -88,9 +93,18 @@ export default class ReviewService {
       rating: review.rating,
     }));
 
+    const dataReviewProduct: TotalReview = {
+      dataReview: data,
+      totalRating: {
+        avgRating,
+        stars: getRating(reviews),
+      },
+      satisfiedTotal: getSatisfiedBuyes(getRating(reviews)),
+    };
+
     return {
       code: 200,
-      data,
+      data: dataReviewProduct,
       message: "Successfully get data reviews!",
       status: "success",
     };

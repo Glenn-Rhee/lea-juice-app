@@ -94,6 +94,11 @@ export interface TransactionDashboard {
   postalCode: string | null;
 }
 
+type TotalRating = {
+  stars: number[];
+  avgRating: string;
+};
+
 export interface DataReview {
   id: string;
   name: string | null;
@@ -101,4 +106,10 @@ export interface DataReview {
   rating: number;
   comment: string;
   createdAt: Date;
+}
+
+export interface TotalReview {
+  totalRating: TotalRating;
+  dataReview: DataReview[];
+  satisfiedTotal: number;
 }

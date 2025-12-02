@@ -32,36 +32,20 @@ export default function CommentSection(props: CommentSectionProps) {
         <Separator className="bg-stone-700/40 my-3" />
         <h4 className="text-stone-900 font-medium text-lg">Rating</h4>
         <ul className="flex flex-col gap-y-4 mt-2">
-          <li className="flex items-center gap-x-2">
-            <Checkbox id="5" className="border border-gray-500 w-5 h-5" />
-            <Label htmlFor="5" className="text-gray-600 text-lg font-semibold">
-              <IconStarFilled className="text-yellow-500" size={20} /> 5
-            </Label>
-          </li>
-          <li className="flex items-center gap-x-2">
-            <Checkbox id="4" className="border border-gray-500 w-5 h-5" />
-            <Label htmlFor="4" className="text-gray-600 text-lg font-semibold">
-              <IconStarFilled className="text-yellow-500" size={20} /> 4
-            </Label>
-          </li>
-          <li className="flex items-center gap-x-2">
-            <Checkbox id="3" className="border border-gray-500 w-5 h-5" />
-            <Label htmlFor="3" className="text-gray-600 text-lg font-semibold">
-              <IconStarFilled className="text-yellow-500" size={20} /> 3
-            </Label>
-          </li>
-          <li className="flex items-center gap-x-2">
-            <Checkbox id="2" className="border border-gray-500 w-5 h-5" />
-            <Label htmlFor="2" className="text-gray-600 text-lg font-semibold">
-              <IconStarFilled className="text-yellow-500" size={20} /> 2
-            </Label>
-          </li>
-          <li className="flex items-center gap-x-2">
-            <Checkbox id="1" className="border border-gray-500 w-5 h-5" />
-            <Label htmlFor="1" className="text-gray-600 text-lg font-semibold">
-              <IconStarFilled className="text-yellow-500" size={20} /> 1
-            </Label>
-          </li>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <li key={i} className="flex items-center gap-x-2">
+              <Checkbox
+                id={(i + 1).toString()}
+                className="border border-gray-500 w-5 h-5"
+              />
+              <Label
+                htmlFor={(i + 1).toString()}
+                className="text-gray-600 text-lg font-semibold"
+              >
+                <IconStarFilled className="text-yellow-500" size={20} /> {i + 1}
+              </Label>
+            </li>
+          ))}
         </ul>
       </div>
       <div className="flex-3 w-full flex flex-col gap-y-7 ps-4">
@@ -137,7 +121,7 @@ export default function CommentSection(props: CommentSectionProps) {
               <Skeleton className="mt-4 bg-gray-300 w-[20rem] h-3" />
             </div>
           ))
-        ) : data && data.length === 0 ? (
+        ) : data && data.dataReview.length === 0 ? (
           <div className="w-full h-full flex flex-col items-center justify-center">
             <Image
               src={"/comment.png"}
@@ -151,7 +135,7 @@ export default function CommentSection(props: CommentSectionProps) {
           </div>
         ) : (
           data &&
-          data.map((d, i) => (
+          data.dataReview.map((d, i) => (
             <div key={i} className="space-y-1">
               <div className="flex items-center gap-x-2">
                 {d.imageUrl ? (
