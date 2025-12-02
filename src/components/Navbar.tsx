@@ -45,7 +45,7 @@ export default function Navbar(props: NavbarProps) {
 
   return (
     <>
-      <nav className="fixed w-full z-50 px-8 " id="navbar">
+      <nav className="fixed w-full z-50 px-8" id="navbar">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link
             href={"/"}
