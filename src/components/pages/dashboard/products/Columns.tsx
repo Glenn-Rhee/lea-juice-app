@@ -10,6 +10,7 @@ import z from "zod";
 import ProductValidation from "@/validation/product-validation";
 import { IconEdit } from "@tabler/icons-react";
 import DeleteProduct from "./DeleteProduct";
+import TableCellViewer from "./TableCellViewer";
 
 export const columns: ColumnDef<DataProduct>[] = [
   {
@@ -54,11 +55,7 @@ export const columns: ColumnDef<DataProduct>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </button>
     ),
-    cell: ({ row }) => (
-      <span className="text-white font-medium">
-        {row.original.product_name}
-      </span>
-    ),
+    cell: ({ row }) => <TableCellViewer item={row.original} />,
   },
   {
     accessorKey: "price",
@@ -148,6 +145,7 @@ export const columns: ColumnDef<DataProduct>[] = [
             </Button>
           </DialogProduct>
           <DeleteProduct id={row.original.id} />
+          <TableCellViewer item={row.original} isForAction />
         </div>
       );
     },

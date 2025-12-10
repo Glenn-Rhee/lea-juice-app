@@ -170,7 +170,9 @@ export default function DialogProduct(props: DialogProductProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-center">Add product</DialogTitle>
+          <DialogTitle className="text-center">
+            {httpMethod === "PATCH" ? "Edit Product" : "Add Product"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
