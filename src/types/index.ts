@@ -2,6 +2,7 @@ import z from "zod";
 import {
   CartItem,
   CATEGORY,
+  GENDER,
   Product,
   STATUSORDER,
   STATUSPAYMENT,
@@ -117,4 +118,21 @@ export interface TotalReview {
   totalRating: TotalRating;
   dataReview: DataReview[];
   satisfiedTotal: number;
+}
+
+export interface DataUserTable {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  image: string;
+  totalOrders: number;
+  address: string;
+  phoneNumber: string;
+  gender: GENDER;
+  city: string;
+  province: string;
+  postalCode: string;
+  totalSpending: number;
+  lastPurchaseDate: Date;
 }
