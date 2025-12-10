@@ -65,6 +65,11 @@ export interface DataProduct extends Product {
     id: string;
     category_name: CATEGORY;
   };
+  Detail_Order: {
+    quantity: number;
+  }[];
+  totalPurchased: number;
+  advantage: number;
   imageUrlUser: string | null;
 }
 

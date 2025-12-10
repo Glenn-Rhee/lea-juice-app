@@ -27,7 +27,6 @@ export default function TableCellViewer({
 }) {
   const isMobile = useIsMobile();
   const [open, setOpen] = useState<boolean>(false);
-
   return (
     <Drawer
       open={open}
@@ -73,12 +72,16 @@ export default function TableCellViewer({
               <Input readOnly disabled value={item.category.category_name} />
             </div>
             <div className="flex flex-col gap-y-2">
-              <Label>Total Purchases</Label>
-              <Input readOnly disabled value={10} />
+              <Label>Total Purchased</Label>
+              <Input readOnly disabled value={item.totalPurchased} />
             </div>
             <div className="flex flex-col gap-y-2">
-              <Label>Advantage</Label>
-              <Input readOnly disabled value={10000} />
+              <Label>Total Advantage</Label>
+              <Input
+                readOnly
+                disabled
+                value={"Rp" + item.advantage.toLocaleString("id-ID")}
+              />
             </div>
           </div>
           <Textarea

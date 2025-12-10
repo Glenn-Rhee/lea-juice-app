@@ -55,6 +55,14 @@ export default class ProductService {
     let products = await prisma.product.findMany({
       include: {
         category: true,
+        Detail_Order: {
+          select: {
+            quantity: true,
+          },
+          where: {
+            status: "COMPLETED",
+          },
+        },
       },
       orderBy: { product_name: "asc" },
     });
@@ -84,6 +92,14 @@ export default class ProductService {
         },
         include: {
           category: true,
+          Detail_Order: {
+            select: {
+              quantity: true,
+            },
+            where: {
+              status: "COMPLETED",
+            },
+          },
         },
         orderBy: { product_name: "asc" },
       });
@@ -101,6 +117,14 @@ export default class ProductService {
           },
           include: {
             category: true,
+            Detail_Order: {
+              select: {
+                quantity: true,
+              },
+              where: {
+                status: "COMPLETED",
+              },
+            },
           },
           orderBy: { product_name: "asc" },
         });
@@ -115,7 +139,16 @@ export default class ProductService {
         },
         include: {
           category: true,
+          Detail_Order: {
+            select: {
+              quantity: true,
+            },
+            where: {
+              status: "COMPLETED",
+            },
+          },
         },
+
         orderBy: { product_name: "asc" },
       });
 
@@ -129,6 +162,14 @@ export default class ProductService {
           },
           include: {
             category: true,
+            Detail_Order: {
+              select: {
+                quantity: true,
+              },
+              where: {
+                status: "COMPLETED",
+              },
+            },
           },
           orderBy: { product_name: "asc" },
         });
@@ -142,6 +183,14 @@ export default class ProductService {
         },
         include: {
           category: true,
+          Detail_Order: {
+            select: {
+              quantity: true,
+            },
+            where: {
+              status: "COMPLETED",
+            },
+          },
         },
         orderBy: { product_name: "asc" },
       });
@@ -163,6 +212,16 @@ export default class ProductService {
         status: "success",
       };
     }
+
+    products = products
+      .map((p) => ({
+        ...p,
+        totalPurchased: p.Detail_Order.reduce((acc, d) => acc + d.quantity, 0),
+      }))
+      .map((p) => ({
+        ...p,
+        advantage: p.totalPurchased * p.price,
+      }));
 
     return {
       code: 200,
