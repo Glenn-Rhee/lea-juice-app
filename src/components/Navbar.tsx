@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { Session } from "next-auth";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
 import { IconShoppingCart } from "@tabler/icons-react";
@@ -17,7 +17,23 @@ import { useCartItems } from "@/lib/product-queries";
 interface NavbarProps {
   token: Session | null;
 }
-
+export async function handleLogout(
+  setLoading: Dispatch<SetStateAction<boolean>>
+) {
+  setLoading(true);
+  try {
+    await signOut();
+    toast.success("Logout successfully!");
+  } catch (error) {
+    if (error instanceof Error) {
+      toast.error("An error while logout! Please try again later!");
+    } else {
+      toast.error("An error occured!");
+    }
+  } finally {
+    setLoading(false);
+  }
+}
 export default function Navbar(props: NavbarProps) {
   const { token } = props;
   const pathname = usePathname();
@@ -26,22 +42,6 @@ export default function Navbar(props: NavbarProps) {
 
   if (pathname.includes("/auth")) return null;
   if (pathname.includes("/dashboard")) return null;
-
-  async function handleLogout() {
-    setLoading(true);
-    try {
-      await signOut();
-      toast.success("Logout successfully!");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error("An error while logout! Please try again later!");
-      } else {
-        toast.error("An error occured!");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <>
@@ -99,7 +99,7 @@ export default function Navbar(props: NavbarProps) {
                   <Button
                     variant={"destructive"}
                     type="button"
-                    onClick={handleLogout}
+                    onClick={() => handleLogout(setLoading)}
                     disabled={loading}
                     className="cursor-pointer rounded-full px-8 py-5"
                   >
@@ -121,7 +121,7 @@ export default function Navbar(props: NavbarProps) {
                 <UserProfile
                   disabled={loading}
                   token={token}
-                  handleLogout={handleLogout}
+                  handleLogout={() => handleLogout(setLoading)}
                 />
 
                 {token?.user.role === "USER" && (

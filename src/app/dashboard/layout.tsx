@@ -1,12 +1,30 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { DataUser, ResponsePayload } from "@/types";
+import { cookies } from "next/headers";
 
-export default function DashboardLayout({
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://lea-juice-app.vercel.app"
+    : "http://localhost:3000";
+
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
+  const res = await fetch(baseUrl + "/api/user", {
+    headers: {
+      Authorization: `Bearer ${token?.value || ""}`,
+    },
+  });
+  const dataRes = (await res.json()) as ResponsePayload<DataUser>;
+
   return (
     <SidebarProvider
       style={
@@ -16,7 +34,7 @@ export default function DashboardLayout({
         } as React.CSSProperties
       }
     >
-      <AppSidebar variant="inset" />
+      <AppSidebar dataUser={dataRes.data} variant="inset" />
       <SidebarInset>
         <SiteHeader />
         {children}
