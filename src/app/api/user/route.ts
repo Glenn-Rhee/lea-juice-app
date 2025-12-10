@@ -53,6 +53,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
+    const searchParams = req.nextUrl.searchParams;
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     if (!token || !token.id) {
       throw new ResponseError(
@@ -61,7 +62,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    const response = await UserService.getUser(token.id);
+    const response = await UserService.getUser(token.id, searchParams.get("get"));
     return NextResponse.json<ResponsePayload>(response);
   } catch (error) {
     console.log("Error user Route at GET method:", error);

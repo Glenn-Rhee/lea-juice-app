@@ -1,7 +1,14 @@
 import ResponseError from "@/error/ResponseError";
+import getMostPurchasedCategory from "@/helper/getMostPurchasedCategory";
 import Bcrypt from "@/lib/bcrypt";
 import { prisma } from "@/lib/prisma";
-import { DataUser, PatchUser, RegisterUser, ResponsePayload } from "@/types";
+import {
+  DataUser,
+  DataUserTable,
+  PatchUser,
+  RegisterUser,
+  ResponsePayload,
+} from "@/types";
 
 export default class UserService {
   static async createUser(data: RegisterUser): Promise<ResponsePayload> {
@@ -94,7 +101,14 @@ export default class UserService {
     };
   }
 
-  static async getUser(id: string): Promise<ResponsePayload> {
+  static async getUser(
+    id: string,
+    getParams: string | null
+  ): Promise<ResponsePayload> {
+    if (getParams && getParams === "*") {
+      return await this.getUsers(id);
+    }
+
     const userData = await prisma.user.findFirst({
       where: { id },
     });
@@ -131,6 +145,95 @@ export default class UserService {
       code: 200,
       data,
       message: "Successfully get data user!",
+    };
+  }
+
+  static async getUsers(userId: string): Promise<ResponsePayload> {
+    const isAdmin = await prisma.user.findUnique({ where: { id: userId } });
+    if (!isAdmin) {
+      throw new ResponseError(404, "Oops! User is not found");
+    }
+
+    if (isAdmin.role === "USER") {
+      throw new ResponseError(
+        403,
+        "Oops! Yout don't have any access for this service!"
+      );
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        Order: {
+          some: {
+            Detail_Order: {
+              some: {
+                status: "COMPLETED",
+              },
+            },
+          },
+        },
+      },
+      include: {
+        userDetail: true,
+        Order: {
+          include: {
+            Detail_Order: {
+              include: {
+                product: {
+                  include: {
+                    category: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const allOrders = users.flatMap((u) => u.Order || []);
+    const bestSeller =
+      allOrders.length > 0 ? getMostPurchasedCategory(allOrders) : "JUICE";
+
+    const data: DataUserTable[] = users.map((user) => ({
+      address: user.userDetail?.address || "",
+      city: user.userDetail?.city || "",
+      email: user.email || "",
+      id: user.id,
+      image: user.image || "",
+      name: user.name || "",
+      phoneNumber: user.userDetail?.phoneNumber || "",
+      postalCode: user.userDetail?.postalCode || "",
+      province: user.userDetail?.province || "",
+      username: user.username || "",
+      lastPurchaseDate: user.Order.sort(
+        (a, b) => b.created_at.getTime() - a.created_at.getTime()
+      )[0].created_at,
+      totalOrders: user.Order.reduce((sum, order) => {
+        const completedDetails = order.Detail_Order.filter(
+          (d) => d.status === "COMPLETED"
+        );
+        return sum + completedDetails.length;
+      }, 0),
+      totalSpending: user.Order.reduce((sum, order) => {
+        const completedDetails = order.Detail_Order.filter(
+          (d) => d.status === "COMPLETED"
+        );
+        const totalItems = completedDetails.reduce(
+          (s, d) => s + d.total_price,
+          0
+        );
+        return sum + totalItems;
+      }, 0),
+      gender: user.userDetail?.gender || "UNKNOWN",
+      bestSeller,
+    }));
+
+    return {
+      code: 200,
+      data,
+      message: "Successfully get data users!",
+      status: "success",
     };
   }
 }

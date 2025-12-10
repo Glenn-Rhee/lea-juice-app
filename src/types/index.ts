@@ -135,4 +135,5 @@ export interface DataUserTable {
   postalCode: string;
   totalSpending: number;
   lastPurchaseDate: Date;
+  bestSeller: CATEGORY;
 }
