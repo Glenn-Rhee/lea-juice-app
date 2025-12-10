@@ -50,6 +50,15 @@ export default function TableCellViewer({
           <DrawerTitle className="text-center">Products Detail</DrawerTitle>
         </DrawerHeader>
         <div className="flex flex-col gap-y-3 w-full mt-3 overflow-y-auto">
+          <div className="mt-3 w-full flex items-center justify-center">
+            <Image
+              src={item.image_url}
+              alt={item.product_name + " image"}
+              height={200}
+              width={100}
+              className="w-full max-h-[12rem] object-cover max-w-[15rem]"
+            />
+          </div>
           <div className="flex flex-col gap-y-2">
             <Label>Product Id</Label>
             <Input readOnly disabled value={item.id} />
@@ -90,15 +99,6 @@ export default function TableCellViewer({
             disabled
             value={item.description}
           />
-          <div className="mt-3 w-full flex items-center justify-center">
-            <Image
-              src={item.image_url}
-              alt={item.product_name + " image"}
-              height={200}
-              width={100}
-              className="w-full max-h-[12rem] object-cover max-w-[15rem]"
-            />
-          </div>
         </div>
         <DrawerFooter>
           <DrawerClose className="cursor-pointer" asChild>

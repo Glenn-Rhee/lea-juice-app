@@ -2,6 +2,7 @@
 import { DataUserTable } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
+import TableCellViewer from "./TableCellViewer";
 
 export const columnsUser: ColumnDef<DataUserTable>[] = [
   {
@@ -33,6 +34,15 @@ export const columnsUser: ColumnDef<DataUserTable>[] = [
     ),
   },
   {
+    accessorKey: "totalSpending",
+    header: "Total Spending",
+    cell: ({ row }) => (
+      <span className="font-medium">
+        Rp{row.original.totalSpending.toLocaleString("id-ID")}
+      </span>
+    ),
+  },
+  {
     accessorKey: "lastPurchaseDate",
     header: "Last Purchase Date",
     cell: ({ row }) => {
@@ -54,11 +64,16 @@ export const columnsUser: ColumnDef<DataUserTable>[] = [
         <Image
           src={row.original.image}
           alt={`Profile pictur ${row.original.username}`}
-          width={50}
-          height={50}
+          width={40}
+          height={40}
           className="aspect-square object-cover rounded-full border"
         />
       );
     },
+  },
+  {
+    accessorKey: "actions",
+    header: "Action",
+    cell: ({ row }) => <TableCellViewer item={row.original} />,
   },
 ];
