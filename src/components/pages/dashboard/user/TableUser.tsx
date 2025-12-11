@@ -21,14 +21,15 @@ export default function TableUser({
 
     // username
     let filtered = initialData.filter((d) => d.username.includes(filter));
-    if (filtered.length === 0) {
-      // email
-      filtered = initialData.filter((d) => d.email.includes(filter));
-    }
 
     if (filtered.length === 0) {
       // id
       filtered = initialData.filter((d) => d.id === filter);
+    }
+
+    if (filtered.length === 0) {
+      // email
+      filtered = initialData.filter((d) => d.email.includes(filter));
     }
 
     if (filtered.length === 0) {

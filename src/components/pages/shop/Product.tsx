@@ -74,25 +74,33 @@ export default function Product(props: ProductProps) {
           </span>
         </div>
       </Link>
-      <button
-        disabled={createCart.isPending}
-        onClick={handleCheckout}
-        className={cn(
-          "w-full mt-4 bg-white border py-2 rounded-full transition-colors duration-300",
-          {
-            "cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white":
-              !createCart.isPending,
-            "cursor-not-allowed border-orange-400/40 text-gray-400":
-              createCart.isPending,
-          }
-        )}
-      >
-        {createCart.isPending ? (
-          <Loader className="text-gray-700 text-center mx-auto" />
-        ) : (
-          "Add to chart"
-        )}
-      </button>
+      {data.stock === 0 ? (
+        <div className="w-full mt-4">
+          <span className="text-red-500 block font-medium text-lg text-center">
+            Sold out
+          </span>
+        </div>
+      ) : (
+        <button
+          disabled={createCart.isPending}
+          onClick={handleCheckout}
+          className={cn(
+            "w-full mt-4 bg-white border py-2 rounded-full transition-colors duration-300",
+            {
+              "cursor-pointer border-orange-600 hover:bg-orange-600 text-orange-500 hover:text-white":
+                !createCart.isPending,
+              "cursor-not-allowed border-orange-400/40 text-gray-400":
+                createCart.isPending,
+            }
+          )}
+        >
+          {createCart.isPending ? (
+            <Loader className="text-gray-700 text-center mx-auto" />
+          ) : (
+            "Add to chart"
+          )}
+        </button>
+      )}
     </div>
   );
 }

@@ -59,27 +59,35 @@ export default function ProductPurchaseBar(props: ProductPurchaseBarProps) {
 
   return (
     <div className="flex items-center gap-x-3">
-      <span className="text-gray-600 font-medium">Quantity</span>
-      <Counter stateQty={[qty, setQty]} maxStock={data.stock} />
-      <button
-        type="button"
-        onClick={handleCheckout}
-        className={cn(
-          "px-4 py-1 border w-[10rem] transition-colors duration-200 rounded-xl",
-          {
-            "border-orange-600 cursor-pointer text-orange-500 hover:border-transparent hover:bg-orange-600 hover:text-white":
-              !createCart.isPending,
-            "cursor-not-allowed border-orange-400/40 text-gray-400":
-              createCart.isPending,
-          }
-        )}
-      >
-        {createCart.isPending ? (
-          <Loader className="text-gray-700 text-center mx-auto" />
-        ) : (
-          "Add to chart"
-        )}
-      </button>
+      {data.stock === 0 ? (
+        <span className="text-red-500 font-medium text-lg not-[]:bg-white">
+          Sold out
+        </span>
+      ) : (
+        <>
+          <span className="text-gray-600 font-medium">Quantity</span>
+          <Counter stateQty={[qty, setQty]} maxStock={data.stock} />
+          <button
+            type="button"
+            onClick={handleCheckout}
+            className={cn(
+              "px-4 py-1 border w-[10rem] transition-colors duration-200 rounded-xl",
+              {
+                "border-orange-600 cursor-pointer text-orange-500 hover:border-transparent hover:bg-orange-600 hover:text-white":
+                  !createCart.isPending,
+                "cursor-not-allowed border-orange-400/40 text-gray-400":
+                  createCart.isPending,
+              }
+            )}
+          >
+            {createCart.isPending ? (
+              <Loader className="text-gray-700 text-center mx-auto" />
+            ) : (
+              "Add to chart"
+            )}
+          </button>
+        </>
+      )}
     </div>
   );
 }

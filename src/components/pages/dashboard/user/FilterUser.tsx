@@ -24,7 +24,7 @@ export default function FilterUser(props: FilterUserProps) {
           }
           onChange={(e) => setValue(e.target.value)}
           type="search"
-          placeholder="Find username, name, or email user..."
+          placeholder="Find username, email, id, total order, and total spending"
           className="w-full pl-10 pr-4 py-2 border border-input rounded-lg bg-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition"
         />
       </div>
