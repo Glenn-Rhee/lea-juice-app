@@ -101,7 +101,3 @@ This project is licensed to the team "Kelompok 1". Members:
 
 - Sensitive keys and tokens found in the local `.env` (if any) should be rotated before publishing the repository publicly.
 - If you want, I can also add a `env.example` file (without secrets), commit this `README.md`, or generate basic documentation pages inside the repo (API routes, Prisma schema summary, and example screenshots).
-
----
-
-README created based on repository metadata and your inputs.
