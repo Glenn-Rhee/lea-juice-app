@@ -213,16 +213,18 @@ export default class ProductService {
       };
     }
 
-    products = products
-      .map((p) => ({
-        ...p,
-        totalPurchased: p.Detail_Order.reduce((acc, d) => acc + d.quantity, 0),
-      }))
-      .map((p) => ({
-        ...p,
-        advantage: p.totalPurchased * p.price,
-      }));
+    products = products.map((p) => {
+      const totalPurchased = p.Detail_Order.reduce(
+        (acc, d) => acc + d.quantity,
+        0
+      );
 
+      return {
+        ...p,
+        totalPurchased,
+        advantage: totalPurchased * p.price,
+      };
+    });
     return {
       code: 200,
       data: products,
