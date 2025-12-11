@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lea-Juice-App
 
-## Getting Started
+## Description
 
-First, run the development server:
+Lea-Juice-App is an online marketplace for fresh juices, fruits, and salads. Customers can browse products, add items to a cart, checkout using integrated payment gateways, and leave reviews and comments. The project includes an admin interface for managing products, viewing sales and customers, and handling transactions.
+
+## Features
+
+- Two user roles: Buyer (user) and Admin
+- Buyer features: browse products, add to cart, checkout, write product reviews, post comments
+- Admin features: product CRUD (create, read, update, delete), view total sales per product, view customers who purchased, view total revenue, and manage incoming transactions
+- Authentication with `next-auth` (Prisma adapter)
+- Database management with Prisma
+- Payment integration (Midtrans)
+- File uploads and media handling
+- Optional Supabase & Redis integrations for realtime/data storage
+
+## Tech Stack
+
+- Next.js (React)
+- TypeScript
+- Prisma (Postgres)
+- NextAuth
+- Supabase (optional public client)
+- Upstash Redis (optional)
+- Tailwind CSS and Radix UI for components
+- TanStack Query for data fetching
+
+## Installation
+
+Clone the repository and install dependencies using `npm`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Glenn-Rhee/lea-juice-app
+cd lea-juice-app
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file at the project root and provide the following variables (example placeholders):
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+NEXTAUTH_SECRET=your_nextauth_secret
+GOOGLE_CLIENTID=your_google_client_id
+GOOGLE_CLIENTSECRET=your_google_client_secret
+UPLOADTHING_TOKEN=your_uploadthing_token
+UPLOADTHING_SECRET=your_uploadthing_secret
+UPLOADTHING_APP_ID=your_uploadthing_app_id
+UPSTASH_REDIS_REST_URL=https://xxxxx.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your_upstash_token
+MIDTRANS_SERVER_KEY=your_midtrans_server_key
+MIDTRANS_CLIENT_KEY=your_midtrans_client_key
+MIDTRANS_IS_PRODUCTION=false
+NEXT_PUBLIC_SUPABASE_URL=https://your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Learn More
+Do NOT commit secrets to version control. Use environment variables in your deployment platform (for example, Vercel Environment Variables).
 
-To learn more about Next.js, take a look at the following resources:
+## Database Migration
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To create or run migrations during development, run:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npx prisma migrate dev --name "init"
+npx prisma generate
+```
 
-## Deploy on Vercel
+(You provided: `prisma generate dev --name "name"` — the common flow is `prisma migrate dev --name "<name>"` then `prisma generate`.)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` — Run development server
+- `npm run build` — Run `prisma generate` then build for production
+- `npm start` — Start the production server
+- `npm run prisma:generate` — Run `prisma generate`
+
+## Deployment
+
+This project can be deployed anywhere that supports Node.js and Next.js. For convenience, you can deploy to Vercel (recommended by the author):
+
+1. Push your repository to GitHub/GitLab/Bitbucket
+2. Import the repository on Vercel
+3. Configure environment variables on Vercel according to the list above
+4. Set the build command to `npm run build` and the output directory to the default (Vercel will detect Next.js)
+
+## Contributors & License
+
+This project is licensed to the team "Kelompok 1". Members:
+
+- Anisa Rahayu
+- Ariel Rizki Muhtamad Bakri
+- Faizh Adi Anugerah
+- Muhammad Davy Wibowo
+- Najwa Rahmatia Astuti
+
+## Notes
+
+- Sensitive keys and tokens found in the local `.env` (if any) should be rotated before publishing the repository publicly.
+- If you want, I can also add a `env.example` file (without secrets), commit this `README.md`, or generate basic documentation pages inside the repo (API routes, Prisma schema summary, and example screenshots).
+
+---
+
+README created based on repository metadata and your inputs.
