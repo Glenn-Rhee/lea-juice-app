@@ -94,7 +94,10 @@ export default function TableCellViewer({ item }: { item: DataUserTable }) {
             <span className="text-sm font-light">{dateOfDay}</span>
           </div>
           <Separator className="bg-gray-600" />
-          <Textarea className="mt-3" readOnly disabled value={item.address} />
+          <div className="flex flex-col gap-y-2 mt-3">
+            <Label>Address</Label>
+            <Textarea readOnly disabled value={item.address} />
+          </div>
           <div className="grid grid-cols-2 gap-y-3 gap-x-4 w-full mt-3">
             <div className="flex flex-col gap-y-2">
               <Label>Gender</Label>

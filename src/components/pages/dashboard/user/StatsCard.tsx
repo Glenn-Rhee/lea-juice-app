@@ -24,7 +24,9 @@ export default function StatsCard({ data }: { data: DataUserTable[] }) {
         <p className="text-sm text-muted-foreground mb-2">
           Best Selling Product
         </p>
-        <p className="text-3xl font-bold">{data[0].bestSeller}</p>
+        <p className="text-3xl font-bold">
+          {data.length === 0 ? "-" : data[0].bestSeller}
+        </p>
         <p className="text-xs text-muted-foreground mt-1">
           The product with the most sales.
         </p>
