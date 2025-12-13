@@ -5,6 +5,8 @@ import ProductValidation from "@/validation/product-validation";
 import z from "zod";
 import { CATEGORY } from "../../generated/prisma";
 import { UTApi } from "uploadthing/server";
+import { JWT } from "next-auth/jwt";
+import StatisticService from "./statistic-service";
 
 export default class ProductService {
   static async createProduct(
@@ -47,7 +49,8 @@ export default class ProductService {
 
   static async getProduct(
     query: URLSearchParams,
-    user_id: string | null | undefined
+    user_id: string | null | undefined,
+    token: JWT | null
   ): Promise<ResponsePayload> {
     const q = query.get("q");
     const category = query.get("c") as CATEGORY | null;
@@ -213,23 +216,48 @@ export default class ProductService {
       };
     }
 
-    products = products.map((p) => {
-      const totalPurchased = p.Detail_Order.reduce(
-        (acc, d) => acc + d.quantity,
-        0
-      );
+    if (token && token.role === "ADMIN") {
+      products = products.map((p) => {
+        const totalPurchased = p.Detail_Order.reduce(
+          (acc, d) => acc + d.quantity,
+          0
+        );
 
-      return {
-        ...p,
-        totalPurchased,
-        advantage: totalPurchased * p.price,
-      };
-    });
+        return {
+          ...p,
+          totalPurchased,
+          advantage: totalPurchased * p.price,
+        };
+      });
+    }
+
     return {
       code: 200,
       data: products,
       message: "Successfully get products!",
       status: "success",
+    };
+  }
+
+  static async getProductBestSeller(): Promise<ResponsePayload> {
+    const bestSeller = await StatisticService.getBestSeller();
+    const productIds = bestSeller.map((item) => item.product_id);
+    const products = await prisma.product.findMany({
+      where: {
+        id: {
+          in: productIds,
+        },
+      },
+      orderBy: {
+        product_name: "asc",
+      },
+    });
+
+    return {
+      status: "success",
+      code: 200,
+      data: products,
+      message: "Successfully get best seller products!",
     };
   }
 

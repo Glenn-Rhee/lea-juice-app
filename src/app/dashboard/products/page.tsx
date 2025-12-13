@@ -5,6 +5,7 @@ import TableProduct from "@/components/pages/dashboard/products/TableProduct";
 import ResponseError from "@/error/ResponseError";
 import { DataProduct, ResponsePayload } from "@/types";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -20,11 +21,21 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   const query = (await searchParams).q;
   const c = (await searchParams).c;
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
 
   const response = await fetch(
     `${baseUrl}/api/products` +
-      (query ? `?q=${query}${c ? `&c=${c}` : ""}` : "")
+      (query ? `?q=${query}${c ? `&c=${c}` : ""}` : ""),
+    {
+      headers: {
+        Authorization: `Bearer ${token?.value || ""}`,
+      },
+    }
   );
+
   const dataProducts = (await response.json()) as ResponsePayload<
     DataProduct[]
   >;
@@ -46,13 +57,22 @@ export async function generateMetadata({
 
 export default async function ProductsDashboardPage({ searchParams }: Props) {
   const query = (await searchParams).q;
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
   const c = (await searchParams).c;
   let dataProducts: DataProduct[] | null = null;
   let errorMessage: { message: string; code: number } | null = null;
   try {
     const response = await fetch(
       `${baseUrl}/api/products` +
-        (query ? `?q=${query}${c ? `&c=${c}` : ""}` : "")
+        (query ? `?q=${query}${c ? `&c=${c}` : ""}` : ""),
+      {
+        headers: {
+          Authorization: `Bearer ${token?.value || ""}`,
+        },
+      }
     );
     const dataResponse = (await response.json()) as ResponsePayload<
       DataProduct[]

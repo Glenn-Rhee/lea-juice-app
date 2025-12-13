@@ -36,7 +36,7 @@ export default async function ShopePage({ searchParams }: Props) {
   const links = [{ href: "/", text: "Home" }];
   let dataProducts: DataProduct[] | null = null;
   let errorMessage: { message: string; code: number } | null = null;
-
+  let bestSellerProducts: DataProduct[] | null = null;
   try {
     const response = await fetch(
       `${baseUrl}/api/products` +
@@ -46,15 +46,24 @@ export default async function ShopePage({ searchParams }: Props) {
             }`
           : "")
     );
+    const res = await fetch(baseUrl + "/api/products?best=true");
+    const dataRes = (await res.json()) as ResponsePayload<DataProduct[]>;
+    if (dataRes.status === "failed") {
+      throw new ResponseError(dataRes.code, dataRes.message);
+    }
+
     const dataResponse = (await response.json()) as ResponsePayload<
       DataProduct[]
     >;
     if (dataResponse.status === "failed") {
       throw new ResponseError(dataResponse.code, dataResponse.message);
     }
+
+    bestSellerProducts = dataRes.data;
     dataProducts = dataResponse.data;
     errorMessage = null;
   } catch (error) {
+    bestSellerProducts = null;
     if (error instanceof ResponseError) {
       errorMessage = {
         message: error.message,
@@ -79,7 +88,8 @@ export default async function ShopePage({ searchParams }: Props) {
           message={errorMessage.message}
         />
       ) : (
-        dataProducts && (
+        dataProducts &&
+        bestSellerProducts && (
           <>
             {!search && !category && (
               <>
@@ -87,10 +97,10 @@ export default async function ShopePage({ searchParams }: Props) {
                 <h2 className="text-stone-800 font-semibold text-3xl mt-4">
                   Top Sellers
                 </h2>
-                {dataProducts.length === 0 ? (
+                {bestSellerProducts.length === 0 ? (
                   <EmptyProduct message="Product is not finished yet" />
                 ) : (
-                  <Products data={dataProducts} />
+                  <Products data={bestSellerProducts} />
                 )}
               </>
             )}

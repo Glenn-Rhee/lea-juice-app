@@ -64,10 +64,16 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         throw new ResponseError(400, "Invalid category!");
       }
     }
-    const response = await ProductService.getProduct(
-      query,
-      token ? token.id : null
-    );
+
+    const best = query.get("best");
+    const response =
+      best && best == "true"
+        ? await ProductService.getProductBestSeller()
+        : await ProductService.getProduct(
+            query,
+            token ? token.id : null,
+            token
+          );
     return NextResponse.json<ResponsePayload>(response);
   } catch (error) {
     console.log("Error product Route at POST method:", error);
