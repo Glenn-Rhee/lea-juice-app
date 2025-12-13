@@ -26,7 +26,7 @@ export function getDateRange(
 
   if (range === "7d") start.setDate(now.getDate() - 7);
   if (range === "30d") start.setDate(now.getDate() - 30);
-  if (range === "90d") start.setDate(now.getMonth() - 3);
+  if (range === "90d") start.setMonth(now.getMonth() - 3);
 
   return { gte: start, lte: now };
 }

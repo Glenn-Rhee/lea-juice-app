@@ -35,11 +35,11 @@ export function SectionCards(props: SectionCardsProps) {
   const { dataTotalRevenu, dataNewOrder, dataBestSeller, dataProductLowStock } =
     props;
   const totalToday = dataTotalRevenu.today.reduce(
-    (prev, curr) => prev + curr.total_price,
+    (prev, curr) => prev + curr.revenue,
     0
   );
   const totalYesterday = dataTotalRevenu.yesterday.reduce(
-    (prev, curr) => prev + curr.total_price,
+    (prev, curr) => prev + curr.revenue,
     0
   );
 

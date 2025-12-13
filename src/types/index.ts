@@ -147,14 +147,21 @@ export type DataNewOrder = {
 export type TotalRevenue = {
   id: string;
   total_price: number;
+  created_at: Date;
+};
+
+export type GroupedRevenue = {
+  date: string;
+  totalOrder: number;
+  revenue: number;
 };
 
 export type DataTotalRevenue = {
-  today: TotalRevenue[];
-  sevenDay: TotalRevenue[];
-  oneMonth: TotalRevenue[];
-  threeMonth: TotalRevenue[];
-  yesterday: TotalRevenue[];
+  today: GroupedRevenue[];
+  sevenDay: GroupedRevenue[];
+  oneMonth: GroupedRevenue[];
+  threeMonth: GroupedRevenue[];
+  yesterday: GroupedRevenue[];
 };
 
 export type DataBestSeller = {

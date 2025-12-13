@@ -1,5 +1,6 @@
 import ResponseError from "@/error/ResponseError";
 import { getDateRange } from "@/helper/getDateRange";
+import { groupOrdersByDate } from "@/helper/groupOrdersByDate";
 import { prisma } from "@/lib/prisma";
 import { ResponsePayload } from "@/types";
 
@@ -14,13 +15,13 @@ export default class StatisticService {
     } = await this.getOrders();
 
     const dataTotalRevenue = {
-      today: ordersToday,
-      sevenDay: ordersSevenDays,
-      oneMonth: ordersOneMonth,
-      threeMonth: ordersThreeMonth,
-      yesterday: ordersYesterday,
+      today: groupOrdersByDate(ordersToday),
+      sevenDay: groupOrdersByDate(ordersSevenDays),
+      oneMonth: groupOrdersByDate(ordersOneMonth),
+      threeMonth: groupOrdersByDate(ordersThreeMonth),
+      yesterday: groupOrdersByDate(ordersYesterday),
     };
-    
+
     const newOrder = await prisma.detail_Order.findMany({
       where: {
         status: {
@@ -109,6 +110,7 @@ export default class StatisticService {
       select: {
         id: true,
         total_price: true,
+        created_at: true,
       },
       where: {
         status: "COMPLETED",
@@ -123,6 +125,7 @@ export default class StatisticService {
       select: {
         id: true,
         total_price: true,
+        created_at: true,
       },
       where: {
         status: "COMPLETED",
@@ -137,6 +140,7 @@ export default class StatisticService {
       select: {
         id: true,
         total_price: true,
+        created_at: true,
       },
       where: {
         status: "COMPLETED",
@@ -151,6 +155,7 @@ export default class StatisticService {
       select: {
         id: true,
         total_price: true,
+        created_at: true,
       },
       where: {
         status: "COMPLETED",
@@ -165,6 +170,7 @@ export default class StatisticService {
       select: {
         id: true,
         total_price: true,
+        created_at: true,
       },
       where: {
         status: "COMPLETED",
