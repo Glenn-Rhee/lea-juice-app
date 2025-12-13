@@ -137,3 +137,43 @@ export interface DataUserTable {
   lastPurchaseDate: Date;
   bestSeller: CATEGORY;
 }
+
+export type DataNewOrder = {
+  total: number;
+  pending: number;
+  process: number;
+};
+
+export type TotalRevenue = {
+  id: string;
+  total_price: number;
+};
+
+export type DataTotalRevenue = {
+  today: TotalRevenue[];
+  sevenDay: TotalRevenue[];
+  oneMonth: TotalRevenue[];
+  threeMonth: TotalRevenue[];
+  yesterday: TotalRevenue[];
+};
+
+export type DataBestSeller = {
+  productName: string;
+  stock: number;
+  sold: number | null;
+};
+
+export type DataProductLowStock = {
+  totalProduct: number;
+  products: {
+    id: string;
+    product_name: string;
+  }[];
+};
+
+export interface DataStatistic {
+  dataTotalRevenue: DataTotalRevenue;
+  dataNewOrder: DataNewOrder;
+  dataBestSeller: DataBestSeller;
+  dataProductLowStock: DataProductLowStock;
+}

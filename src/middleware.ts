@@ -87,6 +87,32 @@ export async function middleware(req: NextRequest) {
         status: "failed",
       });
     }
+
+    if (url.includes("/statistic")) {
+      if (!token) {
+        return NextResponse.json<ResponsePayload>(
+          {
+            code: 403,
+            data: null,
+            message: "Unathorized! Login first!",
+            status: "failed",
+          },
+          { status: 403 }
+        );
+      }
+
+      if (token.role === "USER") {
+        return NextResponse.json<ResponsePayload>(
+          {
+            code: 403,
+            data: null,
+            message: "Oops! You don't have any access for this service!",
+            status: "failed",
+          },
+          { status: 403 }
+        );
+      }
+    }
   } else {
     if (url.includes("/auth") && token) {
       return NextResponse.redirect(new URL("/shop", req.url));
