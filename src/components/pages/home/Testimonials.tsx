@@ -1,7 +1,10 @@
 "use client";
-import { testimonials } from "@/utils/testimonials";
+import { Skeleton } from "@/components/ui/skeleton";
+import ResponseError from "@/error/ResponseError";
+import { DataAllReview, ResponsePayload } from "@/types";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Testimonials() {
   const sectionRef = useRef(null);
@@ -9,7 +12,32 @@ export default function Testimonials() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
+  const [dataReview, setDataReview] = useState<DataAllReview[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/reviews");
+        const dataRes = (await res.json()) as ResponsePayload<DataAllReview[]>;
+        if (dataRes.status === "failed") {
+          throw new ResponseError(dataRes.code, dataRes.message);
+        }
 
+        setDataReview(dataRes.data);
+      } catch (error) {
+        if (error instanceof ResponseError) {
+          toast.error(error.message);
+        } else {
+          toast.error("An error occured!");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(dataReview);
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
   const y = useTransform(scrollYProgress, [0, 0.2], [100, 0]);
 
@@ -93,26 +121,27 @@ export default function Testimonials() {
             }}
             className="flex gap-8 whitespace-nowrap"
           >
-            {[...Array(3)].map((_, set) => (
-              <div key={set} className="flex gap-8">
-                {testimonials.map((t, i) => (
-                  <div
-                    key={`${set}-${i}`}
-                    className="inline-block px-6 py-4 bg-white rounded-lg shadow-md border border-orange-100 hover:shadow-lg transition-shadow duration-300 flex-shrink-0"
-                  >
-                    <p className="text-stone-600 font-medium text-sm mb-4">
-                      &quot;{t.comment.substring(0, 50)}...&quot;
-                    </p>
-                    <div className="flex items-center gap-2 justify-between">
-                      <span className="text-orange-500 font-semibold text-xs">
-                        {t.name}
-                      </span>
-                      <span className="text-yellow-400 text-xs">★★★★★</span>
+            {loading
+              ? Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="flex gap-8">
+                    <Skeleton className="w-[30rem] h-[5rem] bg-gray-500"></Skeleton>
+                  </div>
+                ))
+              : dataReview.map((review, i) => (
+                  <div key={i + (review.name || "-")} className="flex gap-8">
+                    <div className="inline-block px-6 py-4 bg-white rounded-lg shadow-md border w-[30rem] border-orange-100 hover:shadow-lg transition-shadow duration-300 flex-shrink-0">
+                      <p className="text-stone-600 truncate font-medium text-sm mb-4">
+                        &quot;{review.comment}&quot;
+                      </p>
+                      <div className="flex items-center gap-2 justify-between">
+                        <span className="text-orange-500 font-semibold text-xs">
+                          {review.name}
+                        </span>
+                        <span className="text-yellow-400 text-xs">★★★★★</span>
+                      </div>
                     </div>
                   </div>
                 ))}
-              </div>
-            ))}
           </motion.div>
         </motion.div>
       </div>

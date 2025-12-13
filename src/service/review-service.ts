@@ -109,4 +109,37 @@ export default class ReviewService {
       status: "success",
     };
   }
+
+  static async getAllReview(): Promise<ResponsePayload> {
+    const reviews = await prisma.review.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      where: {
+        rating: {
+          gte: 5,
+        },
+        comment: {
+          not: "",
+        },
+      },
+    });
+
+    const data = reviews.map((review) => ({
+      comment: review.comment,
+      rating: review.rating,
+      name: review.user.name,
+    }));
+
+    return {
+      status: "success",
+      code: 200,
+      data,
+      message: "Successfully get all review!",
+    };
+  }
 }

@@ -184,3 +184,9 @@ export interface DataStatistic {
   dataBestSeller: DataBestSeller;
   dataProductLowStock: DataProductLowStock;
 }
+
+export interface DataAllReview {
+  comment: string;
+  rating: number;
+  name: string | null;
+}
