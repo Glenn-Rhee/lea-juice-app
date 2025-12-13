@@ -21,9 +21,17 @@ const baseUrl =
     : "http://localhost:3000";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("__Secure-next-auth.session-token") ??
+    cookieStore.get("next-auth.session-token");
+
   const id = (await params).id;
   const response = await fetch(baseUrl + "/api/products?id=" + id, {
     credentials: "include",
+    headers: {
+      Authorization: `Bearer ${token?.value || ""}`,
+    },
   });
 
   const dataResponse = (await response.json()) as ResponsePayload<DataProduct>;
