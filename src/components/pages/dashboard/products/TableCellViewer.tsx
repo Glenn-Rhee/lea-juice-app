@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { DataProduct, DataReview, ResponsePayload, TotalRating } from "@/types";
 import ReviewValidation from "@/validation/review-validation";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
-import { Info } from "lucide-react";
+import { ChevronDown, ChevronUp, Info } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -199,8 +199,8 @@ export default function TableCellViewer({
                         <Image
                           src={review.imageUrl}
                           alt={"Profile Image " + review.name}
-                          width={40}
-                          height={40}
+                          width={30}
+                          height={30}
                           className="object-cover rounded-full aspect-square"
                         />
                       ) : (
@@ -232,7 +232,15 @@ export default function TableCellViewer({
                       onClick={() =>
                         setDataReview((prev) => {
                           if (!prev) return prev;
-
+                          if (review.reply) {
+                            return {
+                              ...prev,
+                              dataReview: prev.dataReview.map((p) => ({
+                                ...p,
+                                isActive: p.id === review.id && !p.isActive,
+                              })),
+                            };
+                          }
                           return {
                             ...prev,
                             dataReview: prev.dataReview.map((p) => ({
@@ -242,54 +250,95 @@ export default function TableCellViewer({
                           };
                         })
                       }
-                      className="text-blue-500 hover:underline cursor-pointer"
+                      className="text-blue-500 hover:bg-white/10 px-2 py-1 rounded-md cursor-pointer"
                     >
-                      Reply
-                    </button>
-                    {review.isActive && (
-                      <div className="flex flex-col items-center gap-y-3 px-2">
-                        <input
-                          type="text"
-                          value={reply}
-                          onChange={(e) => setReply(e.target.value)}
-                          onKeyUp={(e) =>
-                            e.key.toLowerCase() === "enter" &&
-                            sendReplyReview(review.id)
-                          }
-                          placeholder="Type your reply..."
-                          className="w-full border-b placeholder:text-sm border-gray-500 bg-transparent outline-none pb-2 focus:outline-none"
-                        />
-                        <div className="flex items-center w-full justify-between">
-                          <button
-                            disabled={loading}
-                            onClick={() =>
-                              setDataReview((prev) => {
-                                if (!prev) return prev;
-
-                                return {
-                                  ...prev,
-                                  dataReview: prev.dataReview.map((p) => ({
-                                    ...p,
-                                    isActive: false,
-                                  })),
-                                };
-                              })
-                            }
-                            className="cursor-pointer"
-                          >
-                            Cancel
-                          </button>
-                          <Button
-                            disabled={loading}
-                            onClick={() => sendReplyReview(review.id)}
-                            size={"sm"}
-                            className="cursor-pointer w-[4rem]"
-                          >
-                            {loading ? <Loader /> : "Send"}
-                          </Button>
+                      {review.reply ? (
+                        <div className="flex gap-x-2 items-center">
+                          {review.isActive ? (
+                            <ChevronUp size={19} />
+                          ) : (
+                            <ChevronDown size={19} />
+                          )}
+                          Show reply
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        "Reply"
+                      )}
+                    </button>
+                    {review.isActive &&
+                      (review.reply ? (
+                        <div className="space-y-2 ps-6">
+                          <div className="flex items-center gap-x-2">
+                            {review.reply.image_reply ? (
+                              <Image
+                                src={review.reply.image_reply}
+                                alt={"Profile Image " + review.reply.username}
+                                width={30}
+                                height={30}
+                                className="object-cover rounded-full aspect-square"
+                              />
+                            ) : (
+                              <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
+                                <IconUserFilled
+                                  className="text-orange-800"
+                                  size={20}
+                                />
+                              </div>
+                            )}
+                            <span>{review.reply.username}</span>
+                            <span className="text-sm font-semibold text-gray-400">
+                              {timeAgo(review.reply.created_at)}
+                            </span>
+                          </div>
+                          <span className="flex items-center text-gray-300 font-semibold text-sm gap-x-2"></span>
+                          <p className="text-sm font-light">
+                            {review.reply.comment}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-y-3 px-2">
+                          <input
+                            type="text"
+                            value={reply}
+                            onChange={(e) => setReply(e.target.value)}
+                            onKeyUp={(e) =>
+                              e.key.toLowerCase() === "enter" &&
+                              sendReplyReview(review.id)
+                            }
+                            placeholder="Type your reply..."
+                            className="w-full border-b placeholder:text-sm border-gray-500 bg-transparent outline-none pb-2 focus:outline-none"
+                          />
+                          <div className="flex items-center w-full justify-between">
+                            <button
+                              disabled={loading}
+                              onClick={() =>
+                                setDataReview((prev) => {
+                                  if (!prev) return prev;
+
+                                  return {
+                                    ...prev,
+                                    dataReview: prev.dataReview.map((p) => ({
+                                      ...p,
+                                      isActive: false,
+                                    })),
+                                  };
+                                })
+                              }
+                              className="cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                            <Button
+                              disabled={loading}
+                              onClick={() => sendReplyReview(review.id)}
+                              size={"sm"}
+                              className="cursor-pointer w-[4rem]"
+                            >
+                              {loading ? <Loader /> : "Send"}
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
                   </div>
                 </div>
               </React.Fragment>

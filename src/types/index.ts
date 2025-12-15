@@ -112,6 +112,15 @@ export interface DataReview {
   rating: number;
   comment: string;
   createdAt: Date;
+  reply: DataReply | null;
+}
+
+interface DataReply {
+  comment: string;
+  user_reply_id: string;
+  image_reply: string | null;
+  created_at: Date;
+  username: string | null;
 }
 
 export interface TotalReview {

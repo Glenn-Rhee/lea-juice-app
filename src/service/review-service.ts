@@ -79,6 +79,17 @@ export default class ReviewService {
       where: { product_id },
       include: {
         user: true,
+        reviewReply: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                image: true,
+                username: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -91,6 +102,15 @@ export default class ReviewService {
       imageUrl: review.user.image,
       name: review.user.name,
       rating: review.rating,
+      reply: review.reviewReply
+        ? {
+            comment: review.reviewReply.comment,
+            user_reply_id: review.reviewReply.user.id,
+            image_reply: review.reviewReply.user.image,
+            created_at: review.reviewReply.created_at,
+            username: review.reviewReply.user.username,
+          }
+        : null,
     }));
 
     const dataReviewProduct: TotalReview = {
