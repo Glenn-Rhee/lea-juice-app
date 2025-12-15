@@ -100,7 +100,7 @@ export interface TransactionDashboard {
   postalCode: string | null;
 }
 
-type TotalRating = {
+export type TotalRating = {
   stars: number[];
   avgRating: string;
 };

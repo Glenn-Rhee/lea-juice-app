@@ -142,4 +142,31 @@ export default class ReviewService {
       message: "Successfully get all review!",
     };
   }
+
+  static async createReplyReview(
+    data: z.infer<typeof ReviewValidation.CREATEREPLYREVIEW>
+  ): Promise<ResponsePayload> {
+    const isReviewExist = await prisma.review.count({
+      where: { id: data.review_id },
+    });
+
+    if (isReviewExist === 0) {
+      throw new ResponseError(404, "Oops! Review is not found!");
+    }
+
+    await prisma.reviewReply.create({
+      data: {
+        comment: data.reply,
+        review_id: data.review_id,
+        user_id: data.user_id,
+      },
+    });
+
+    return {
+      status: "success",
+      code: 201,
+      data: null,
+      message: "Successfully reply!",
+    };
+  }
 }

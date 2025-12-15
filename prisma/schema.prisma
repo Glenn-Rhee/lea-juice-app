@@ -44,14 +44,14 @@ model VerificationToken {
 }
 
 model User {
-  id            String      @id @default(uuid())
+  id            String        @id @default(uuid())
   name          String?
   username      String?
-  email         String?     @unique
+  email         String?       @unique
   password      String?
-  role          ROLE        @default(USER)
-  created_at    DateTime    @default(now())
-  updaated_at   DateTime    @updatedAt
+  role          ROLE          @default(USER)
+  created_at    DateTime      @default(now())
+  updaated_at   DateTime      @updatedAt
   image         String?
   emailVerified String?
   accounts      Account[]
@@ -60,6 +60,7 @@ model User {
   Review        Review[]
   sessions      Session[]
   userDetail    UserDetail?
+  reviewReplies ReviewReply[]
 }
 
 model UserDetail {
@@ -129,14 +130,26 @@ model Payment {
 }
 
 model Review {
+  id          String       @id @default(uuid())
+  user_id     String
+  product_id  String
+  rating      Int
+  comment     String
+  created_at  DateTime     @default(now())
+  product     Product      @relation(fields: [product_id], references: [id])
+  user        User         @relation(fields: [user_id], references: [id])
+  reviewReply ReviewReply?
+}
+
+model ReviewReply {
   id         String   @id @default(uuid())
+  review_id  String   @unique
   user_id    String
-  product_id String
-  rating     Int
   comment    String
   created_at DateTime @default(now())
-  product    Product  @relation(fields: [product_id], references: [id])
-  user       User     @relation(fields: [user_id], references: [id])
+
+  review Review @relation(fields: [review_id], references: [id])
+  user   User   @relation(fields: [user_id], references: [id])
 }
 
 model Cart {

@@ -9,4 +9,14 @@ export default class ReviewValidation {
       .max(5, { error: "Maximum of rating is 5!" }),
     comment: z.string({ error: "Please fill comment properly!" }),
   });
+
+  static readonly CREATEREPLYREVIEW = z.object({
+    reply: z
+      .string({ error: "Please fill reply review properly" })
+      .min(1, { error: "Minimum length of review is one" }),
+    review_id: z.string({ error: "Please fill review id properly!" }),
+    user_id: z.string({
+      error: "Oops! Id user is required! Please login first",
+    }),
+  });
 }
