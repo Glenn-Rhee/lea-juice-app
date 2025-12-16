@@ -19,7 +19,8 @@ import { Info } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import ReviewSection from "./ReviewSection";
-import { useGetReview } from "@/lib/review-mutation";
+import { useGetReviewReply } from "@/lib/review-queries";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export interface TotalReview {
   totalRating: TotalRating;
@@ -37,14 +38,19 @@ export default function TableCellViewer({
   const isMobile = useIsMobile();
   const [open, setOpen] = useState<boolean>(false);
   const [dataReview, setDataReview] = useState<TotalReview>();
-  const reviewMutation = useGetReview();
-  
+  const [activeProductId, setActiveProduct] = useState(item.id);
+  const { data, isFetching, refetch, isPending } =
+    useGetReviewReply(activeProductId);
+
   useEffect(() => {
-    if (reviewMutation.data) {
-      setDataReview(reviewMutation.data);
-      setOpen(true);
+    if (open && activeProductId) {
+      refetch();
     }
-  }, [reviewMutation.data]);
+  }, [open, activeProductId, refetch]);
+
+  useEffect(() => {
+    setDataReview(data);
+  }, [data]);
 
   return (
     <Drawer
@@ -54,10 +60,11 @@ export default function TableCellViewer({
     >
       <DrawerTrigger
         asChild
-        disabled={reviewMutation.isPending}
+        disabled={isFetching}
         onClick={(e) => {
           e.preventDefault();
-          reviewMutation.mutate({ product_id: item.id });
+          setActiveProduct(item.id);
+          setOpen(true);
         }}
         className="text-white cursor-pointer hover:underline"
       >
@@ -69,7 +76,7 @@ export default function TableCellViewer({
           <button>{item.product_name}</button>
         )}
       </DrawerTrigger>
-      <DrawerContent className="px-4 w-[180px]">
+      <DrawerContent className="px-4 focus:border-none focus:outline-0 w-[180px]">
         <DrawerHeader>
           <DrawerTitle className="text-center">Products Detail</DrawerTitle>
         </DrawerHeader>
@@ -85,7 +92,11 @@ export default function TableCellViewer({
           </div>
           <div className="flex items-center gap-x-3">
             <IconStarFilled className="text-yellow-500" />
-            <span>{dataReview && dataReview.totalRating.avgRating}</span>
+            {isPending ? (
+              <Skeleton className="w-[2rem] h-[1rem] bg-gray-700"></Skeleton>
+            ) : (
+              <span>{dataReview && dataReview.totalRating.avgRating}</span>
+            )}
           </div>
           <div className="flex flex-col gap-y-2">
             <Label>Product Id</Label>
@@ -125,8 +136,9 @@ export default function TableCellViewer({
             <Label>Description</Label>
             <Textarea readOnly disabled value={item.description} />
           </div>
-          <h4 className="text-center text-xl mt-3 mb-2">Reviews users</h4>
-          {dataReview &&
+          {dataReview && (
+              <h4 className="text-center text-xl mt-3 mb-2">Reviews users</h4>
+            ) &&
             dataReview.dataReview.map((review) => (
               <ReviewSection
                 setDataReview={setDataReview}
