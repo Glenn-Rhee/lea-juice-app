@@ -3,7 +3,7 @@ import { getAverageRating } from "@/helper/getAverageRating";
 import { getRating } from "@/helper/getRating";
 import { getSatisfiedBuyes } from "@/helper/getSatisfiedBuyers";
 import { prisma } from "@/lib/prisma";
-import { DataReview, ResponsePayload, TotalReview } from "@/types";
+import { DataReply, DataReview, ResponsePayload, TotalReview } from "@/types";
 import ReviewValidation from "@/validation/review-validation";
 import z from "zod";
 
@@ -174,18 +174,35 @@ export default class ReviewService {
       throw new ResponseError(404, "Oops! Review is not found!");
     }
 
-    await prisma.reviewReply.create({
+    const dataReply = await prisma.reviewReply.create({
       data: {
         comment: data.reply,
         review_id: data.review_id,
         user_id: data.user_id,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            image: true,
+            username: true,
+          },
+        },
+      },
     });
+
+    const dataRes: DataReply = {
+      comment: dataReply.comment,
+      created_at: dataReply.created_at,
+      image_reply: dataReply.user.image,
+      user_reply_id: dataReply.user.id,
+      username: dataReply.user.username,
+    };
 
     return {
       status: "success",
       code: 201,
-      data: null,
+      data: dataRes,
       message: "Successfully reply!",
     };
   }

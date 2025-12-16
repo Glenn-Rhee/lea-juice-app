@@ -115,7 +115,7 @@ export interface DataReview {
   reply: DataReply | null;
 }
 
-interface DataReply {
+export interface DataReply {
   comment: string;
   user_reply_id: string;
   image_reply: string | null;
