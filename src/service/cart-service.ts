@@ -33,11 +33,12 @@ export default class CartService {
       cart = await prisma.cart.create({ data: { user_id } });
     }
 
-    const existingItem = await prisma.cartItem.count({
+    const existingItem = await prisma.cartItem.findFirst({
       where: { product_id: data.product_id, cart_id: cart.id },
+      select: { id: true },
     });
 
-    if (existingItem > 0) {
+    if (existingItem) {
       throw new ResponseError(401, "Oops! This item already add to cart");
     }
 
@@ -100,19 +101,21 @@ export default class CartService {
     item_id: string,
     user_id: string
   ): Promise<ResponsePayload> {
-    const existingUser = await prisma.user.count({
+    const existingUser = await prisma.user.findUnique({
       where: { id: user_id },
+      select: { id: true },
     });
 
-    if (existingUser === 0) {
+    if (!existingUser) {
       throw new ResponseError(404, "Oops! user is not found!");
     }
 
-    const existingCartItem = await prisma.cartItem.count({
+    const existingCartItem = await prisma.cartItem.findUnique({
       where: { id: item_id },
+      select: { id: true },
     });
 
-    if (existingCartItem === 0) {
+    if (!existingCartItem) {
       throw new ResponseError(404, "Oops! Cart item is missing or deleted!");
     }
 

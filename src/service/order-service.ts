@@ -160,11 +160,12 @@ export default class OrderService {
     orderDetailId: string,
     data: z.infer<typeof OrderValidation.PATCHORDER>
   ): Promise<ResponsePayload> {
-    const isExist = await prisma.detail_Order.count({
+    const isExist = await prisma.detail_Order.findUnique({
       where: { id: orderDetailId },
+      select: { id: true },
     });
 
-    if (isExist === 0) {
+    if (!isExist) {
       throw new ResponseError(
         404,
         "Oops! Detail order is missing or have been delete!"
