@@ -19,6 +19,10 @@ export default class CartService {
 
     const isProductRegist = await prisma.product.findUnique({
       where: { id: data.product_id },
+      select: {
+        product_name: true,
+        stock: true,
+      },
     });
     if (!isProductRegist) {
       throw new ResponseError(404, "Oops! Product is not found!");
@@ -29,11 +33,11 @@ export default class CartService {
       cart = await prisma.cart.create({ data: { user_id } });
     }
 
-    const existingItem = await prisma.cartItem.findFirst({
+    const existingItem = await prisma.cartItem.count({
       where: { product_id: data.product_id, cart_id: cart.id },
     });
 
-    if (existingItem) {
+    if (existingItem > 0) {
       throw new ResponseError(401, "Oops! This item already add to cart");
     }
 
@@ -66,7 +70,10 @@ export default class CartService {
   }
 
   static async getCart(user_id: string): Promise<ResponsePayload> {
-    const existingCart = await prisma.cart.findFirst({ where: { user_id } });
+    const existingCart = await prisma.cart.findFirst({
+      where: { user_id },
+      select: { id: true },
+    });
     if (!existingCart) {
       return {
         code: 200,
@@ -93,19 +100,19 @@ export default class CartService {
     item_id: string,
     user_id: string
   ): Promise<ResponsePayload> {
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.user.count({
       where: { id: user_id },
     });
 
-    if (!existingUser) {
+    if (existingUser === 0) {
       throw new ResponseError(404, "Oops! user is not found!");
     }
 
-    const existingCartItem = await prisma.cartItem.findUnique({
+    const existingCartItem = await prisma.cartItem.count({
       where: { id: item_id },
     });
 
-    if (!existingCartItem) {
+    if (existingCartItem === 0) {
       throw new ResponseError(404, "Oops! Cart item is missing or deleted!");
     }
 
@@ -124,6 +131,7 @@ export default class CartService {
   ): Promise<ResponsePayload> {
     const existingCart = await prisma.cartItem.findUnique({
       where: { id: data.item_id },
+      select: { product_id: true, cart_id: true },
     });
 
     if (!existingCart) {
@@ -135,6 +143,7 @@ export default class CartService {
 
     const product = await prisma.product.findUnique({
       where: { id: existingCart.product_id },
+      select: { stock: true, product_name: true },
     });
 
     if (!product) {

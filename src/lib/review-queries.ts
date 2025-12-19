@@ -45,8 +45,6 @@ export function useGetReviewReply(product_id: string) {
           isActive: false,
         }));
 
-        console.log(dataRes.data);
-
         return {
           dataReview: dataReviewUser,
           satisfiedTotal: dataRes.data.satisfiedTotal,
