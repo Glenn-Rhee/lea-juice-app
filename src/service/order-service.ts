@@ -16,6 +16,13 @@ export default class OrderService {
   ): Promise<ResponsePayload> {
     const dataUser = await prisma.userDetail.findUnique({
       where: { userId: user_id },
+      select: {
+        address: true,
+        phoneNumber: true,
+        city: true,
+        province: true,
+        postalCode: true,
+      },
     });
 
     if (!dataUser) {
@@ -35,7 +42,10 @@ export default class OrderService {
     let cartItems: CartItem[] = [];
 
     const order = await prisma.$transaction(async (tx) => {
-      const cartUser = await tx.cart.findUnique({ where: { user_id } });
+      const cartUser = await tx.cart.findUnique({
+        where: { user_id },
+        select: { id: true },
+      });
       if (!cartUser) {
         throw new ResponseError(404, "Oops you don't have a chart yet!");
       }
@@ -150,11 +160,11 @@ export default class OrderService {
     orderDetailId: string,
     data: z.infer<typeof OrderValidation.PATCHORDER>
   ): Promise<ResponsePayload> {
-    const isExist = await prisma.detail_Order.findUnique({
+    const isExist = await prisma.detail_Order.count({
       where: { id: orderDetailId },
     });
 
-    if (!isExist) {
+    if (isExist === 0) {
       throw new ResponseError(
         404,
         "Oops! Detail order is missing or have been delete!"
