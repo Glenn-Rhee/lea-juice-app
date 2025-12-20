@@ -8,8 +8,9 @@ import { timeAgo } from "@/helper/timeAgo";
 import { useComment } from "@/lib/review-mutation";
 import { useReviews } from "@/lib/review-queries";
 import { cn } from "@/lib/utils";
-import { DataReview } from "@/types";
+import { DataReply, DataReview } from "@/types";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -19,13 +20,19 @@ interface CommentSectionProps {
   token: RequestCookie | undefined;
   imageUser: string | null;
 }
+type ReplyState = DataReply & { active: boolean };
+
+type ReviewState = Omit<DataReview, "reply"> & {
+  reply: ReplyState | null;
+};
+
 export default function CommentSection(props: CommentSectionProps) {
   const { product_id, token, imageUser } = props;
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const { data, isLoading } = useReviews(product_id);
   const commentUser = useComment();
-  const [reviews, setReviews] = useState<DataReview[]>([]);
+  const [reviews, setReviews] = useState<ReviewState[]>([]);
   const [filter, setFilter] = useState({
     1: false,
     2: false,
@@ -36,7 +43,12 @@ export default function CommentSection(props: CommentSectionProps) {
 
   useEffect(() => {
     if (data) {
-      setReviews(data.dataReview);
+      const mappedReview = data.dataReview.map((review) => ({
+        ...review,
+        reply: review.reply ? { ...review.reply, active: false } : null,
+      }));
+
+      setReviews(mappedReview);
     }
   }, [data]);
 
@@ -47,7 +59,14 @@ export default function CommentSection(props: CommentSectionProps) {
       .map(([rating]) => Number(rating));
 
     if (activeFilters.length === 0) {
-      setReviews(data ? data.dataReview : []);
+      const mappedReview = data
+        ? data.dataReview.map((review) => ({
+            ...review,
+            reply: review.reply ? { ...review.reply, active: false } : null,
+          }))
+        : [];
+
+      setReviews(mappedReview);
       return;
     }
 
@@ -55,7 +74,12 @@ export default function CommentSection(props: CommentSectionProps) {
       const filtered = data.dataReview.filter((r) =>
         activeFilters.includes(r.rating)
       );
-      setReviews(filtered);
+      const mappedReview = filtered.map((review) => ({
+        ...review,
+        reply: review.reply ? { ...review.reply, active: false } : null,
+      }));
+
+      setReviews(mappedReview);
     }
   }, [filter, data]);
 
@@ -225,6 +249,68 @@ export default function CommentSection(props: CommentSectionProps) {
                 <p className="mt-4 text-gray-700 font-medium text-sm">
                   {d.comment}
                 </p>
+                {d.reply && (
+                  <button
+                    onClick={() => {
+                      setReviews((prev) =>
+                        prev.map((r) =>
+                          r.id === d.id
+                            ? {
+                                ...r,
+                                reply: r.reply
+                                  ? { ...r.reply, active: !r.reply.active }
+                                  : null,
+                              }
+                            : r
+                        )
+                      );
+                    }}
+                    className="flex cursor-pointer hover:bg-gray-600/10 transition-colors duration-200 px-2 py-1 rounded-md items-center gap-x-2 text-primary font-medium"
+                  >
+                    {d.reply.active ? (
+                      <>
+                        <ChevronUp size={19} />
+                        Hide Reply
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown size={19} />
+                        Show Reply
+                      </>
+                    )}
+                  </button>
+                )}
+                {d.reply && d.reply.active && (
+                  <div className="flex flex-col gap-y-2 ps-8">
+                    <div className="flex items-center gap-x-3">
+                      {d.reply.image_reply ? (
+                        <Image
+                          src={d.reply.image_reply}
+                          alt={`Profile image ${d.reply.username}`}
+                          width={30}
+                          height={30}
+                          className="aspect-square rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="aspect-square rounded-full shadow-md bg-orange-100 w-10 h-10 flex items-center justify-center">
+                          <IconUserFilled
+                            className="text-orange-800"
+                            size={20}
+                          />
+                        </div>
+                      )}
+                      <span className="text-stone-700 font-semibold">
+                        {d.reply.username}
+                      </span>
+                      <span className="text-stone-600 font-medium text-sm">
+                        {timeAgo(d.reply.created_at)}
+                      </span>
+                    </div>
+                    <span className="text-stone-800 font-medium text-sm">
+                      {d.reply.comment}
+                    </span>
+                  </div>
+                )}
               </div>
             ))
         )}
