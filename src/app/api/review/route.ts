@@ -14,6 +14,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       throw new ResponseError(403, "Forbidden! You don't have an access!");
     }
 
+    if (token.role === "ADMIN") {
+      throw new ResponseError(403, "Oops! Administrator can't review product!");
+    }
+
     const dataPlain = await req.text();
     const dataJSon = await JSON.parse(dataPlain);
 

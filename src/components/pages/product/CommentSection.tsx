@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { DataReply, DataReview } from "@/types";
 import { IconStarFilled, IconUserFilled } from "@tabler/icons-react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -29,6 +30,7 @@ type ReviewState = Omit<DataReview, "reply"> & {
 export default function CommentSection(props: CommentSectionProps) {
   const { product_id, token, imageUser } = props;
   const [rating, setRating] = useState<number>(0);
+  const { data: session } = useSession();
   const [comment, setComment] = useState<string>("");
   const { data, isLoading } = useReviews(product_id);
   const commentUser = useComment();
@@ -113,7 +115,7 @@ export default function CommentSection(props: CommentSectionProps) {
         </ul>
       </div>
       <div className="flex-3 w-full flex flex-col gap-y-7 ps-4">
-        {token && (
+        {token && session && session.user.role === "USER" && (
           <div className="w-full pb-3 flex items-center gap-x-4">
             {imageUser ? (
               <Image
