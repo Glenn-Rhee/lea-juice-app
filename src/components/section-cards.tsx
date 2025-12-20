@@ -87,7 +87,7 @@ export function SectionCards(props: SectionCardsProps) {
             )}
           </div>
           <div className="text-muted-foreground">
-            {dataTotalRevenu.today.length} transaksi berhasil
+            {dataTotalRevenu.today[0].totalOrder} transaksi berhasil
           </div>
         </CardFooter>
       </Card>
@@ -172,9 +172,12 @@ export function SectionCards(props: SectionCardsProps) {
                 Semua product dalam stock aman
               </span>
             )}
-            <div className="text-muted-foreground flex items-center">
-              {dataProductLowStock.products.map((product) => (
-                <span key={product.id}>{product.product_name} </span>
+            <div className="text-muted-foreground flex gap-x-1 items-center">
+              {dataProductLowStock.products.map((product, i) => (
+                <span key={product.id}>
+                  {product.product_name +
+                    (i < dataProductLowStock.products.length - 1 ? ", " : "")}
+                </span>
               ))}
             </div>
           </CardFooter>
