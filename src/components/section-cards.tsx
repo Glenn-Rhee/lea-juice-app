@@ -87,7 +87,10 @@ export function SectionCards(props: SectionCardsProps) {
             )}
           </div>
           <div className="text-muted-foreground">
-            {dataTotalRevenu.today[0].totalOrder} transaksi berhasil
+            {dataTotalRevenu.today.length === 0
+              ? "0"
+              : dataTotalRevenu.today[0].totalOrder}{" "}
+            transaksi berhasil
           </div>
         </CardFooter>
       </Card>
