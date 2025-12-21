@@ -86,12 +86,12 @@ export default function CommentSection(props: CommentSectionProps) {
   }, [filter, data]);
 
   return (
-    <section className="max-w-6xl w-full mx-auto mt-8 flex gap-x-4 px-4 mb-8">
-      <div className="w-full flex-1 h-fit sticky top-[6rem] bg-white border px-4 py-3 border-gray-300 rounded-sm shadow-sm">
+    <section className="max-w-6xl w-full mx-auto mt-8 flex flex-col md:flex-row gap-x-4 gap-y-2 px-4 mb-8">
+      <div className="w-full flex-1 h-fit sticky top-[6rem] bg-white border px-3 md:px-4 py-3 border-gray-300 rounded-sm shadow-sm">
         <h4 className="text-stone-900 font-semibold text-xl">Filter Reviews</h4>
         <Separator className="bg-stone-700/40 my-3" />
         <h4 className="text-stone-900 font-medium text-lg">Rating</h4>
-        <ul className="flex flex-col gap-y-4 mt-2">
+        <ul className="flex gap-x-3 justify-around md:justify-start md:flex-col gap-y-4 mt-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <li key={i} className="flex items-center gap-x-2">
               <Checkbox
@@ -108,7 +108,11 @@ export default function CommentSection(props: CommentSectionProps) {
                 htmlFor={(i + 1).toString()}
                 className="text-gray-600 text-lg font-semibold"
               >
-                <IconStarFilled className="text-yellow-500" size={20} /> {i + 1}
+                <IconStarFilled
+                  className="text-yellow-500 hidden md:block"
+                  size={20}
+                />{" "}
+                {i + 1}
               </Label>
             </li>
           ))}
