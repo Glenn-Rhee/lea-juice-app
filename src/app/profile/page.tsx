@@ -57,7 +57,7 @@ export default async function ProfilePage() {
       <h1 className="text-center text-gray-900 font-bold text-4xl">
         Profile {dataUser.data.fullname}
       </h1>
-      <div className="w-full flex flex-col md:flex-row gap-x-8 mt-8">
+      <div className="w-full flex flex-col gap-y-4 md:flex-row gap-x-8 mt-8">
         <ProfileSection data={dataUser.data} />
         <SetProfileSection data={dataUser.data} />
       </div>

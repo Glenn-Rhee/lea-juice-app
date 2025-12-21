@@ -14,7 +14,7 @@ export default function TabsEditProfile(props: TabsEditProfileProps) {
           setTab("about");
         }}
         className={cn(
-          "py-2 px-1 rounded-md cursor-pointer text-sm md:font-semibold",
+          "md:py-2 md:px-1 rounded-md cursor-pointer text-sm md:font-semibold",
           tab === "about"
             ? "bg-orange-500 text-white border-transparent"
             : "bg-transparent border border-orange-500 text-orange-600"
@@ -33,7 +33,7 @@ export default function TabsEditProfile(props: TabsEditProfileProps) {
             : "bg-transparent border border-orange-500 text-orange-600"
         )}
       >
-        Set Personal Information
+        Set Personal
       </button>
     </div>
   );

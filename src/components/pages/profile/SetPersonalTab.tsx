@@ -114,7 +114,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
         <h3 className="font-semibold text-xl text-gray-800">
           Personal Identity :
         </h3>
-        <div className="w-full grid grid-cols-2 gap-x-3">
+        <div className="w-full flex flex-col md:grid grid-cols-2 gap-x-3">
           <FormField
             control={form.control}
             name="fullname"
@@ -329,7 +329,7 @@ export default function SetPersonalTab(props: SetPersonalTabProps) {
         <h3 className="font-semibold text-xl text-gray-800">
           Shipping Address :
         </h3>
-        <div className="w-full grid grid-cols-2 gap-x-3">
+        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-x-3">
           <FormField
             control={form.control}
             name="address"

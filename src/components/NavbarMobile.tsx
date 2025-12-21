@@ -114,13 +114,15 @@ export default function NavbarMobile({ token }: NavbarMobileProps) {
               </li>
             </>
           )}
-          <Link
-            onClick={() => setActive(false)}
-            className="active:underline"
-            href={pathname !== "/" ? "/shop" : "#collection"}
-          >
-            {pathname !== "/" ? "Shop" : "Collection"}
-          </Link>
+          {pathname === "/" && (
+            <Link
+              onClick={() => setActive(false)}
+              className="active:underline"
+              href={"#collection"}
+            >
+              Collection
+            </Link>
+          )}
         </ul>
         <div className="flex items-center justify-center gap-x-2 mb-8">
           {pathname === "/" ? (

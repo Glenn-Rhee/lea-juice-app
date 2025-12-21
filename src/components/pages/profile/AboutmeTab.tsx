@@ -44,9 +44,7 @@ export default function AboutmeTab(props: AboutmeTabProps) {
       </div>
 
       <div className="w-full mt-8">
-        <h6 className="font-semibold text-gray-900 text-xl">
-          Shipping Address
-        </h6>
+        <h6 className="font-medium text-gray-900 text-xl">Shipping Address</h6>
         <div className="w-full grid mt-4 grid-cols-2 gap-x-2 gap-y-4">
           <div className="flex flex-col">
             <span className="text-sm text-gray-400">City</span>
