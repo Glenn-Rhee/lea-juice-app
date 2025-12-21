@@ -74,7 +74,6 @@ export default function FormLogin() {
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
-    } finally {
       setIsLoading(false);
     }
   };

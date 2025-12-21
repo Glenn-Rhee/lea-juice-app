@@ -85,7 +85,6 @@ export default function FormSignup() {
           text: "An unexpected error occurred. Please try again.",
         });
       }
-    } finally {
       setLoading(false);
     }
   }
