@@ -91,6 +91,7 @@ export default function FormSignup() {
   }
 
   const handleLoginGoogle = async () => {
+    setLoading(true);
     try {
       const response = await signIn("google", { redirect: false });
       if (response && !response.ok) {
@@ -249,7 +250,10 @@ export default function FormSignup() {
           </Button>
         </form>
 
-        <LoginWithGoogle handleLoginGoogle={handleLoginGoogle} />
+        <LoginWithGoogle
+          isLoading={loading}
+          handleLoginGoogle={handleLoginGoogle}
+        />
       </CardContent>
     </>
   );

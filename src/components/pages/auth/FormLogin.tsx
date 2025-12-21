@@ -80,6 +80,7 @@ export default function FormLogin() {
   };
 
   const handleLoginGoogle = async () => {
+    setIsLoading(true);
     try {
       const response = await signIn("google", { redirect: false });
       if (response && !response.ok) {
@@ -195,7 +196,10 @@ export default function FormLogin() {
           )}
         </Button>
       </form>
-      <LoginWithGoogle handleLoginGoogle={handleLoginGoogle} />
+      <LoginWithGoogle
+        isLoading={isLoading}
+        handleLoginGoogle={handleLoginGoogle}
+      />
     </>
   );
 }
