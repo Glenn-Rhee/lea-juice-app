@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Download, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useState } from "react";
 
 interface FilterUserProps {
@@ -11,8 +11,8 @@ export default function FilterUser(props: FilterUserProps) {
   const { filterUser } = props;
   const [value, setValue] = useState<string>("");
   return (
-    <div className="flex flex-col md:flex-row md:items-center gap-3">
-      <div className="flex-1 relative">
+    <div className="flex flex-row items-center gap-3 mt-4">
+      <div className="md:flex-1 w-[20rem] relative">
         <Search
           onClick={() => filterUser(value.trim())}
           className="absolute left-3 top-3 h-5 w-5 text-muted-foreground"
@@ -30,16 +30,9 @@ export default function FilterUser(props: FilterUserProps) {
       </div>
       <Button
         onClick={() => filterUser(value.trim())}
-        className="py-5 w-[8rem] cursor-pointer rounded-lg"
+        className="py-5 md:w-[8rem] cursor-pointer rounded-lg"
       >
         Search
-      </Button>
-      <Button
-        variant={"ghost"}
-        className="py-5 w-[7rem] flex rounded-lg cursor-pointer border"
-      >
-        <Download className="h-4 w-4" />
-        Export
       </Button>
     </div>
   );
