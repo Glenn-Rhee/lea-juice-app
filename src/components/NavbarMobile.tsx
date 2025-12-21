@@ -61,7 +61,7 @@ export default function NavbarMobile({ token }: NavbarMobileProps) {
           duration: 0.4,
           ease: "easeOut",
         }}
-        className="fixed top-0 right-0 flex flex-col justify-between bottom-0 z-50 bg-orange-100/90 w-[12rem] h-screen md:hidden"
+        className="fixed top-0 right-0 flex flex-col justify-between bottom-0 z-50 bg-orange-100/90 w-[12rem] h-[100dvh] md:hidden"
       >
         <ul className="flex flex-col h-full w-full justify-center items-center gap-y-4 text-primary font-medium text-xl">
           <li>
