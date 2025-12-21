@@ -76,7 +76,7 @@ export default function TableCellViewer({
           <button>{item.product_name}</button>
         )}
       </DrawerTrigger>
-      <DrawerContent className="px-4 focus:border-none focus:outline-0 w-[180px]">
+      <DrawerContent className="px-4 focus:border-none focus:outline-0 md:w-[180px]">
         <DrawerHeader>
           <DrawerTitle className="text-center">Products Detail</DrawerTitle>
         </DrawerHeader>

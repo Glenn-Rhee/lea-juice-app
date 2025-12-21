@@ -43,7 +43,7 @@ export default function TableCellViewer({ item }: { item: DataUserTable }) {
           <Info />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="px-4 w-[180px]">
+      <DrawerContent className="px-4 md:w-[180px]">
         <DrawerHeader>
           <DrawerTitle className="text-center">Users Detail</DrawerTitle>
         </DrawerHeader>

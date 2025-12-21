@@ -44,9 +44,9 @@ export default function ProductHeader() {
   }
 
   return (
-    <div className="w-full grid grid-cols-3 gap-x-3">
-      <div className="flex items-center gap-x-2 flex-1 col-span-2">
-        <div className="flex items-center gap-x-1 h-full px-2 w-full bg-white/10 rounded-md">
+    <div className="w-full flex justify-between items-center md:grid grid-cols-3 gap-x-3">
+      <div className="flex items-center gap-x-2 flex-1 w-full md:col-span-2">
+        <div className="flex items-center gap-x-1 h-full w-full px-2 bg-white/10 rounded-md">
           <button
             disabled={loading}
             onClick={handleSearch}
@@ -69,7 +69,7 @@ export default function ProductHeader() {
           value={category}
           onValueChange={(v: CATEGORY) => setCategory(v)}
         >
-          <SelectTrigger className="h-full w-[180px] px-3 py-1 bg-red-900 rounded-md">
+          <SelectTrigger className="h-full w-[150px] md:w-[180px] px-3 py-1 rounded-md">
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
@@ -82,10 +82,10 @@ export default function ProductHeader() {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex w-full justify-end pe-4 items-center">
+      <div className="flex md:w-full justify-end pe-4 items-center">
         <DialogProduct httpMethod="POST">
           <Button type="button" className="cursor-pointer">
-            Add Product
+            Add <span className="hidden md:inline">Product</span>
           </Button>
         </DialogProduct>
       </div>
