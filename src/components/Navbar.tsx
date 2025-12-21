@@ -13,10 +13,12 @@ import Searchbar from "./Searchbar";
 import UserProfile from "./UserProfile";
 import { cn } from "@/lib/utils";
 import { useCartItems } from "@/lib/product-queries";
+import NavbarMobile from "./NavbarMobile";
 
 interface NavbarProps {
   token: Session | null;
 }
+
 export async function handleLogout(
   setLoading: Dispatch<SetStateAction<boolean>>
 ) {
@@ -34,6 +36,7 @@ export async function handleLogout(
     setLoading(false);
   }
 }
+
 export default function Navbar(props: NavbarProps) {
   const { token } = props;
   const pathname = usePathname();
@@ -66,7 +69,7 @@ export default function Navbar(props: NavbarProps) {
               href={pathname !== "/" ? "/shop" : "#collection"}
               className={cn("nav-link", pathname === "/shop" && "active")}
             >
-              COLLECTION
+              {pathname !== "/" ? "SHOP" : "COLLECTION"}
             </Link>
             {pathname !== "/" ? (
               <Link
@@ -86,7 +89,7 @@ export default function Navbar(props: NavbarProps) {
               </>
             )}
           </div>
-          <div className="space-x-2">
+          <div className="space-x-2 hidden md:block">
             {pathname === "/" ? (
               <>
                 <Link
@@ -145,6 +148,7 @@ export default function Navbar(props: NavbarProps) {
               </div>
             )}
           </div>
+          <NavbarMobile token={token} />
         </div>
       </nav>
     </>

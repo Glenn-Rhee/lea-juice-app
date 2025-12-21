@@ -42,6 +42,7 @@ export default function Searchbar() {
       <button
         disabled={loading}
         onClick={() => {
+          console.log("cihuy");
           if (value.trim() === "") {
             setOpen((prev) => !prev);
           } else {

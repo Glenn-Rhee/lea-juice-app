@@ -23,6 +23,7 @@ interface UserProfileProps {
   token: Session | null;
   handleLogout: () => Promise<void>;
   disabled: boolean;
+  handleClick?: () => void;
 }
 
 export interface UserDetail {
@@ -37,7 +38,7 @@ export interface UserDetail {
 }
 
 export default function UserProfile(props: UserProfileProps) {
-  const { token, handleLogout, disabled } = props;
+  const { token, handleLogout, disabled, handleClick } = props;
   const userData: UserDetail = {
     username: token ? token.user.username || "-" : "User Guest",
     fullName: token?.user?.name || "",
@@ -53,7 +54,10 @@ export default function UserProfile(props: UserProfileProps) {
     <div className="relative">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <button className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors p-2 rounded-full hover:bg-gray-100">
+          <button
+            onClick={handleClick}
+            className="cursor-pointer text-orange-500 md:text-stone-700 md:hover:text-slate-900 transition-colors p-2 rounded-full hover:bg-gray-100"
+          >
             <IconUser />
           </button>
         </DropdownMenuTrigger>
