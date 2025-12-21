@@ -30,7 +30,7 @@ export default function HeroPage() {
             initial={{ y: -600, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="bottle-container parallax-element left-[15%] top-[25%]"
+            className="bottle-container parallax-element left-[15rem] top-[25rem] md:left-[15%] md:top-[20%]"
             data-speed="0.3s"
             style={{ y }}
           >
@@ -63,7 +63,7 @@ export default function HeroPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: "easeInOut", delay: 0.4 }}
             style={{ y }}
-            className="bottle-container parallax-element right-[15%] top-[30%]"
+            className="bottle-container parallax-element right-[12rem] top-[23rem] md:right-[15%] md:top-[30%]"
             data-speed="0.4s"
           >
             <Image
@@ -86,7 +86,7 @@ export default function HeroPage() {
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="text-7xl md:text-9xl font-bold text-stone-900 mb-6"
+                className="text-5xl md:text-9xl font-bold text-stone-900 mb-6"
               >
                 Pure Taste <br />{" "}
                 <span className="text-[#e4842b]">Pure Life</span>
@@ -95,7 +95,7 @@ export default function HeroPage() {
                 initial={{ y: 50, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: "easeInOut" }}
-                className="text-stone-600 text-xl md:text-2xl mb-12 font-light"
+                className="text-slate-700 text-xl md:text-2xl mb-12 font-semibold md:font-light"
               >
                 Handcrafted wellness in every bottle
               </motion.p>

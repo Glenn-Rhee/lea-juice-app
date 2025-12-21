@@ -12,11 +12,11 @@ export default function Story() {
             <span className="text-orange-500 text-sm tracking-widest font-medium">
               OUR PHILOSOPHY
             </span>
-            <h2 className="text-6xl font-bold text-stone-900 mt-4 mb-8">
+            <h2 className="text-5xl md:text-6xl font-bold text-stone-900 mt-4 mb-8">
               Crafted with <br />{" "}
               <span className="text-[#ff8c42]">Intention</span>
             </h2>
-            <p className="text-stone-600 text-lg leading-relaxed mb-8">
+            <p className="text-stone-600 text-base md:text-lg leading-relaxed mb-8">
               Every bottle begins with a simple promise: to deliver
               nature&apos;s finest ingredients in their purest form. We partner
               with organic farms, cold-press within hours of harvest, and never
@@ -64,7 +64,7 @@ export default function Story() {
               </div>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative hidden md:block">
             <div className="aspect-square bg-gradient-to-br from-orange-100 to-amber-100 rounded-3xl flex items-center justify-center overflow-hidden">
               <Image
                 src={"/jus-mangga.png"}

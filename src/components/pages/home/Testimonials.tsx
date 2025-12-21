@@ -97,7 +97,7 @@ export default function Testimonials() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-6xl md:text-7xl font-bold text-stone-900 mt-6"
+            className="text-5xl md:text-7xl font-bold text-stone-900 mt-6"
           >
             Loved by Thousands
           </motion.h2>
