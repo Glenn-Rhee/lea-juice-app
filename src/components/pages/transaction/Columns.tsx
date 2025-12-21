@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 export type Transaction = {
   id: string;
   productName: string;
@@ -141,7 +142,7 @@ export const columns: ColumnDef<Transaction>[] = [
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="data-[highlighted]:bg-gray-300 hover:data-[highlighted]:text-stone-700">
-            View Product
+            <Link href={"/product/" + row.original.id}>View Product</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

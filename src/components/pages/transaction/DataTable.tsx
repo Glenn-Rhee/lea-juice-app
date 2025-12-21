@@ -76,8 +76,8 @@ export default function DataTable<TData, TValue>(
 
   return (
     <div>
-      <div className="overflow-hidden rounded-md border">
-        <Table>
+      <div className="overflow-auto md:overflow-hidden rounded-md border">
+        <Table className="overflow-x-auto">
           <TableHeader className="bg-orange-500 hover:bg-orange-600 hover:opacity-100">
             {table.getHeaderGroups().map((hg) => (
               <TableRow
