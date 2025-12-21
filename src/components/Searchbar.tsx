@@ -51,7 +51,11 @@ export default function Searchbar() {
         }}
         className="cursor-pointer text-stone-700 hover:text-slate-900 transition-colors"
       >
-        {loading ? <Loader className="text-slate-900" /> : <IconSearch />}
+        {loading ? (
+          <Loader className="text-slate-900" />
+        ) : (
+          <IconSearch className="text-orange-500 md:text-stone-700" />
+        )}
       </button>
     </>
   );

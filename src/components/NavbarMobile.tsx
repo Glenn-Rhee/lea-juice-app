@@ -32,7 +32,7 @@ export default function NavbarMobile({ token }: NavbarMobileProps) {
   }, [active]);
 
   return (
-    <div className="flex md:hidden items-center gap-x-2">
+    <div className="flex relative md:hidden items-center gap-x-2">
       {pathname !== "/" && <Searchbar />}
       <button
         onClick={() => setActive((prev) => !prev)}

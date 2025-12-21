@@ -96,7 +96,11 @@ export default async function ProductPage({ params }: Props) {
     { href: "/", text: "Home" },
     { href: "/shop", text: "Shop" },
     {
-      href: "/shop?category=juice",
+      href:
+        "/shop" +
+        (dataProduct
+          ? `?category=${dataProduct.category.category_name.toLowerCase()}`
+          : ""),
       text: dataProduct ? dataProduct.category.category_name : "all",
     },
   ];
