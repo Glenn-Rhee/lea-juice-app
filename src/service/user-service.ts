@@ -195,40 +195,41 @@ export default class UserService {
     const bestSeller =
       allOrders.length > 0 ? getMostPurchasedCategory(allOrders) : "JUICE";
 
-    const data: DataUserTable[] = users.map((user) => ({
-      address: user.userDetail?.address || "",
-      city: user.userDetail?.city || "",
-      email: user.email || "",
-      id: user.id,
-      image: user.image || "",
-      name: user.name || "",
-      phoneNumber: user.userDetail?.phoneNumber || "",
-      postalCode: user.userDetail?.postalCode || "",
-      province: user.userDetail?.province || "",
-      username: user.username || "",
-      lastPurchaseDate: user.Order.sort(
-        (a, b) => b.created_at.getTime() - a.created_at.getTime()
-      )[0].created_at,
-      totalOrders: user.Order.reduce((sum, order) => {
-        const completedDetails = order.Detail_Order.filter(
-          (d) => d.status === "COMPLETED"
-        );
-        return sum + completedDetails.length;
-      }, 0),
-      totalSpending: user.Order.reduce((sum, order) => {
-        const completedDetails = order.Detail_Order.filter(
-          (d) => d.status === "COMPLETED"
-        );
-        const totalItems = completedDetails.reduce(
-          (s, d) => s + d.total_price,
-          0
-        );
-        return sum + totalItems;
-      }, 0),
-      gender: user.userDetail?.gender || "UNKNOWN",
-      bestSeller,
-    }));
-
+    const data: DataUserTable[] = users
+      .map((user) => ({
+        address: user.userDetail?.address || "",
+        city: user.userDetail?.city || "",
+        email: user.email || "",
+        id: user.id,
+        image: user.image || "",
+        name: user.name || "",
+        phoneNumber: user.userDetail?.phoneNumber || "",
+        postalCode: user.userDetail?.postalCode || "",
+        province: user.userDetail?.province || "",
+        username: user.username || "",
+        lastPurchaseDate: user.Order.sort(
+          (a, b) => b.created_at.getTime() - a.created_at.getTime()
+        )[0].created_at,
+        totalOrders: user.Order.reduce((sum, order) => {
+          const completedDetails = order.Detail_Order.filter(
+            (d) => d.status === "COMPLETED"
+          );
+          return sum + completedDetails.length;
+        }, 0),
+        totalSpending: user.Order.reduce((sum, order) => {
+          const completedDetails = order.Detail_Order.filter(
+            (d) => d.status === "COMPLETED"
+          );
+          const totalItems = completedDetails.reduce(
+            (s, d) => s + d.total_price,
+            0
+          );
+          return sum + totalItems;
+        }, 0),
+        gender: user.userDetail?.gender || "UNKNOWN",
+        bestSeller,
+      }))
+      .sort((a, b) => b.totalSpending - a.totalSpending);
     return {
       code: 200,
       data,
