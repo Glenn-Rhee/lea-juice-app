@@ -91,17 +91,13 @@ export default async function ShopePage({ searchParams }: Props) {
         dataProducts &&
         bestSellerProducts && (
           <>
-            {!search && !category && (
+            {!search && !category && bestSellerProducts.length > 0 && (
               <>
                 <BreadcrumbShop links={links} pageTitle="Shop" />
                 <h2 className="text-stone-800 font-semibold text-3xl mt-4">
                   Top Sellers
                 </h2>
-                {bestSellerProducts.length === 0 ? (
-                  <EmptyProduct message="Product is not finished yet" />
-                ) : (
-                  <Products data={bestSellerProducts} />
-                )}
+                <Products data={bestSellerProducts} />
               </>
             )}
             <h2

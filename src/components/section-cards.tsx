@@ -27,7 +27,7 @@ import Link from "next/link";
 interface SectionCardsProps {
   dataTotalRevenu: DataTotalRevenue;
   dataNewOrder: DataNewOrder;
-  dataBestSeller: DataBestSeller;
+  dataBestSeller: DataBestSeller | null;
   dataProductLowStock: DataProductLowStock;
 }
 
@@ -126,21 +126,29 @@ export function SectionCards(props: SectionCardsProps) {
               <CardDescription>Produk Terlaris</CardDescription>
               <Badge variant="outline" className="shrink-0">
                 <IconTrendingUp className="size-3" />
-                {dataBestSeller.sold} Sold
+                {dataBestSeller ? dataBestSeller.sold : 0} Sold
               </Badge>
             </div>
             <CardTitle className="text-xl font-semibold tabular-nums mt-7 text-center">
-              {dataBestSeller.productName}
+              {dataBestSeller ? dataBestSeller.productName : "-"}
             </CardTitle>
           </CardHeader>
           <CardFooter className="flex-col items-start gap-1 text-sm pt-2">
-            <div className="line-clamp-1 flex gap-2 font-medium">
-              Best seller minggu ini{" "}
-              <IconStar className="size-4 fill-yellow-400 text-yellow-400" />
-            </div>
-            <div className="text-muted-foreground">
-              Stok tersisa {dataBestSeller.stock}
-            </div>
+            {dataBestSeller ? (
+              <>
+                <div className="line-clamp-1 flex gap-2 font-medium">
+                  Best seller minggu ini{" "}
+                  <IconStar className="size-4 fill-yellow-400 text-yellow-400" />
+                </div>
+                <div className="text-muted-foreground">
+                  Stok tersisa {dataBestSeller.stock}
+                </div>
+              </>
+            ) : (
+              <span className="line-clamp-1 flex gap-2 font-medium">
+                Tidak ada produk terlaris minggu ini
+              </span>
+            )}
           </CardFooter>
         </Link>
       </Card>

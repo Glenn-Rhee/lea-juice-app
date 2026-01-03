@@ -2,7 +2,7 @@ import ResponseError from "@/error/ResponseError";
 import { getDateRange } from "@/helper/getDateRange";
 import { groupOrdersByDate } from "@/helper/groupOrdersByDate";
 import { prisma } from "@/lib/prisma";
-import { ResponsePayload } from "@/types";
+import { DataBestSeller, ResponsePayload } from "@/types";
 
 export default class StatisticService {
   static async getStatistic(): Promise<ResponsePayload> {
@@ -47,25 +47,29 @@ export default class StatisticService {
     };
 
     const bestSeller = await this.getBestSeller();
-    const product = await prisma.product.findUnique({
-      where: {
-        id: bestSeller[0].product_id,
-      },
-      select: {
-        product_name: true,
-        stock: true,
-      },
-    });
+    let dataBestSeller: DataBestSeller | null = null;
+    
+    if (bestSeller.length > 0) {
+      const product = await prisma.product.findUnique({
+        where: {
+          id: bestSeller[0].product_id,
+        },
+        select: {
+          product_name: true,
+          stock: true,
+        },
+      });
 
-    if (!product) {
-      throw new ResponseError(404, "Oops! Product best seller is not found!");
+      if (!product) {
+        throw new ResponseError(404, "Oops! Product best seller is not found!");
+      }
+
+      dataBestSeller = {
+        productName: product.product_name,
+        stock: product.stock,
+        sold: bestSeller[0]._sum.quantity,
+      };
     }
-
-    const dataBestSeller = {
-      productName: product.product_name,
-      stock: product.stock,
-      sold: bestSeller[0]._sum.quantity,
-    };
 
     const stockRunningLow = await prisma.product.findMany({
       where: {
