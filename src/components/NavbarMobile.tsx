@@ -136,7 +136,9 @@ export default function NavbarMobile({ token }: NavbarMobileProps) {
               </Link>
               {token ? (
                 <Button
+                  onClick={() => handleLogout(setLoading)}
                   variant={"destructive"}
+                  disabled={loading}
                   type="button"
                   className="text-sm font-semibold px-4 py-3"
                 >
